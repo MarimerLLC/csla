@@ -64,6 +64,9 @@ public sealed class FactoryCustomer : BusinessBase<FactoryCustomer>
 
   [CreateChild]
   private void FactoryCreateChild() { }
+
+  [MyCreateChild]
+  private void FactoryDerivedCreateChild() { }
 }
 
 [Csla.Server.ObjectFactory(""Factories.CustomerFactory, Factories"")]
@@ -74,6 +77,9 @@ public sealed partial class PartialFactoryCustomer : BusinessBase<PartialFactory
 
   [FetchChild]
   private void PartialFactoryChildFetch(int id) { }
+
+  [MyFetchChild]
+  private void PartialFactoryDerivedChildFetch(int id) { }
 }
 
 public sealed class CustomFactoryAttribute : Csla.Server.ObjectFactoryAttribute
@@ -92,6 +98,40 @@ public sealed class StaticOperation : BusinessBase<StaticOperation>
 {
   [Fetch]
   private static void StaticFetch(int id) { }
+}
+
+public sealed class MyFetchChildAttribute : FetchChildAttribute { }
+
+public sealed class MyCreateChildAttribute : CreateChildAttribute { }
+
+public sealed class PublicOperations : BusinessBase<PublicOperations>
+{
+  [Fetch]
+  public void PublicFetch(int id) { }
+}
+
+public sealed partial class PartialPublicOperations : BusinessBase<PartialPublicOperations>
+{
+  [Fetch]
+  public void PartialPublicFetch(int id) { }
+}
+
+public sealed class NotInvoked : BusinessBase<NotInvoked>
+{
+  [DataPortalChildOperation]
+  private void BaseAttributeLoad(int id) { }
+
+  [Fetch]
+  private void GenericFetch<TX>(int id) { }
+
+  [MyFetchChild]
+  private void DerivedFetchChild(int id) { }
+}
+
+public sealed class CustomCslaObject : Csla.Core.ICslaObject
+{
+  [Fetch]
+  private void CustomObjectFetch(int id) { }
 }
 
 public sealed class NotAStereotype
@@ -131,7 +171,7 @@ public sealed class NotAStereotype
         ? new MarkMembersAsStaticStubAnalyzer() : new UnusedPrivateMemberStubAnalyzer();
       var diagnostics = await RunAsync(OperationsCode, analyzer);
 
-      foreach (var method in new[] { "Create", "Fetch", "Insert", "DeleteSelf", "FetchChild", "Execute", "Child_Create", "ProtectedBaseFetch", "PrivateBaseFetch", "FactoryCreateChild", "PartialFactoryChildFetch" })
+      foreach (var method in new[] { "Create", "Fetch", "Insert", "DeleteSelf", "FetchChild", "Execute", "Child_Create", "ProtectedBaseFetch", "PrivateBaseFetch", "FactoryCreateChild", "PartialFactoryChildFetch", "FactoryDerivedCreateChild", "PartialPublicFetch", "DerivedFetchChild", "CustomObjectFetch" })
       {
         Assert.IsTrue(diagnostics.IsSuppressedAt(method), method);
       }
@@ -149,8 +189,11 @@ public sealed class NotAStereotype
       // Not an operation, a legacy name without an attribute, root operations on
       // [ObjectFactory] types (including a derived factory attribute), a child
       // operation on a factory type without a generated mapping, an operation
-      // outside a CSLA business type, and a static operation.
-      foreach (var method in new[] { "Helper", "DataPortal_Update", "FactoryRootFetch", "FactoryChildFetch", "PartialFactoryRootFetch", "CustomFactoryRootFetch", "NotAStereotypeFetch", "StaticFetch" })
+      // outside a CSLA object, a static operation, a public operation without a
+      // generated mapping (reflection only binds non-public methods), a base
+      // operation attribute the data portal never looks for, a generic method,
+      // and a derived attribute the generator doesn't see on a factory type.
+      foreach (var method in new[] { "Helper", "DataPortal_Update", "FactoryRootFetch", "FactoryChildFetch", "PartialFactoryRootFetch", "CustomFactoryRootFetch", "NotAStereotypeFetch", "StaticFetch", "PublicFetch", "BaseAttributeLoad", "GenericFetch", "PartialFactoryDerivedChildFetch" })
       {
         Assert.IsFalse(diagnostics.IsSuppressedAt(method), method);
       }
@@ -241,15 +284,52 @@ public sealed class PrivateByAttribute : BusinessBase<PrivateByAttribute>
 public sealed class NotAStereotype
 {
   private static void AddObjectAuthorizationRules(IAddObjectAuthorizationRulesContext notAStereotypeContext) { }
+}
+
+public sealed class NoParameters : BusinessBase<NoParameters>
+{
+  private static void AddObjectAuthorizationRules() { }
+}
+
+public abstract class AbstractRules<T> : BusinessBase<T>
+  where T : AbstractRules<T>
+{
+  private static void AddObjectAuthorizationRules(IAddObjectAuthorizationRulesContext abstractContext) { }
+}
+
+public sealed class Overloaded : BusinessBase<Overloaded>
+{
+  private static void AddObjectAuthorizationRules() { }
+
+  private static void AddObjectAuthorizationRules(IAddObjectAuthorizationRulesContext overloadContext) { }
+}
+
+public sealed class WrongSignature : BusinessBase<WrongSignature>
+{
+  private static void AddObjectAuthorizationRules(int wrongParameter) { }
 }";
       var unusedMembers = await RunAsync(code, new UnusedPrivateMemberStubAnalyzer());
 
-      bool IsSuppressedIn(string typeName) =>
-        unusedMembers.Single(_ => _.Location.SourceTree.GetRoot()
+      // Every AddObjectAuthorizationRules method in the type must be suppressed (or none).
+      bool IsSuppressedIn(string typeName)
+      {
+        var matches = unusedMembers.Where(_ => _.Location.SourceTree.GetRoot()
           .FindNode(_.Location.SourceSpan).Ancestors()
           .OfType<Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax>().First().Identifier.Text == typeName &&
           _.Location.SourceTree.ToString().Substring(_.Location.SourceSpan.Start, _.Location.SourceSpan.Length) == "AddObjectAuthorizationRules")
-          .IsSuppressed;
+          .ToList();
+        Assert.IsTrue(matches.Count > 0, typeName);
+        Assert.IsTrue(matches.All(_ => _.IsSuppressed) || matches.All(_ => !_.IsSuppressed), typeName);
+        return matches[0].IsSuppressed;
+      }
+
+      Assert.IsTrue(IsSuppressedIn("NoParameters"), "NoParameters");
+      // Type.GetMethod on the concrete type doesn't return private static methods of a base type.
+      Assert.IsFalse(IsSuppressedIn("AbstractRules"), "AbstractRules");
+      // Type.GetMethod throws when the name is overloaded.
+      Assert.IsFalse(IsSuppressedIn("Overloaded"), "Overloaded");
+      // CSLA calls the method with no arguments or with the context only.
+      Assert.IsFalse(IsSuppressedIn("WrongSignature"), "WrongSignature");
 
       Assert.IsTrue(IsSuppressedIn("ByName"), "ByName");
       // AuthorizationRuleManager matches the exact attribute type, so a derived attribute doesn't hide the by-name method.

@@ -1,7 +1,6 @@
 using System.Collections.Immutable;
 using Csla.Analyzers.Extensions;
 using Microsoft.CodeAnalysis;
-using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 
@@ -62,10 +61,10 @@ namespace Csla.Analyzers
 
     private static bool IsUnusedMemberFalsePositive(SuppressionAnalysisContext context, Diagnostic diagnostic) =>
       GetMethod(context, diagnostic) is { } method &&
-        (IsCalledDataPortalOperation(method) || IsCalledObjectAuthorizationRulesMethod(method));
+        (IsCalledDataPortalOperation(method, context.CancellationToken) || IsCalledObjectAuthorizationRulesMethod(method));
 
     private static bool IsOperationCanBeStaticFalsePositive(SuppressionAnalysisContext context, Diagnostic diagnostic) =>
-      GetMethod(context, diagnostic) is { } method && IsCalledDataPortalOperation(method);
+      GetMethod(context, diagnostic) is { } method && IsCalledDataPortalOperation(method, context.CancellationToken);
 
     // The data portal chooses an operation by its criteria parameters. [Inject]
     // parameters aren't part of that choice, and an object authorization rules
@@ -83,7 +82,7 @@ namespace Csla.Analyzers
       // Lambdas and local functions inside an operation are ordinary code,
       // so only parameters of the operation itself qualify.
       return parameter.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Ordinary } method &&
-        IsCalledDataPortalOperation(method) &&
+        IsCalledDataPortalOperation(method, context.CancellationToken) &&
         !parameter.GetAttributes().Any(_ => _.AttributeClass.IsInjectable());
     }
 
@@ -101,68 +100,72 @@ namespace Csla.Analyzers
         : null;
     }
 
-    // Private operations in a base type stay candidates: when the derived type
-    // has no matching operation, the data portal looks again from the base type.
-    private static bool IsCalledDataPortalOperation(IMethodSymbol method)
+    // An operation is called either by reflection or by the mapping the
+    // operations generator emits. Reflection binds only non-public instance
+    // methods; private operations in a base type stay candidates, because when
+    // the derived type has no match the data portal looks again from the base
+    // type.
+    private static bool IsCalledDataPortalOperation(IMethodSymbol method, CancellationToken cancellationToken)
     {
       var type = method.ContainingType;
 
-      // The data portal and the generated mappings only call instance methods.
-      if (method.IsStatic || !type.IsStereotype())
+      // Neither path calls static or generic methods.
+      if (method.IsStatic || method.IsGenericMethod || !type.IsCslaObject())
       {
         return false;
       }
 
-      var isRoot = method.IsRootDataPortalOperation().ByAttribute;
-      var isChild = method.IsChildDataPortalOperation().ByAttribute;
+      var isRoot = method.HasOperationAttribute(_ => IsInvokedOperationAttribute(_, child: false));
+      var isChild = method.HasOperationAttribute(_ => IsInvokedOperationAttribute(_, child: true));
 
       if (!isRoot && !isChild)
       {
         return false;
       }
 
+      var reflectionCanCall = method.DeclaredAccessibility != Accessibility.Public;
+      var hasMapping = HasGeneratedOperationMapping(method, cancellationToken);
+
       if (!type.HasObjectFactoryAttribute())
       {
-        return true;
+        return reflectionCanCall || hasMapping;
       }
 
-      // With [ObjectFactory], the factory handles root operations. Child
-      // operations run on the business type through its generated mapping;
-      // without one, reflection sends them to the factory too, except
-      // [CreateChild].
-      return isChild && (HasGeneratedOperationMapping(type) || HasCreateChildAttribute(method));
+      // With [ObjectFactory], the factory handles root operations, and
+      // reflection sends child operations to the factory too, except
+      // [CreateChild]. The generated mapping still calls child operations on
+      // the business type.
+      return isChild &&
+        (hasMapping || (reflectionCanCall && method.HasOperationAttribute(IsCreateChildAttribute)));
     }
 
-    // The operations generator emits a mapping for a non-abstract type that is
-    // declared partial, along with every type that contains it.
-    private static bool HasGeneratedOperationMapping(INamedTypeSymbol type)
+    // The data portal looks for the concrete operation attributes ([Fetch],
+    // [FetchChild], ...) and attributes derived from them, never for the
+    // DataPortal*OperationAttribute base classes themselves.
+    private static bool IsInvokedOperationAttribute(INamedTypeSymbol? attribute, bool child)
     {
-      if (type.IsAbstract)
+      for (var current = attribute; current is not null; current = current.BaseType)
       {
-        return false;
-      }
-
-      for (var current = type; current is not null; current = current.ContainingType)
-      {
-        if (!current.DeclaringSyntaxReferences.Any(_ =>
-          _.GetSyntax() is TypeDeclarationSyntax declaration && declaration.Modifiers.Any(SyntaxKind.PartialKeyword)))
+        if (current.ContainingAssembly?.Name != CslaMemberConstants.AssemblyName)
         {
-          return false;
+          continue;
         }
+
+        return current.Name is not (CslaMemberConstants.Types.DataPortalOperationAttribute or
+            CslaMemberConstants.Types.DataPortalRootOperationAttribute or
+            CslaMemberConstants.Types.DataPortalChildOperationAttribute) &&
+          (child ? current.IsDataPortalChildOperationAttribute() : current.IsDataPortalRootOperationAttribute());
       }
 
-      return true;
+      return false;
     }
 
-    // The data portal reads operation attributes with inherit: true, so an
-    // override inherits [CreateChild] from the method it overrides.
-    private static bool HasCreateChildAttribute(IMethodSymbol method)
+    private static bool IsCreateChildAttribute(INamedTypeSymbol? attribute)
     {
-      for (var current = method; current is not null; current = current.OverriddenMethod)
+      for (var current = attribute; current is not null; current = current.BaseType)
       {
-        if (current.GetAttributes().Any(_ =>
-          _.AttributeClass is { Name: CslaMemberConstants.Types.CreateChildAttribute } attribute &&
-          attribute.ContainingAssembly.Name == CslaMemberConstants.AssemblyName))
+        if (current.Name == CslaMemberConstants.Types.CreateChildAttribute &&
+          current.ContainingAssembly?.Name == CslaMemberConstants.AssemblyName)
         {
           return true;
         }
@@ -171,9 +174,36 @@ namespace Csla.Analyzers
       return false;
     }
 
+    // The operations generator emits a mapping for a non-abstract type that is
+    // partial, along with every type that contains it. It only picks up
+    // methods that carry a CSLA operation attribute directly (not one derived
+    // from it, and not one inherited through an override).
+    private static bool HasGeneratedOperationMapping(IMethodSymbol method, CancellationToken cancellationToken)
+    {
+      var type = method.ContainingType;
+
+      if (type.IsAbstract ||
+        !method.GetAttributes().Any(_ =>
+          _.AttributeClass?.ContainingAssembly?.Name == CslaMemberConstants.AssemblyName &&
+          (IsInvokedOperationAttribute(_.AttributeClass, child: false) || IsInvokedOperationAttribute(_.AttributeClass, child: true))))
+      {
+        return false;
+      }
+
+      return type.DeclaringSyntaxReferences
+        .Select(_ => _.GetSyntax(cancellationToken))
+        .OfType<TypeDeclarationSyntax>()
+        .FirstOrDefault() is { } declaration &&
+        TypeWithOperationsShouldBePartialAnalyzer.GetNonPartialTypeDeclarations(declaration).Count == 0;
+    }
+
     // AuthorizationRuleManager calls the public static method marked with
-    // exactly [ObjectAuthorizationRules]. Only when there is none does it call
-    // a static method of any accessibility named AddObjectAuthorizationRules.
+    // exactly [ObjectAuthorizationRules]. Only when the type has none does it
+    // look up AddObjectAuthorizationRules by name with
+    // Type.GetMethod(name, Static | Public | NonPublic | FlattenHierarchy) on
+    // the concrete type. That doesn't return private static methods of a base
+    // type, throws when there are overloads, and the method is then called
+    // with no arguments or with the context.
     private static bool IsCalledObjectAuthorizationRulesMethod(IMethodSymbol method)
     {
       var type = method.ContainingType;
@@ -189,8 +219,17 @@ namespace Csla.Analyzers
       }
 
       return method.Name == CslaMemberConstants.Operations.AddObjectAuthorizationRules &&
+        !(type.IsAbstract && method.DeclaredAccessibility == Accessibility.Private) &&
+        HasObjectAuthorizationRulesSignature(method) &&
+        type.GetMembers(method.Name).OfType<IMethodSymbol>().Count(_ => _.IsStatic) == 1 &&
         !type.GetMembers().OfType<IMethodSymbol>().Any(IsPublicObjectAuthorizationRulesMethod);
     }
+
+    private static bool HasObjectAuthorizationRulesSignature(IMethodSymbol method) =>
+      method.Parameters.Length == 0 ||
+      (method.Parameters.Length == 1 &&
+        method.Parameters[0].Type is { Name: CslaMemberConstants.Types.IAddObjectAuthorizationRulesContext } parameterType &&
+        parameterType.ContainingAssembly.Name == CslaMemberConstants.AssemblyName);
 
     private static bool IsPublicObjectAuthorizationRulesMethod(IMethodSymbol method) =>
       method.IsStatic &&

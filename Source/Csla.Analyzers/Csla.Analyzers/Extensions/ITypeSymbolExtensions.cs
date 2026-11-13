@@ -1,4 +1,4 @@
-using System.Diagnostics.CodeAnalysis;
+﻿using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 
 namespace Csla.Analyzers.Extensions
@@ -174,6 +174,18 @@ namespace Csla.Analyzers.Extensions
         }
       }
       return false;
+    }
+
+    /// <summary>
+    /// Gets whether the type implements <c>ICslaObject</c>, the constraint the
+    /// data portal places on the types it creates, fetches and updates.
+    /// </summary>
+    internal static bool IsCslaObject([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        @this.AllInterfaces.Any(_ =>
+          _.Name == CslaMemberConstants.Types.ICslaObject &&
+          _.ContainingAssembly.Name == CslaMemberConstants.AssemblyName);
     }
 
     internal static bool IsObjectFactoryAttribute([NotNullWhen(true)] this ITypeSymbol? @this)

@@ -81,7 +81,7 @@ namespace Csla.Analyzers.Extensions
     // The data portal reads operation attributes with inherit: true, so an
     // override (such as of BusinessBase.Child_Create) inherits the attribute
     // of the method it overrides.
-    private static bool HasOperationAttribute(this IMethodSymbol @this, Func<INamedTypeSymbol?, bool> isOperationAttribute)
+    internal static bool HasOperationAttribute(this IMethodSymbol @this, Func<INamedTypeSymbol?, bool> isOperationAttribute)
     {
       for (var method = @this; method is not null; method = method.OverriddenMethod)
       {

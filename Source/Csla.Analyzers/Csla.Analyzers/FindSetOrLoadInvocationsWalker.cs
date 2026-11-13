@@ -24,7 +24,7 @@ namespace Csla.Analyzers
       }
       else
       {
-        // Look inside other calls, such as LoadPropertyMarkDirty(X, v).ToString() or Foo(SetProperty(X, v)).
+        // Look inside other calls, such as LoadPropertyMarkDirty(X, v).ToString() or Run(() => SetProperty(X, v)).
         base.VisitInvocationExpression(node);
       }
     }

@@ -159,6 +159,43 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsObjectAuthorizationRulesAttribute());
     }
 
+    /// <summary>
+    /// Gets whether the type or one of its base types has <c>[ObjectFactory]</c>
+    /// or an attribute derived from it, matching how the data portal looks for
+    /// the attribute (<c>GetCustomAttributes(typeof(ObjectFactoryAttribute), true)</c>).
+    /// </summary>
+    internal static bool HasObjectFactoryAttribute(this ITypeSymbol? @this)
+    {
+      for (var type = @this; type is not null; type = type.BaseType)
+      {
+        if (type.GetAttributes().Any(_ => _.AttributeClass.IsObjectFactoryAttribute()))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
+    /// <summary>
+    /// Gets whether the type implements <c>ICslaObject</c>, the constraint the
+    /// data portal places on the types it creates, fetches and updates.
+    /// </summary>
+    internal static bool IsCslaObject([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        @this.AllInterfaces.Any(_ =>
+          _.Name == CslaMemberConstants.Types.ICslaObject &&
+          _.ContainingAssembly.Name == CslaMemberConstants.AssemblyName);
+    }
+
+    internal static bool IsObjectFactoryAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.ObjectFactoryAttribute &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsObjectFactoryAttribute());
+    }
+
     internal static bool IsCalculatedPropertyAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&

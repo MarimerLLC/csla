@@ -264,6 +264,22 @@
       /// </summary>
       public const string ObjectFactory = nameof(ObjectFactory);
       /// <summary>
+      ///
+      /// </summary>
+      public const string ObjectFactoryAttribute = nameof(ObjectFactoryAttribute);
+      /// <summary>
+      ///
+      /// </summary>
+      public const string CreateChildAttribute = nameof(CreateChildAttribute);
+      /// <summary>
+      ///
+      /// </summary>
+      public const string ICslaObject = nameof(ICslaObject);
+      /// <summary>
+      ///
+      /// </summary>
+      public const string IAddObjectAuthorizationRulesContext = nameof(IAddObjectAuthorizationRulesContext);
+      /// <summary>
       /// 
       /// </summary>
       public const string ReadOnlyBase = nameof(ReadOnlyBase);

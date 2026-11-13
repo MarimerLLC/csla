@@ -1,4 +1,4 @@
-﻿using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CodeActions;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -53,9 +53,9 @@ namespace Csla.Analyzers.Tests
     /// (check <see cref="Diagnostic.IsSuppressed"/>).
     /// </summary>
     internal static async Task<List<Diagnostic>> GetDiagnosticsWithSuppressorAsync(string code,
-      DiagnosticAnalyzer analyzer, DiagnosticSuppressor suppressor)
+      DiagnosticAnalyzer analyzer, DiagnosticSuppressor suppressor, string assemblyName = "Test")
     {
-      var document = Create(code);
+      var document = Create(code, assemblyName);
       var options = new CompilationWithAnalyzersOptions(
         new AnalyzerOptions([]), onAnalyzerException: null, concurrentAnalysis: true,
         logAnalyzerExecutionTime: false, reportSuppressedDiagnostics: true);
@@ -93,9 +93,9 @@ namespace Csla.Analyzers.Tests
       }
     }
 
-    internal static Document Create(string code)
+    internal static Document Create(string code, string assemblyName = "Test")
     {
-      var projectName = "Test";
+      var projectName = assemblyName;
       var projectId = ProjectId.CreateNewId(projectName);
 
       using var workspace = new AdhocWorkspace();

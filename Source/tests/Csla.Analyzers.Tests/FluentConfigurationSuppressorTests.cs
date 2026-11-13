@@ -25,6 +25,7 @@ using System.Threading.Tasks;
 using Csla;
 using Csla.Channels.Http;
 using Csla.Configuration;
+using Csla.Rules;
 using Microsoft.Extensions.DependencyInjection;
 
 public static class MyExtensions
@@ -36,7 +37,7 @@ public sealed class Customer : BusinessBase<Customer> { }
 
 public static class Startup
 {
-  public static async Task Configure(IServiceCollection services, Customer customer, IDataPortal<Customer> portal, HttpProxyOptions proxy)
+  public static async Task Configure(IServiceCollection services, Customer customer, IDataPortal<Customer> portal, HttpProxyOptions proxy, ApplicationContext context)
   {
     services.AddCsla();
     services.AddCsla(o => o.Rules(r => { r.UseBatchCheckRules(); }));
@@ -49,6 +50,9 @@ public static class Startup
     portal.Fetch(1);
     await portal.FetchAsync(1);
     customer.ToString();
+    services?.AddCsla();
+    Csla.Core.ObjectCloner.GetInstance(context);
+    RuleUri.Parse(""csla://rule"");
   }
 }";
       var diagnostics = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
@@ -67,6 +71,31 @@ public static class Startup
       Assert.IsFalse(diagnostics.IsSuppressedAt("portal.Fetch(1)"), "Fetch()");
       Assert.IsFalse(diagnostics.IsSuppressedAt("await portal.FetchAsync(1)"), "FetchAsync()");
       Assert.IsFalse(diagnostics.IsSuppressedAt("customer.ToString()"), "ToString()");
+      Assert.IsTrue(diagnostics.IsSuppressedAt("services?.AddCsla()"), "conditional access");
+      Assert.IsFalse(diagnostics.IsSuppressedAt("Csla.Core.ObjectCloner.GetInstance(context)"), "static factory method");
+      Assert.IsFalse(diagnostics.IsSuppressedAt("RuleUri.Parse(\"csla://rule\")"), "static Parse method");
+    }
+
+    [TestMethod]
+    public async Task DoNotSuppressInOtherAssembliesNamedCsla()
+    {
+      var code =
+@"public sealed class Money
+{
+  public Money Round() => this;
+}
+
+public static class Usage
+{
+  public static void Run(Money money)
+  {
+    money.Round();
+  }
+}";
+      var diagnostics = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
+        code, new ExpressionValueIsUnusedStubAnalyzer(), new FluentConfigurationSuppressor(), "Csla.Contrib");
+
+      Assert.IsFalse(diagnostics.IsSuppressedAt("money.Round()"));
     }
   }
 }

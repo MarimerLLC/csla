@@ -264,6 +264,10 @@
       /// </summary>
       public const string ObjectFactory = nameof(ObjectFactory);
       /// <summary>
+      ///
+      /// </summary>
+      public const string ObjectFactoryAttribute = nameof(ObjectFactoryAttribute);
+      /// <summary>
       /// 
       /// </summary>
       public const string ReadOnlyBase = nameof(ReadOnlyBase);

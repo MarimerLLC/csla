@@ -57,12 +57,17 @@ Some .NET code style and code quality rules report false positives on CSLA code,
 
 | Suppression ID | Suppresses | Where |
 |---|---|---|
-| `CSLA1001` | `IDE0051` (remove unused private member) | Data portal operations (methods with `[Create]`, `[Fetch]`, `[FetchChild]` and the other operation attributes), and object authorization rules methods that CSLA calls: a public static method with `[ObjectAuthorizationRules]`, or a static method named `AddObjectAuthorizationRules` |
-| `CSLA1002` | `CA1822` (mark members as static) | Data portal operations. The data portal only calls instance methods, so making an operation static breaks it at runtime |
-| `CSLA1003` | `IDE0060` (remove unused parameter) | Parameters of the same methods as `CSLA1001`. The data portal chooses an operation by its parameter types, so removing a parameter changes which method is called. Parameters of lambdas and local functions inside an operation are not suppressed |
-| `CSLA1004` | `IDE0058` (expression value is never used) | Calls to CSLA fluent configuration methods, such as `services.AddCsla(...)`, `options.DataPortal(...)` or `proxy.WithDataPortalUrl(...)`. These are methods in a CSLA assembly that return the object they were called on. Never applies to `Save()` or `SaveAsync()`, where ignoring the result is a bug (see CSLA0005 and CSLA0006) |
+| `CSLA1001` | `IDE0051` (remove unused private member) | Data portal operations the data portal calls, and the object authorization rules method CSLA calls: a public static method with `[ObjectAuthorizationRules]`, or, when a type has none, a static method named `AddObjectAuthorizationRules` |
+| `CSLA1002` | `CA1822` (mark members as static) | Data portal operations the data portal calls. The data portal only calls instance methods, so making an operation static breaks it at runtime |
+| `CSLA1003` | `IDE0060` (remove unused parameter) | Criteria parameters of data portal operations the data portal calls. The data portal chooses an operation by these parameter types, so removing one changes which method is called. `[Inject]` parameters, parameters of lambdas and local functions inside an operation, and the context parameter of an object authorization rules method are not suppressed, because removing them is safe |
+| `CSLA1004` | `IDE0058` (expression value is never used) | Calls to CSLA fluent configuration methods, such as `services.AddCsla(...)`, `options.DataPortal(...)` or `proxy.WithDataPortalUrl(...)`. These are instance or extension methods in a CSLA assembly (signed with the CSLA key) that return the object they were called on. Static factory methods and `Save()`/`SaveAsync()` don't qualify; ignoring the result of `Save()` is a bug (see CSLA0005 and CSLA0006) |
 
-The suppressors don't apply to private operations named by the legacy convention (such as `DataPortal_Fetch`) that have no operation attribute, because the data portal doesn't call those.
+A data portal operation is a method with `[Create]`, `[Fetch]`, `[FetchChild]` or another operation attribute, in a CSLA business type. The suppressors leave the diagnostics in place where the data portal never calls the method, so they still point out dead code:
+
+* methods without an operation attribute, including legacy names such as `DataPortal_Fetch`
+* operation attributes outside a CSLA business type
+* private operations in an abstract type (the data portal ignores private operations declared in a base type)
+* root operations in a type with `[ObjectFactory]` (the factory handles those; child operations still run on the business type)
 
 To turn a suppressor off, add its ID to `NoWarn` in your project file, for example `<NoWarn>$(NoWarn);CSLA1002</NoWarn>`. Setting `dotnet_diagnostic.CSLA1002.severity` in an `.editorconfig` file doesn't affect suppressors.
 

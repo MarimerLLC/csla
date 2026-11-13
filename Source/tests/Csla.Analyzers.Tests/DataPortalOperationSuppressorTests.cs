@@ -1,3 +1,5 @@
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Analyzers.Tests
@@ -39,7 +41,36 @@ public sealed class Command : CommandBase<Command>
 public sealed class Items : BusinessListBase<Items, Customer>
 {
   protected override void Child_Create() { }
+}
+
+public abstract class CustomerBase<T> : BusinessBase<T>
+  where T : CustomerBase<T>
+{
+  [Fetch]
+  private void PrivateBaseFetch(int id) { }
+
+  [Fetch]
+  protected void ProtectedBaseFetch(string name) { }
+}
+
+[Csla.Server.ObjectFactory(""Factories.CustomerFactory, Factories"")]
+public sealed class FactoryCustomer : BusinessBase<FactoryCustomer>
+{
+  [Fetch]
+  private void FactoryRootFetch(int id) { }
+
+  [FetchChild]
+  private void FactoryChildFetch(int id) { }
+}
+
+public sealed class NotAStereotype
+{
+  [Fetch]
+  private void NotAStereotypeFetch(int id) { }
 }";
+
+    private static Task<List<Diagnostic>> RunAsync(string code, DiagnosticAnalyzer analyzer) =>
+      TestHelpers.GetDiagnosticsWithSuppressorAsync(code, analyzer, new DataPortalOperationSuppressor());
 
     [TestMethod]
     public void VerifySupportedSuppressions()
@@ -61,48 +92,49 @@ public sealed class Items : BusinessListBase<Items, Customer>
     }
 
     [TestMethod]
-    public async Task SuppressUnusedPrivateMemberOnOperations()
+    [DataRow("IDE0051")]
+    [DataRow("CA1822")]
+    public async Task SuppressOnCalledOperations(string diagnosticId)
     {
-      var diagnostics = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
-        OperationsCode, new UnusedPrivateMemberStubAnalyzer(), new DataPortalOperationSuppressor());
+      DiagnosticAnalyzer analyzer = diagnosticId == "CA1822"
+        ? new MarkMembersAsStaticStubAnalyzer() : new UnusedPrivateMemberStubAnalyzer();
+      var diagnostics = await RunAsync(OperationsCode, analyzer);
 
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Create"), "Create");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Fetch"), "Fetch");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Insert"), "Insert");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("DeleteSelf"), "DeleteSelf");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("FetchChild"), "FetchChild");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Execute"), "Execute");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Child_Create"), "Child_Create");
-      Assert.IsFalse(diagnostics.IsSuppressedAt("Helper"), "Helper");
-      Assert.IsFalse(diagnostics.IsSuppressedAt("DataPortal_Update"), "DataPortal_Update");
+      foreach (var method in new[] { "Create", "Fetch", "Insert", "DeleteSelf", "FetchChild", "Execute", "Child_Create", "ProtectedBaseFetch", "FactoryChildFetch" })
+      {
+        Assert.IsTrue(diagnostics.IsSuppressedAt(method), method);
+      }
     }
 
     [TestMethod]
-    public async Task SuppressMarkMembersAsStaticOnOperations()
+    [DataRow("IDE0051")]
+    [DataRow("CA1822")]
+    public async Task DoNotSuppressOnMethodsTheDataPortalDoesNotCall(string diagnosticId)
     {
-      var diagnostics = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
-        OperationsCode, new MarkMembersAsStaticStubAnalyzer(), new DataPortalOperationSuppressor());
+      DiagnosticAnalyzer analyzer = diagnosticId == "CA1822"
+        ? new MarkMembersAsStaticStubAnalyzer() : new UnusedPrivateMemberStubAnalyzer();
+      var diagnostics = await RunAsync(OperationsCode, analyzer);
 
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Create"), "Create");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Fetch"), "Fetch");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Execute"), "Execute");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("Child_Create"), "Child_Create");
-      Assert.IsFalse(diagnostics.IsSuppressedAt("Helper"), "Helper");
-      Assert.IsFalse(diagnostics.IsSuppressedAt("DataPortal_Update"), "DataPortal_Update");
+      // Not an operation, a legacy name without an attribute, a private operation
+      // in an abstract base type, a root operation on an [ObjectFactory] type,
+      // and an operation outside a CSLA business type.
+      foreach (var method in new[] { "Helper", "DataPortal_Update", "PrivateBaseFetch", "FactoryRootFetch", "NotAStereotypeFetch" })
+      {
+        Assert.IsFalse(diagnostics.IsSuppressedAt(method), method);
+      }
     }
 
     [TestMethod]
     public async Task DoNotSuppressUnrelatedDiagnosticOnOperation()
     {
-      var diagnostics = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
-        OperationsCode, new UnrelatedStubAnalyzer(), new DataPortalOperationSuppressor());
+      var diagnostics = await RunAsync(OperationsCode, new UnrelatedStubAnalyzer());
 
       Assert.IsTrue(diagnostics.Count > 0);
       Assert.IsFalse(diagnostics.Any(_ => _.IsSuppressed));
     }
 
     [TestMethod]
-    public async Task SuppressUnusedParameterOnOperations()
+    public async Task SuppressUnusedCriteriaParameterOnOperations()
     {
       var code =
 @"using System;
@@ -126,12 +158,12 @@ public sealed class Customer : BusinessBase<Customer>
 
   public Customer(int constructorParameter) { }
 }";
-      var diagnostics = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
-        code, new UnusedParameterStubAnalyzer(), new DataPortalOperationSuppressor());
+      var diagnostics = await RunAsync(code, new UnusedParameterStubAnalyzer());
 
       Assert.IsTrue(diagnostics.IsSuppressedAt("overloadMarker"), "overloadMarker");
       Assert.IsTrue(diagnostics.IsSuppressedAt("id"), "id");
-      Assert.IsTrue(diagnostics.IsSuppressedAt("dal"), "dal");
+      // [Inject] parameters don't take part in choosing the operation.
+      Assert.IsFalse(diagnostics.IsSuppressedAt("dal"), "dal");
       Assert.IsFalse(diagnostics.IsSuppressedAt("lambdaParameter"), "lambdaParameter");
       Assert.IsFalse(diagnostics.IsSuppressedAt("localParameter"), "localParameter");
       Assert.IsFalse(diagnostics.IsSuppressedAt("helperParameter"), "helperParameter");
@@ -139,21 +171,33 @@ public sealed class Customer : BusinessBase<Customer>
     }
 
     [TestMethod]
-    public async Task SuppressOnObjectAuthorizationRulesMethods()
+    public async Task SuppressUnusedMemberOnCalledObjectAuthorizationRulesMethods()
     {
       var code =
 @"using Csla;
 using Csla.Rules;
+
+public sealed class DerivedRulesAttribute : ObjectAuthorizationRulesAttribute { }
 
 public sealed class ByName : BusinessBase<ByName>
 {
   private static void AddObjectAuthorizationRules(IAddObjectAuthorizationRulesContext byNameContext) { }
 }
 
-public sealed class ByAttribute : BusinessBase<ByAttribute>
+public sealed class ByNameWithDerivedAttributeMethod : BusinessBase<ByNameWithDerivedAttributeMethod>
+{
+  [DerivedRules]
+  public static void DerivedAttributeRules(IAddObjectAuthorizationRulesContext context) { }
+
+  private static void AddObjectAuthorizationRules(IAddObjectAuthorizationRulesContext derivedContext) { }
+}
+
+public sealed class Shadowed : BusinessBase<Shadowed>
 {
   [ObjectAuthorizationRules]
   public static void SetupRules(IAddObjectAuthorizationRulesContext context) { }
+
+  private static void AddObjectAuthorizationRules(IAddObjectAuthorizationRulesContext shadowedContext) { }
 }
 
 public sealed class PrivateByAttribute : BusinessBase<PrivateByAttribute>
@@ -166,22 +210,28 @@ public sealed class NotAStereotype
 {
   private static void AddObjectAuthorizationRules(IAddObjectAuthorizationRulesContext notAStereotypeContext) { }
 }";
-      var unusedMembers = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
-        code, new UnusedPrivateMemberStubAnalyzer(), new DataPortalOperationSuppressor());
-      var byName = unusedMembers.Where(_ => _.Location.GetLineSpan().StartLinePosition.Line == 5).ToList();
+      var unusedMembers = await RunAsync(code, new UnusedPrivateMemberStubAnalyzer());
 
-      Assert.AreEqual(1, byName.Count);
-      Assert.IsTrue(byName[0].IsSuppressed, "AddObjectAuthorizationRules");
+      bool IsSuppressedIn(string typeName) =>
+        unusedMembers.Single(_ => _.Location.SourceTree.GetRoot()
+          .FindNode(_.Location.SourceSpan).Ancestors()
+          .OfType<Microsoft.CodeAnalysis.CSharp.Syntax.TypeDeclarationSyntax>().First().Identifier.Text == typeName &&
+          _.Location.SourceTree.ToString().Substring(_.Location.SourceSpan.Start, _.Location.SourceSpan.Length) == "AddObjectAuthorizationRules")
+          .IsSuppressed;
+
+      Assert.IsTrue(IsSuppressedIn("ByName"), "ByName");
+      // AuthorizationRuleManager matches the exact attribute type, so a derived attribute doesn't hide the by-name method.
+      Assert.IsTrue(IsSuppressedIn("ByNameWithDerivedAttributeMethod"), "ByNameWithDerivedAttributeMethod");
+      // A public [ObjectAuthorizationRules] method runs instead of the by-name method.
+      Assert.IsFalse(IsSuppressedIn("Shadowed"), "Shadowed");
+      Assert.IsFalse(IsSuppressedIn("NotAStereotype"), "NotAStereotype");
       Assert.IsTrue(unusedMembers.IsSuppressedAt("SetupRules"), "SetupRules");
       // AuthorizationRuleManager only finds public methods by attribute, so this one is really unused.
       Assert.IsFalse(unusedMembers.IsSuppressedAt("NeverCalledRules"), "NeverCalledRules");
-      Assert.IsFalse(unusedMembers.Single(_ => _.Location.GetLineSpan().StartLinePosition.Line == 22).IsSuppressed, "NotAStereotype");
 
-      var unusedParameters = await TestHelpers.GetDiagnosticsWithSuppressorAsync(
-        code, new UnusedParameterStubAnalyzer(), new DataPortalOperationSuppressor());
-
-      Assert.IsTrue(unusedParameters.IsSuppressedAt("byNameContext"), "byNameContext");
-      Assert.IsFalse(unusedParameters.IsSuppressedAt("notAStereotypeContext"), "notAStereotypeContext");
+      // The context parameter is optional at run time, so an unused one is a true positive.
+      var unusedParameters = await RunAsync(code, new UnusedParameterStubAnalyzer());
+      Assert.IsFalse(unusedParameters.IsSuppressedAt("byNameContext"), "byNameContext");
     }
   }
 }

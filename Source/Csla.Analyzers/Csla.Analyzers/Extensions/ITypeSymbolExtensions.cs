@@ -159,6 +159,24 @@ namespace Csla.Analyzers.Extensions
           @this.BaseType.IsObjectAuthorizationRulesAttribute());
     }
 
+    /// <summary>
+    /// Gets whether the type or one of its base types has <c>[ObjectFactory]</c>,
+    /// matching how the data portal looks for the attribute (with inheritance).
+    /// </summary>
+    internal static bool HasObjectFactoryAttribute(this ITypeSymbol? @this)
+    {
+      for (var type = @this; type is not null; type = type.BaseType)
+      {
+        if (type.GetAttributes().Any(_ =>
+          _.AttributeClass is { Name: CslaMemberConstants.Types.ObjectFactoryAttribute } attribute &&
+          attribute.ContainingAssembly.Name == CslaMemberConstants.AssemblyName))
+        {
+          return true;
+        }
+      }
+      return false;
+    }
+
     internal static bool IsCalculatedPropertyAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&

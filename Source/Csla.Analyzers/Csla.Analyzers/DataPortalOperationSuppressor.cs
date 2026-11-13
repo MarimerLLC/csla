@@ -46,47 +46,51 @@ namespace Csla.Analyzers
       {
         var descriptor = diagnostic.Id switch
         {
-          Constants.SuppressedDiagnosticIdentifiers.UnusedPrivateMember => unusedOperationRule,
-          Constants.SuppressedDiagnosticIdentifiers.MarkMembersAsStatic => operationCanBeStaticRule,
-          Constants.SuppressedDiagnosticIdentifiers.UnusedParameter => unusedOperationParameterRule,
+          Constants.SuppressedDiagnosticIdentifiers.UnusedPrivateMember when IsUnusedMemberFalsePositive(context, diagnostic) => unusedOperationRule,
+          Constants.SuppressedDiagnosticIdentifiers.MarkMembersAsStatic when IsOperationCanBeStaticFalsePositive(context, diagnostic) => operationCanBeStaticRule,
+          Constants.SuppressedDiagnosticIdentifiers.UnusedParameter when IsUnusedParameterFalsePositive(context, diagnostic) => unusedOperationParameterRule,
           _ => null
         };
 
-        if (descriptor is null)
-        {
-          continue;
-        }
-
-        var method = GetMethod(context, diagnostic);
-
-        if (method is not null && IsCalledByCsla(method))
+        if (descriptor is not null)
         {
           context.ReportSuppression(Suppression.Create(descriptor, diagnostic));
         }
       }
     }
 
-    private static IMethodSymbol? GetMethod(SuppressionAnalysisContext context, Diagnostic diagnostic)
-    {
-      var tree = diagnostic.Location.SourceTree;
+    private static bool IsUnusedMemberFalsePositive(SuppressionAnalysisContext context, Diagnostic diagnostic) =>
+      GetMethod(context, diagnostic) is { } method &&
+        (IsCalledDataPortalOperation(method) || IsCalledObjectAuthorizationRulesMethod(method));
 
-      if (tree is null)
+    private static bool IsOperationCanBeStaticFalsePositive(SuppressionAnalysisContext context, Diagnostic diagnostic) =>
+      GetMethod(context, diagnostic) is { } method && IsCalledDataPortalOperation(method);
+
+    // The data portal chooses an operation by its criteria parameters. [Inject]
+    // parameters aren't part of that choice, and an object authorization rules
+    // method is called with or without its context parameter, so an unused
+    // parameter there is a true positive.
+    private static bool IsUnusedParameterFalsePositive(SuppressionAnalysisContext context, Diagnostic diagnostic)
+    {
+      if (!context.TryFindNode(diagnostic, out var node, out var model) ||
+        node.AncestorsAndSelf().OfType<ParameterSyntax>().FirstOrDefault() is not { } parameterNode ||
+        model.GetDeclaredSymbol(parameterNode, context.CancellationToken) is not IParameterSymbol parameter)
       {
-        return null;
+        return false;
       }
 
-      var node = tree.GetRoot(context.CancellationToken)
-        .FindNode(diagnostic.Location.SourceSpan, getInnermostNodeForTie: true);
-      var model = context.GetSemanticModel(tree);
+      // Lambdas and local functions inside an operation are ordinary code,
+      // so only parameters of the operation itself qualify.
+      return parameter.ContainingSymbol is IMethodSymbol { MethodKind: MethodKind.Ordinary } method &&
+        IsCalledDataPortalOperation(method) &&
+        !parameter.GetAttributes().Any(_ => _.AttributeClass.IsInjectable());
+    }
 
-      if (diagnostic.Id == Constants.SuppressedDiagnosticIdentifiers.UnusedParameter)
+    private static IMethodSymbol? GetMethod(SuppressionAnalysisContext context, Diagnostic diagnostic)
+    {
+      if (!context.TryFindNode(diagnostic, out var node, out var model))
       {
-        // Lambdas and local functions inside an operation are ordinary code,
-        // so only parameters of the operation itself qualify.
-        var parameter = node.AncestorsAndSelf().OfType<ParameterSyntax>().FirstOrDefault();
-        return parameter is not null &&
-          model.GetDeclaredSymbol(parameter, context.CancellationToken) is IParameterSymbol { ContainingSymbol: IMethodSymbol { MethodKind: MethodKind.Ordinary } method }
-            ? method : null;
+        return null;
       }
 
       // The nearest member declaration must be the method itself, so a
@@ -96,20 +100,61 @@ namespace Csla.Analyzers
         : null;
     }
 
-    private static bool IsCalledByCsla(IMethodSymbol method)
+    private static bool IsCalledDataPortalOperation(IMethodSymbol method)
     {
-      if (method.IsDataPortalOperation())
+      var type = method.ContainingType;
+
+      if (!type.IsStereotype())
+      {
+        return false;
+      }
+
+      var isRoot = method.IsRootDataPortalOperation().ByAttribute;
+      var isChild = method.IsChildDataPortalOperation().ByAttribute;
+
+      if (!isRoot && !isChild)
+      {
+        return false;
+      }
+
+      // The data portal ignores private operations declared in a base type,
+      // and an abstract type is only ever a base type.
+      if (type.IsAbstract && method.DeclaredAccessibility == Accessibility.Private)
+      {
+        return false;
+      }
+
+      // With [ObjectFactory], the factory handles root operations instead of
+      // the business type; child operations still run on the business type.
+      return isChild || !type.HasObjectFactoryAttribute();
+    }
+
+    // AuthorizationRuleManager calls the public static method marked with
+    // exactly [ObjectAuthorizationRules]. Only when there is none does it call
+    // a static method of any accessibility named AddObjectAuthorizationRules.
+    private static bool IsCalledObjectAuthorizationRulesMethod(IMethodSymbol method)
+    {
+      var type = method.ContainingType;
+
+      if (!method.IsStatic || !type.IsStereotype())
+      {
+        return false;
+      }
+
+      if (IsPublicObjectAuthorizationRulesMethod(method))
       {
         return true;
       }
 
-      // AuthorizationRuleManager calls a public static method with
-      // [ObjectAuthorizationRules], or else a static method of any
-      // accessibility named AddObjectAuthorizationRules.
-      var (byNamingConvention, byAttribute) = method.IsAddObjectAuthorizationRulesOperation();
-      return method.IsStatic &&
-        method.ContainingType.IsStereotype() &&
-        (byNamingConvention || (byAttribute && method.DeclaredAccessibility == Accessibility.Public));
+      return method.Name == CslaMemberConstants.Operations.AddObjectAuthorizationRules &&
+        !type.GetMembers().OfType<IMethodSymbol>().Any(IsPublicObjectAuthorizationRulesMethod);
     }
+
+    private static bool IsPublicObjectAuthorizationRulesMethod(IMethodSymbol method) =>
+      method.IsStatic &&
+      method.DeclaredAccessibility == Accessibility.Public &&
+      method.GetAttributes().Any(_ =>
+        _.AttributeClass is { Name: CslaMemberConstants.Types.ObjectAuthorizationRulesAttribute } attribute &&
+        attribute.ContainingAssembly.Name == CslaMemberConstants.AssemblyName);
   }
 }

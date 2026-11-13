@@ -35,7 +35,7 @@ public partial class PersonListPage : UserControl
 
   private async Task LoadDataAsync()
   {
-    await ViewModel.RefreshAsync<PersonList>(
+    await ViewModel.RefreshAsync(
       async () => await _dataPortal.FetchAsync());
   }
 

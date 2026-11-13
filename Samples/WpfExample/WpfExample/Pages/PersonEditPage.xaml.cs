@@ -27,7 +27,7 @@ namespace WpfExample.Pages
     private async void UserControl_Loaded(object sender, RoutedEventArgs e)
     {
       var context = Context as PersonInfo;
-      ViewModel.Model = await ViewModel.RefreshAsync<PersonEdit>(async () =>
+      await ViewModel.RefreshAsync(async () =>
       {
         if (context == null)
           return await _portal.CreateAsync();
@@ -35,12 +35,24 @@ namespace WpfExample.Pages
           return await _portal.FetchAsync(context.Id);
       });
       DataContext = ViewModel;
+      if (ViewModel.Exception is not null)
+        ShowError();
     }
 
     private async void SavePerson(object sender, RoutedEventArgs e)
     {
+      // SaveAsync doesn't throw. A failed save sets Exception, and an
+      // invalid model sets only ViewModelErrorText, so check both.
       await ViewModel.SaveAsync();
-      MainWindow.Instance.ShowPage(typeof(PersonListPage));
+      if (ViewModel.Exception is null && string.IsNullOrEmpty(ViewModel.ViewModelErrorText))
+        MainWindow.Instance.ShowPage(typeof(PersonListPage));
+      else
+        ShowError();
+    }
+
+    private void ShowError()
+    {
+      MessageBox.Show(ViewModel.ViewModelErrorText, "Error", MessageBoxButton.OK, MessageBoxImage.Error);
     }
   }
 }

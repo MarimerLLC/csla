@@ -5,7 +5,7 @@ using Csla;
 namespace PropertyStatus
 {
   [Serializable]
-  public class Blah : BusinessBase<Blah>
+  public partial class Blah : BusinessBase<Blah>
   {
     public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(nameof(Data));
     public string Data

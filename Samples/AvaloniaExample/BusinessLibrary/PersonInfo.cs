@@ -3,7 +3,7 @@ using Csla;
 namespace BusinessLibrary;
 
 [Serializable]
-public sealed class PersonInfo : ReadOnlyBase<PersonInfo>
+public sealed partial class PersonInfo : ReadOnlyBase<PersonInfo>
 {
   public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
   public int Id => GetProperty(IdProperty);

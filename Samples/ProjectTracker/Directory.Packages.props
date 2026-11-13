@@ -1,14 +1,13 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CslaVersion>10.1.0-g660c07ebcb</CslaVersion>
+    <CslaVersion>11.0.0-alpha.2</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Csla" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.AspNetCore" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.Blazor" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.Blazor.WebAssembly" Version="$(CslaVersion)" />
-    <PackageVersion Include="Csla.Generator.AutoImplementProperties.CSharp" Version="$(CslaVersion)" />
     <PackageVersion Include="Marimer.Blazor.RenderMode" Version="1.0.2" />
     <PackageVersion Include="Marimer.Blazor.RenderMode.WebAssembly" Version="1.0.2" />
     <PackageVersion Include="Microsoft.AspNetCore.Components.WebAssembly" Version="10.0.0" />

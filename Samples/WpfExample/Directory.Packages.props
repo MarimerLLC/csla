@@ -1,11 +1,10 @@
 <Project>
   <PropertyGroup>
     <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
-    <CslaVersion>10.0.0-beta-0022-gbd53196668</CslaVersion>
+    <CslaVersion>11.0.0-alpha.2</CslaVersion>
   </PropertyGroup>
   <ItemGroup>
     <PackageVersion Include="Csla" Version="$(CslaVersion)" />
-    <PackageVersion Include="Csla.Generator.AutoImplementProperties.CSharp" Version="$(CslaVersion)" />
     <PackageVersion Include="Csla.Wpf" Version="$(CslaVersion)" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.0.1" />
   </ItemGroup>

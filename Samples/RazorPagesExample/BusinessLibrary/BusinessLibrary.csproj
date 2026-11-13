@@ -8,7 +8,6 @@
 
   <ItemGroup>
     <PackageReference Include="Csla" />
-    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" />
   </ItemGroup>
 
   <ItemGroup>

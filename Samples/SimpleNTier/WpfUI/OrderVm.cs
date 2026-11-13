@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using BusinessLibrary;
 using Csla;
 using Csla.Xaml;
@@ -10,51 +9,27 @@ namespace WpfUI
   {
     public OrderVm()
     {
-      var t = RefreshAsync<BusinessLibrary.Order>(async () =>
+      // RefreshAsync and SaveAsync don't throw. They capture the exception
+      // in the Exception property and raise the Error event.
+      Error += (o, e) => ShowError(e.Error);
+
+      _ = RefreshAsync(async () =>
       {
-        try
-        {
-          var portal = App.ApplicationContext.GetRequiredService<IDataPortal<BusinessLibrary.Order>>();
-          return await portal.FetchAsync(441);
-        }
-        catch (Exception ex)
-        {
-          var fullError = $"Error fetching order:\n{ex.Message}\n\nFull details:\n{ex}";
-          try
-          {
-            Bxf.Shell.Instance.ShowError(fullError, "Data Portal Error");
-          }
-          catch
-          {
-            System.Windows.MessageBox.Show(fullError, "Data Portal Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
-          }
-          return null;
-        }
+        var portal = App.ApplicationContext.GetRequiredService<IDataPortal<BusinessLibrary.Order>>();
+        return await portal.FetchAsync(441);
       });
     }
 
-    public override System.Threading.Tasks.Task<Order> SaveAsync()
+    private static void ShowError(Exception ex)
     {
+      var fullError = $"Data portal error:\n{ex.Message}\n\nFull details:\n{ex}";
       try
       {
-        return base.SaveAsync();
+        Bxf.Shell.Instance.ShowError(fullError, "Data Portal Error");
       }
-      catch (Exception ex)
+      catch
       {
-        var x = ex;
-        throw;
-      }
-    }
-
-    public override async Task SaveAsync(object sender, ExecuteEventArgs e)
-    {
-      try
-      {
-        await base.SaveAsync(sender, e);
-      }
-      catch (Exception ex)
-      {
-        var x = ex;
+        System.Windows.MessageBox.Show(fullError, "Data Portal Error", System.Windows.MessageBoxButton.OK, System.Windows.MessageBoxImage.Error);
       }
     }
   }

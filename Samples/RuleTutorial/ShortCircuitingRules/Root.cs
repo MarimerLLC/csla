@@ -24,7 +24,7 @@ namespace ShortCircuitingRules
   /// The root.
   /// </summary>
   [Serializable]
-  public class Root : BusinessBase<Root>
+  public partial class Root : BusinessBase<Root>
   {
     #region Business Methods
 
@@ -142,7 +142,7 @@ namespace ShortCircuitingRules
     public static Root GetEditableRoot()
     {
       var portal = Program.ApplicationContext.GetRequiredService<IDataPortal<Root>>();
-      return portal.Fetch(null);
+      return portal.Fetch();
     }
 
     #endregion
@@ -161,10 +161,8 @@ namespace ShortCircuitingRules
     /// <summary>
     /// The data portal_ fetch.
     /// </summary>
-    /// <param name="criteria">
-    /// The criteria.
-    /// </param>
-    protected void DataPortal_Fetch(object criteria)
+    [Fetch]
+    private void DataPortal_Fetch()
     {
       BusinessRules.CheckRules();
     }

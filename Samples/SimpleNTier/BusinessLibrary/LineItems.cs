@@ -3,7 +3,7 @@ using Csla;
 
 namespace BusinessLibrary
 {
-  public class LineItems : BusinessBindingListBase<LineItems, LineItem>
+  public partial class LineItems : BusinessBindingListBase<LineItems, LineItem>
   {
     [FetchChild]
     private void Fetch()

@@ -22,6 +22,11 @@ namespace Csla.Analyzers
       {
         Invocation = node;
       }
+      else
+      {
+        // Look inside other calls, such as GetProperty(X).ToUpper() or Foo(GetProperty(X)).
+        base.VisitInvocationExpression(node);
+      }
     }
 
     internal InvocationExpressionSyntax? Invocation { get; private set; }

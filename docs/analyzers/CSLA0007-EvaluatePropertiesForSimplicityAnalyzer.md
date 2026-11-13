@@ -16,6 +16,11 @@ public class Customer
 }
 ```
 
+Expression-bodied properties that call a property helper method inside another call are reported too:
+```
+public string Data => GetProperty(DataProperty).ToUpper();
+```
+
 ## Code Fix
 
 No code fix is available for this analyzer.

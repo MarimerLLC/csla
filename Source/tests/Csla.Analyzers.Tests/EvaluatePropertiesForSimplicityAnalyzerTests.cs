@@ -162,6 +162,86 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenClassHasExpressionBodiedGetterWithPropertyMethodNestedInAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data => GetProperty(DataProperty).ToUpper();
+
+          public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(_ => _.Code);
+          public string Code => string.Concat("x", GetProperty(CodeProperty));
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+      [
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+      ]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasGetAccessorExpressionWithPropertyMethodNestedInAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data { get => GetProperty(DataProperty).ToUpper(); }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasGetAccessorBodyWithPropertyMethodNestedInAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data { get { return GetProperty(DataProperty).ToUpper(); } }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasPropertyMethodsWithInvocationsInTheirArguments()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data => LazyGetProperty(DataProperty, () => "a".ToUpper());
+
+          public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(_ => _.Name);
+          public string Name
+          {
+            get => GetProperty(NameProperty);
+            set => SetProperty(NameProperty, value.Trim());
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenClassHasSetterWithNoMethodCall()
     {
       var code =

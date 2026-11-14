@@ -1011,8 +1011,6 @@ namespace Csla
     [Obsolete(Core.BusinessBase.LazyAsyncTaskObsoleteMessage)]
     protected P? LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
       if (factory is null)
         throw new ArgumentNullException(nameof(factory));
 
@@ -1036,6 +1034,11 @@ namespace Csla
     /// The real value is provided later along with a PropertyChanged
     /// event to indicate the value has changed.
     /// </para><para>
+    /// The property is marked as loading before the factory is invoked.
+    /// If the factory throws, returns <see langword="null"/>, or returns a
+    /// task that fails, the UnhandledAsyncException event is raised and the
+    /// property keeps its default value. The next read invokes the factory again.
+    /// </para><para>
     /// If the user is not authorized to read the property
     /// value, the defaultValue value is returned as a
     /// result.
@@ -1049,11 +1052,22 @@ namespace Csla
       if (factory is null)
         throw new ArgumentNullException(nameof(factory));
 
-      if (!FieldManager.FieldExists(property) && !PropertyIsLoading(property))
-      {
-        LoadPropertyAsync(property, factory());
-      }
+      if (!StartLazyLoad(property, factory))
+        return property.DefaultValue;
       return GetProperty<P>(property);
+    }
+
+    /// <summary>
+    /// Starts an async lazy load unless the property is already loaded or loading.
+    /// Returns false when the load failed synchronously, so there is no value to read.
+    /// </summary>
+    private bool StartLazyLoad<P>(PropertyInfo<P> property, Func<Task<P>> factory)
+    {
+      if (FieldManager.FieldExists(property) || PropertyIsLoading(property))
+        return true;
+
+      LoadManager.BeginLoad(new TaskLoader<P>(property, factory));
+      return FieldManager.FieldExists(property) || PropertyIsLoading(property);
     }
 
     /// <summary>
@@ -1395,8 +1409,6 @@ namespace Csla
     [Obsolete(Core.BusinessBase.LazyAsyncTaskObsoleteMessage)]
     protected P? LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
     {
-      if (property is null)
-        throw new ArgumentNullException(nameof(property));
       if (factory is null)
         throw new ArgumentNullException(nameof(factory));
 
@@ -1415,6 +1427,12 @@ namespace Csla
     /// Async method returning the new value. It is only invoked
     /// when the value isn't loaded and isn't already loading.
     /// </param>
+    /// <remarks>
+    /// The property is marked as loading before the factory is invoked.
+    /// If the factory throws, returns <see langword="null"/>, or returns a
+    /// task that fails, the UnhandledAsyncException event is raised and the
+    /// property keeps its default value. The next read invokes the factory again.
+    /// </remarks>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
     protected P? LazyReadPropertyAsync<P>(PropertyInfo<P> property, Func<Task<P>> factory)
     {
@@ -1423,21 +1441,14 @@ namespace Csla
       if (factory is null)
         throw new ArgumentNullException(nameof(factory));
 
-      if (!FieldManager.FieldExists(property) && !PropertyIsLoading(property))
-      {
-        LoadPropertyAsync(property, factory());
-      }
+      if (!StartLazyLoad(property, factory))
+        return default;
       return ReadProperty<P>(property);
     }
 
     P? IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) where P: default
     {
       return LazyReadProperty(propertyInfo, valueGenerator);
-    }
-
-    P? IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) where P : default
-    {
-      return LazyReadPropertyAsync(propertyInfo, () => factory);
     }
 
     #endregion
@@ -1842,11 +1853,6 @@ namespace Csla
     object? IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
     {
       return LazyGetProperty(propertyInfo, valueGenerator);
-    }
-
-    object? IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
-    {
-      return LazyGetPropertyAsync(propertyInfo, () => factory);
     }
 
     object? IManageProperties.ReadProperty(IPropertyInfo propertyInfo)

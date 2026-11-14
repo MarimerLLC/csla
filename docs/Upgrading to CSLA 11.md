@@ -311,7 +311,9 @@ public ShipmentInfo? Shipment =>
     () => ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
 ```
 
-A getter that checks `FieldManager.FieldExists` and `PropertyIsLoading` before calling `LazyGetPropertyAsync` can drop the check, along with the CSLA0007 suppression it needed. The compiler reports `CS0618` for calls to the `Task<P>` overloads until you change them. A call that passes `null` as the second argument no longer compiles (`CS0121`), because it matches both overloads.
+A getter that checks `FieldManager.FieldExists` and `PropertyIsLoading` before calling `LazyGetPropertyAsync` can drop the check, along with the CSLA0007 suppression it needed.
+
+The factory runs after the property is marked as loading. If it throws, returns `null`, or returns a task that fails, the object raises `UnhandledAsyncException` and the getter returns the default value; the next read calls the factory again. This also applies to the `Task<P>` overloads: a task that has already failed is reported through `UnhandledAsyncException` instead of making the getter throw `InvalidOperationException`. The compiler reports `CS0618` for calls to the `Task<P>` overloads until you change them. A call that passes `null` as the second argument no longer compiles (`CS0121`), because it matches both overloads.
 
 ## Async `SafeDataReader`
 

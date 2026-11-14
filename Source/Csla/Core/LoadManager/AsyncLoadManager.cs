@@ -50,10 +50,10 @@ namespace Csla.Core.LoadManager
 
     public void BeginLoad(IAsyncLoader loader)
     {
-      if (IsLoadingProperty(loader.Property)) return;
-
+      // Check and add under one lock, so concurrent callers can't both start a load.
       lock (_syncRoot)
       {
+        if (_loading.Any(l => l.Property == loader.Property)) return;
         _loading.Add(loader);
       }
       // notify property busy

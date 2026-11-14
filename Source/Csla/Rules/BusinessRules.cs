@@ -923,24 +923,7 @@ namespace Csla.Rules
             // run rules on affected properties for this async rule
             var affected = onAsyncRuleCompleted?.Invoke(r) ?? [];
 
-            // mark each property as not busy
-            foreach (var item in r.Rule.AffectedProperties)
-            {
-              BusyProperties.Remove(item);
-              RunningAsyncRules = BusyProperties.Count > 0;
-              if (!BusyProperties.Contains(item))
-                _target.RuleComplete(item);
-            }
-
-            foreach (var property in affected.Distinct())
-            {
-              // property is not in AffectedProperties (already signalled to UI)
-              if (!r.Rule.AffectedProperties.Any(p => p.Name == property))
-                _target.RuleComplete(property);
-            }
-
-            if (!RunningRules && !RunningAsyncRules)
-              _target.AllRulesComplete();
+            CompleteAsyncRule(r.Rule, affected);
           }
         }
         else  // Rule is Sync
@@ -1037,6 +1020,79 @@ namespace Csla.Rules
     }
 
     #endregion
+
+    /// <summary>
+    /// Raises the notifications for a completed async rule, then clears
+    /// its busy state. The object reports itself idle last, so once
+    /// IsBusy is false (and WaitForIdle or CheckRulesAsync returns), no
+    /// more completion work runs for the rule.
+    /// </summary>
+    /// <param name="rule">The completed rule.</param>
+    /// <param name="affected">Names of further properties whose rules ran on completion.</param>
+    /// <remarks>Called inside the lock on _syncRoot.</remarks>
+    private void CompleteAsyncRule(IBusinessRuleBase rule, IEnumerable<string> affected)
+    {
+      // BusyProperties holds one entry per running rule for each of its affected
+      // properties. The handlers of the notifications below can start rules, or
+      // complete other rules, so each decision checks the live list, discounting
+      // this rule's own entries (they stay until the object reports idle).
+
+      // raise the completion notifications while the object is still busy
+      var completed = new List<IPropertyInfo>();
+      foreach (var item in rule.AffectedProperties.Distinct())
+      {
+        if (!IsBusyForOtherRules(item, rule))
+        {
+          completed.Add(item);
+          _target.RuleComplete(item);
+        }
+      }
+
+      foreach (var property in affected.Distinct())
+      {
+        // property is not in AffectedProperties (already signalled to UI)
+        if (!rule.AffectedProperties.Any(p => p.Name == property))
+          _target.RuleComplete(property);
+      }
+
+      if (!RunningRules && BusyProperties.Count == rule.AffectedProperties.Count)
+        _target.AllRulesComplete();
+
+      // clear the busy state
+      foreach (var item in rule.AffectedProperties)
+        BusyProperties.Remove(item);
+      var idle = rule.AffectedProperties.Distinct().Where(p => !BusyProperties.Contains(p)).ToList();
+
+      // another rule for a property may have kept it busy when its notification
+      // was due, then completed in a handler above without notifying, because
+      // this rule's entry was still there
+      foreach (var item in idle)
+      {
+        if (!completed.Contains(item))
+          _target.RuleComplete(item);
+      }
+
+      // report each property idle; the object becomes idle with the last one
+      for (var i = 0; i < idle.Count; i++)
+      {
+        if (i == idle.Count - 1)
+          _isBusy = BusyProperties.Count > 0;
+        // a handler may have started a rule for this property again
+        if (!BusyProperties.Contains(idle[i]))
+          _target.PropertyIdle(idle[i]);
+      }
+
+      // release CheckRulesAsync last
+      if (!_isBusy)
+        BusyChanged.Set();
+    }
+
+    /// <summary>
+    /// Gets a value indicating whether rules other than the specified
+    /// running rule keep a property busy.
+    /// </summary>
+    private bool IsBusyForOtherRules(IPropertyInfo property, IBusinessRuleBase rule) =>
+      BusyProperties.Count(p => Equals(p, property)) > rule.AffectedProperties.Count(p => Equals(p, property));
 
     private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
     {

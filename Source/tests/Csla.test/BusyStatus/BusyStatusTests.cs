@@ -119,31 +119,31 @@ namespace cslalighttest.BusyStatus
       IDataPortal<ItemWithAsynchRule> dataPortal = _testHost.GetDataPortal<ItemWithAsynchRule>();
 
       var item = await dataPortal.FetchAsync("an id");
-      item.ValidationComplete += (_, _) =>
-      {
-        Assert.IsFalse(item.IsBusy);
-        Assert.IsTrue(item.IsSavable);
-      };
       item.RuleField = "some value";
       Assert.IsTrue(item.IsBusy);
       Assert.IsFalse(item.IsSavable);
+
+      await item.WaitForIdle();
+
+      Assert.IsFalse(item.IsBusy);
+      Assert.IsTrue(item.IsSavable);
     }
 
     [TestMethod]
-    public void ListTestNotBusy()
+    public async Task ListTestNotBusy()
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateHost.GetDataPortal<ItemWithAsynchRuleList>();
 
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-      items[0].ValidationComplete += (_, _) =>
-      {
-        Assert.IsFalse(items.IsBusy);
-        Assert.IsTrue(items.IsSavable);
-      };
 
       items[0].RuleField = "some value";
       Assert.IsTrue(items.IsBusy);
       Assert.IsFalse(items.IsSavable);
+
+      await items.WaitForIdle();
+
+      Assert.IsFalse(items.IsBusy);
+      Assert.IsTrue(items.IsSavable);
     }
 
     [TestMethod]
@@ -153,11 +153,17 @@ namespace cslalighttest.BusyStatus
 
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
       var tcs = new TaskCompletionSource<(bool WasBusy, bool WasSavable, string ReturnedOperationResult)>();
-      items[0].ValidationComplete += async (_, _) =>
+      var item = items[0];
+      EventHandler handler = null;
+      handler = async (_, _) =>
       {
+        // saving runs the item's rules again, which raises ValidationComplete again
+        item.ValidationComplete -= handler;
         try
         {
+          // completion notifications are raised while the object is still busy (#4991)
           var wasBusyInHandler = items.IsBusy;
+          await items.WaitForIdle();
           var wasSavableInHandler = items.IsSavable;
           items = await items.SaveAsync();
           var returnedOperationResultInHandler = items[0].OperationResult;
@@ -168,6 +174,7 @@ namespace cslalighttest.BusyStatus
           tcs.SetException(ex);
         }
       };
+      item.ValidationComplete += handler;
 
       items[0].RuleField = "some value";
       Assert.IsTrue(items.IsBusy);
@@ -175,7 +182,7 @@ namespace cslalighttest.BusyStatus
       var (wasBusy, wasSavable, returnedOperationResult) = await tcs.Task;
       using (new AssertionScope())
       {
-        wasBusy.Should().BeFalse();
+        wasBusy.Should().BeTrue();
         wasSavable.Should().BeTrue();
         returnedOperationResult.Should().Be("DataPortal_Update");
       }
@@ -222,37 +229,43 @@ namespace cslalighttest.BusyStatus
       IDataPortal<ItemWithAsynchRule> dataPortal = _noCloneOnUpdateHost.GetDataPortal<ItemWithAsynchRule>();
 
       var item = await dataPortal.FetchAsync("an id");
-      item.ValidationComplete += (_, _) =>
-      {
-        Assert.IsFalse(item.IsBusy);
-        Assert.IsTrue(item.IsSavable);
-        item = item.Save();
-        Assert.AreEqual("DataPortal_Update", item.OperationResult);
-      };
+      bool? busyInValidationComplete = null;
+      item.ValidationComplete += (_, _) => busyInValidationComplete = item.IsBusy;
       item.RuleField = "some value";
       Assert.IsTrue(item.IsBusy);
       Assert.IsFalse(item.IsSavable);
+
+      await item.WaitForIdle();
+
+      // completion notifications are raised while the object is still busy (#4991)
+      Assert.AreEqual(true, busyInValidationComplete);
+      Assert.IsFalse(item.IsBusy);
+      Assert.IsTrue(item.IsSavable);
+      item = item.Save();
+      Assert.AreEqual("DataPortal_Update", item.OperationResult);
     }
 
     [TestMethod]
-    public void ListTestSaveWhileNotBusyNetOnly()
+    public async Task ListTestSaveWhileNotBusyNetOnly()
     {
       IDataPortal<ItemWithAsynchRuleList> dataPortal = _noCloneOnUpdateHost.GetDataPortal<ItemWithAsynchRuleList>();
 
       ItemWithAsynchRuleList items = ItemWithAsynchRuleList.GetListWithItems(dataPortal);
-
-      items[0].ValidationComplete += (_, _) =>
-      {
-        Assert.IsFalse(items.IsBusy);
-        Assert.IsTrue(items.IsSavable);
-        items = items.Save();
-        string actual = items[0].OperationResult;
-        Assert.AreEqual("DataPortal_Update", actual);
-      };
+      bool? busyInValidationComplete = null;
+      items[0].ValidationComplete += (_, _) => busyInValidationComplete = items.IsBusy;
 
       items[0].RuleField = "some value";
       Assert.IsTrue(items.IsBusy);
       Assert.IsFalse(items.IsSavable);
+
+      await items.WaitForIdle();
+
+      // completion notifications are raised while the object is still busy (#4991)
+      Assert.AreEqual(true, busyInValidationComplete);
+      Assert.IsFalse(items.IsBusy);
+      Assert.IsTrue(items.IsSavable);
+      items = items.Save();
+      Assert.AreEqual("DataPortal_Update", items[0].OperationResult);
     }
 
     [TestMethod]

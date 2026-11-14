@@ -121,8 +121,25 @@ namespace Csla
 
     Task IDataPortalTarget.CheckRulesAsync() => Task.CompletedTask;
 
-    Task IDataPortalTarget.WaitForIdle(TimeSpan timeout) => Task.CompletedTask;
-    Task IDataPortalTarget.WaitForIdle(CancellationToken ct) => Task.CompletedTask;
+    Task IDataPortalTarget.WaitForIdle(TimeSpan timeout) =>
+      BusyHelper.WaitForIdleAsTimeout(WaitForChildrenIdle, GetType(), nameof(IDataPortalTarget.WaitForIdle), timeout);
+
+    Task IDataPortalTarget.WaitForIdle(CancellationToken ct) => WaitForChildrenIdle(ct);
+
+    /// <summary>
+    /// Waits until no object held in a managed property is busy.
+    /// </summary>
+    /// <remarks>
+    /// A command has no busy state of its own, but the objects it holds
+    /// can have async rules running. The data portal waits here so the
+    /// command isn't returned (and serialized) while they still run.
+    /// </remarks>
+    private async Task WaitForChildrenIdle(CancellationToken ct)
+    {
+      // a completing rule can make another child busy, so look again after each wait
+      while (FieldManager.GetBusyChild() is { } child)
+        await BusyHelper.WaitForIdle(child, ct, nameof(IDataPortalTarget.WaitForIdle)).ConfigureAwait(false);
+    }
 
     void IDataPortalTarget.MarkAsChild()
     { }

@@ -11,8 +11,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="Csla" Version="11.0.0-alpha.2" />
-    <PackageReference Include="Csla.Windows.Forms" Version="11.0.0-alpha.2" />
+    <PackageReference Include="Csla" Version="11.0.0-alpha.3" />
+    <PackageReference Include="Csla.Windows.Forms" Version="11.0.0-alpha.3" />
   </ItemGroup>
 
   <ItemGroup>

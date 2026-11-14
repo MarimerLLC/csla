@@ -1007,8 +1007,42 @@ namespace Csla
     /// result.
     /// </para>
     /// </remarks>
-    /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="property"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
+    [Obsolete(Core.BusinessBase.LazyAsyncTaskObsoleteMessage)]
     protected P? LazyGetPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+      if (factory is null)
+        throw new ArgumentNullException(nameof(factory));
+
+      return LazyGetPropertyAsync(property, () => factory);
+    }
+
+    /// <summary>
+    /// Lazily initializes a property and returns
+    /// the resulting value.
+    /// </summary>
+    /// <typeparam name="P">Type of the property.</typeparam>
+    /// <param name="property">PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">
+    /// Async method returning the new value. It is only invoked
+    /// when the value isn't loaded and isn't already loading.
+    /// </param>
+    /// <remarks>
+    /// <para>
+    /// Note that the first value returned is almost certainly
+    /// the defaultValue because the value is initialized asynchronously.
+    /// The real value is provided later along with a PropertyChanged
+    /// event to indicate the value has changed.
+    /// </para><para>
+    /// If the user is not authorized to read the property
+    /// value, the defaultValue value is returned as a
+    /// result.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
+    protected P? LazyGetPropertyAsync<P>(PropertyInfo<P> property, Func<Task<P>> factory)
     {
       if (property is null)
         throw new ArgumentNullException(nameof(property));
@@ -1017,7 +1051,7 @@ namespace Csla
 
       if (!FieldManager.FieldExists(property) && !PropertyIsLoading(property))
       {
-        LoadPropertyAsync(property, factory);
+        LoadPropertyAsync(property, factory());
       }
       return GetProperty<P>(property);
     }
@@ -1358,7 +1392,31 @@ namespace Csla
     /// PropertyInfo object containing property metadata.</param>
     /// <param name="factory">Async method returning the new value.</param>
     /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
+    [Obsolete(Core.BusinessBase.LazyAsyncTaskObsoleteMessage)]
     protected P? LazyReadPropertyAsync<P>(PropertyInfo<P> property, Task<P> factory)
+    {
+      if (property is null)
+        throw new ArgumentNullException(nameof(property));
+      if (factory is null)
+        throw new ArgumentNullException(nameof(factory));
+
+      return LazyReadPropertyAsync(property, () => factory);
+    }
+
+    /// <summary>
+    /// Gets a property's value as a specified type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="property">
+    /// PropertyInfo object containing property metadata.</param>
+    /// <param name="factory">
+    /// Async method returning the new value. It is only invoked
+    /// when the value isn't loaded and isn't already loading.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> or <paramref name="factory"/> is <see langword="null"/>.</exception>
+    protected P? LazyReadPropertyAsync<P>(PropertyInfo<P> property, Func<Task<P>> factory)
     {
       if (property is null)
         throw new ArgumentNullException(nameof(property));
@@ -1367,7 +1425,7 @@ namespace Csla
 
       if (!FieldManager.FieldExists(property) && !PropertyIsLoading(property))
       {
-        LoadPropertyAsync(property, factory);
+        LoadPropertyAsync(property, factory());
       }
       return ReadProperty<P>(property);
     }
@@ -1379,7 +1437,7 @@ namespace Csla
 
     P? IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) where P : default
     {
-      return LazyReadPropertyAsync(propertyInfo, factory);
+      return LazyReadPropertyAsync(propertyInfo, () => factory);
     }
 
     #endregion
@@ -1788,7 +1846,7 @@ namespace Csla
 
     object? IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
-      return LazyGetPropertyAsync(propertyInfo, factory);
+      return LazyGetPropertyAsync(propertyInfo, () => factory);
     }
 
     object? IManageProperties.ReadProperty(IPropertyInfo propertyInfo)

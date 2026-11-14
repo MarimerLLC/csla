@@ -19,7 +19,7 @@ public partial class TestClass
 	[global::Test.TagAttribute<int>( Label="count")]
 	public int Count
 	{
-		get => GetProperty(CountProperty)!;
+		get => GetProperty(CountProperty);
 		set => SetProperty(CountProperty, value);
 	}
 }

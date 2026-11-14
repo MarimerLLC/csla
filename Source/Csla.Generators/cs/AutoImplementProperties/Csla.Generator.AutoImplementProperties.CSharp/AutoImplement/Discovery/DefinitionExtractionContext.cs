@@ -66,6 +66,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       return typeSymbol.ContainingNamespace.ToString();
     }
 
+    /// <summary>
+    /// Determine whether a type is a value type, for which the null-forgiving
+    /// operator has no meaning
+    /// </summary>
+    /// <param name="typeSyntax">The type syntax representing the type to be tested</param>
+    /// <returns>true if the type is a value type; otherwise, false</returns>
+    public bool IsValueType(TypeSyntax typeSyntax)
+    {
+      return _semanticModel.GetTypeInfo(typeSyntax).Type?.IsValueType ?? false;
+    }
+
     public string GetFullyQualifiedType(TypeSyntax typeSyntax)
     {
       bool isNullable = false;

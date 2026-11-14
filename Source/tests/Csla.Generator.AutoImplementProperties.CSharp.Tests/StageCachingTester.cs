@@ -12,16 +12,17 @@
 using System.Collections;
 using System.Collections.Immutable;
 using System.Reflection;
+using Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations
+namespace Csla.Generator.AutoImplementProperties.CSharp.Tests
 {
   internal static class StageCachingTester
   {
-    public static void VerifyStageCaching<T>(string source, Type trackingNamesType) where T : IIncrementalGenerator, new()
+    public static void VerifyStageCaching<T>(string source, Type trackingNamesType, IEnumerable<string>? additionalSources = null) where T : IIncrementalGenerator, new()
     {
-      var (driver, compilation) = DataPortalOperationsTestHelper<T>.Setup(source, trackSteps: true);
+      var (driver, compilation) = DataPortalOperationsTestHelper<T>.Setup(source, additionalSources, trackSteps: true);
       var clonedCompilation = compilation.Clone();
 
       driver = driver.RunGenerators(compilation);

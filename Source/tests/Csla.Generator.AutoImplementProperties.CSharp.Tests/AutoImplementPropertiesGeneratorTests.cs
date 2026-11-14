@@ -1,5 +1,8 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
-
+using Csla.Generator.AutoImplementProperties.CSharp.Tests;
+using FluentAssertions;
+using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 
 namespace Csla.Generator.Tests
 {
@@ -203,6 +206,155 @@ namespace Csla.Generator.Tests
 
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
+
+    // A partial property marked [CslaIgnoreProperty] is not implemented by the generator
+    [TestMethod]
+    [DataRow("BusinessBase")]
+    [DataRow("ReadOnlyBase")]
+    [DataRow("CommandBase")]
+    public async Task Case11(string baseType)
+    {
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(IgnoredPropertySource(baseType));
+    }
+
+    // The property methods come from the CSLA base class inherited through intermediate base classes
+    [TestMethod]
+    [DataRow("ReadOnlyBase")]
+    [DataRow("BusinessDocumentBase")]
+    [DataRow("CommandBase")]
+    public async Task Case12(string baseType)
+    {
+      var intermediateBases = baseType switch
+      {
+        "ReadOnlyBase" => """
+          public abstract class AppBase<T> : Csla.ReadOnlyBase<T>
+            where T : AppBase<T>
+          {
+          }
+          """,
+        "BusinessDocumentBase" => """
+          public abstract class AppBase<T> : Csla.BusinessDocumentBase<T, LineItem>
+            where T : AppBase<T>
+          {
+          }
+
+          public class LineItem : Csla.BusinessBase<LineItem>
+          {
+          }
+          """,
+        // Two levels of intermediate base classes
+        _ => """
+          public abstract class RootBase<T> : Csla.CommandBase<T>
+            where T : RootBase<T>
+          {
+          }
+
+          public abstract class AppBase<T> : RootBase<T>
+            where T : AppBase<T>
+          {
+          }
+          """
+      };
+      var source = $$"""
+        namespace Test;
+
+        {{intermediateBases}}
+
+        [Csla.CslaImplementProperties]
+        public partial class TestClass : AppBase<TestClass>
+        {
+          public partial string Name { get; private set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("Value types other than built-in types get no null-forgiving operator; reference types keep it.")]
+    public async Task Case13()
+    {
+      var source = """
+        namespace Test;
+
+        public enum Status { Open, Closed }
+
+        public struct Money
+        {
+          public decimal Amount { get; set; }
+        }
+
+        public class Note
+        {
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class TestClass : Csla.BusinessBase<TestClass>
+        {
+          public partial Status Status { get; set; }
+          public partial Money Total { get; set; }
+          public partial System.Nullable<int> Count { get; set; }
+          public partial Note Note { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("A class whose base class only has a CSLA base class's name gets no properties generated.")]
+    public void BaseClassOutsideCslaGeneratesNoProperties()
+    {
+      var source = """
+        namespace MyCompany
+        {
+          public class BusinessBase<T>
+          {
+          }
+        }
+
+        namespace Test
+        {
+          [Csla.CslaImplementProperties]
+          public partial class TestClass : MyCompany.BusinessBase<TestClass>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+        """;
+
+      var result = CSharpGeneratorDriver.Create(new IncrementalAutoImplementPropertiesPartialsGenerator().AsSourceGenerator())
+        .RunGenerators(TestCompilation.Create([source]))
+        .GetRunResult();
+
+      result.Diagnostics.Should().BeEmpty();
+      result.GeneratedTrees.Select(tree => tree.ToString()).Should().NotContain(text => text.Contains("RegisterProperty"));
+    }
+
+    [TestMethod("Pipeline stages are cacheable")]
+    public void StageCaching()
+    {
+      StageCachingTester.VerifyStageCaching<IncrementalAutoImplementPropertiesPartialsGenerator>(IgnoredPropertySource("BusinessBase"), typeof(TrackingNames));
+    }
+
+    private static string IgnoredPropertySource(string baseType) => $$"""
+      using System.ComponentModel;
+
+      namespace Test;
+
+      [Csla.CslaImplementProperties]
+      public partial class TestClass : Csla.{{baseType}}<TestClass>
+      {
+        [Description("Address line 1")]
+        public partial string? AddressLine1 { get; private set; }
+        public partial string Town { get; set; }
+        [Csla.CslaIgnoreProperty]
+        public partial string IgnoredProperty { get; set; }
+      }
+
+      public partial class TestClass
+      {
+        public partial string IgnoredProperty { get => ""; set { } }
+      }
+      """;
 
     public static IEnumerable<object[]> Case09TestData()
     {

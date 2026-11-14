@@ -100,20 +100,28 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
     #region Private Helper Methods
 
-    // ... existing helper methods ...
-
     /// <summary>
     /// Extract the name of the base class of the type for which we will be generating code
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
-    /// <returns>The name of the base class of the type for which generation is being performed</returns>
+    /// <returns>The name of the nearest base class in <see cref="CslaBaseClasses"/> the type inherits,
+    /// through any intermediate base classes; otherwise an empty string, and nothing is generated</returns>
     private static string GetBaseClassTypeName(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       var targetTypeSymbol = extractionContext.SemanticModel.GetDeclaredSymbol(targetTypeDeclaration) as INamedTypeSymbol;
-      var baseTypeSymbol = targetTypeSymbol?.BaseType;
 
-      return baseTypeSymbol?.Name ?? string.Empty;
+      for (var baseType = targetTypeSymbol?.BaseType; baseType is not null; baseType = baseType.BaseType)
+      {
+        if (baseType.ContainingNamespace is { Name: "Csla" } containingNamespace
+          && containingNamespace.ContainingNamespace?.IsGlobalNamespace == true
+          && CslaBaseClasses.PropertyMethods.ContainsKey(baseType.Name))
+        {
+          return baseType.Name;
+        }
+      }
+
+      return string.Empty;
     }
 
     #endregion

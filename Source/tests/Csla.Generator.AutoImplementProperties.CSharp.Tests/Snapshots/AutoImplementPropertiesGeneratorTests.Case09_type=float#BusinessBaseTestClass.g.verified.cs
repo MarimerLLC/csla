@@ -11,7 +11,7 @@ public partial class BusinessBaseTestClass
 	public static readonly PropertyInfo<float> NameProperty = RegisterProperty<float>(nameof(Name));
 	public partial float Name
 	{
-		get => GetProperty(NameProperty)!;
+		get => GetProperty(NameProperty);
 		private set => SetProperty(NameProperty, value);
 	}
 }

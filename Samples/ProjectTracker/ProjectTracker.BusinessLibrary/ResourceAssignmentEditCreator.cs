@@ -8,9 +8,9 @@ namespace ProjectTracker.Library
     public partial ResourceAssignmentEdit Result { get; private set; }
 
     [Fetch]
-    private void Fetch(int projectId, [Inject] IChildDataPortal<ResourceAssignmentEdit> portal)
+    private async Task Fetch(int projectId, [Inject] IChildDataPortal<ResourceAssignmentEdit> portal)
     {
-      Result = portal.CreateChild(projectId);
+      Result = await portal.CreateChildAsync(projectId);
     }
   }
 }

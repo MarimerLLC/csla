@@ -98,6 +98,8 @@ public class FooCommand : CommandBase<FooCommand> {
 
 CSLA 10 supports the use of nullable reference types in your code. This means that you can use the `#nullable enable` directive in your code and the compiler will now tell you where CSLA does not expect any `null` values or returns `null`.
 
+Property methods such as `GetProperty`, `ReadProperty` and `LazyGetProperty` return `P?`, so a property of a non-nullable reference type gets `CS8603` in its getter. See [Nullable reference types and CSLA properties](Nullable-Reference-Types.md) for when to use `GetProperty(...)!` and when to declare the property nullable.
+
 Supporting nullable types means that some APIs have changed to support nullable types.
 
 * Many methods now throw an `ArgumentNullException` instead of a `NullReferenceException`. That means typically the methods didn't work so far with `null` anyway

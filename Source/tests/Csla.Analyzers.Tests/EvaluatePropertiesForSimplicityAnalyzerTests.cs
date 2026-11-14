@@ -162,6 +162,138 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenClassHasExpressionBodiedGetterWithPropertyMethodNestedInAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data => GetProperty(DataProperty).ToUpper();
+
+          public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(_ => _.Code);
+          public string Code => string.Concat("x", GetProperty(CodeProperty));
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+      [
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+      ]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasGetAccessorExpressionWithPropertyMethodNestedInAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data { get => GetProperty(DataProperty).ToUpper(); }
+
+          public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(_ => _.Code);
+          public string Code { get => string.Concat("x", GetProperty(CodeProperty)); }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+        ],
+        diagnostics => AssertLocations(diagnostics,
+          "=> GetProperty(DataProperty).ToUpper()",
+          "=> string.Concat(\"x\", GetProperty(CodeProperty))"));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasGetAccessorBodyWithPropertyMethodNestedInAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data { get { return GetProperty(DataProperty).ToUpper(); } }
+
+          public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(_ => _.Code);
+          public string Code { get { return string.Concat("x", GetProperty(CodeProperty)); } }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+        ],
+        diagnostics => AssertLocations(diagnostics,
+          "{ return GetProperty(DataProperty).ToUpper(); }",
+          "{ return string.Concat(\"x\", GetProperty(CodeProperty)); }"));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasSetAccessorBodyWithPropertyMethodNestedInAnotherInvocation()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data
+          {
+            get => GetProperty(DataProperty);
+            set { Run(() => SetProperty(DataProperty, value)); }
+          }
+
+          private void Run(System.Action action) => action();
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule],
+        diagnostics => AssertLocations(diagnostics,
+          "{ Run(() => SetProperty(DataProperty, value)); }"));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenClassHasPropertyMethodsWithPropertyMethodsInTheirArguments()
+    {
+      var code =
+        """
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> DataProperty = RegisterProperty<string>(_ => _.Data);
+          public string Data => LazyGetProperty(DataProperty, () => ReadProperty(NameProperty));
+
+          public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(_ => _.Name);
+          public string Name
+          {
+            get { return GetProperty(NameProperty); }
+            set { SetProperty(NameProperty, value ?? ReadProperty(NameProperty)); }
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
+    }
+
+    private static void AssertLocations(List<Diagnostic> diagnostics, params string[] expectedLocations)
+    {
+      var actualLocations = diagnostics
+        .Select(_ => _.Location.SourceTree.ToString().Substring(_.Location.SourceSpan.Start, _.Location.SourceSpan.Length))
+        .OrderBy(_ => _, StringComparer.Ordinal)
+        .ToArray();
+      CollectionAssert.AreEqual(expectedLocations.OrderBy(_ => _, StringComparer.Ordinal).ToArray(), actualLocations);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenClassHasSetterWithNoMethodCall()
     {
       var code =
@@ -350,6 +482,107 @@ namespace Csla.Analyzers.Tests
         """;
       await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
     }
+    [TestMethod]
+    public async Task AnalyzeWhenGetterUsesNullForgivingOperator()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City));
+          public string City
+          {
+            get => GetProperty(CityProperty)!;
+            set => SetProperty(CityProperty, value);
+          }
+
+          public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State));
+          public string State
+          {
+            get { return GetProperty(StateProperty)!; }
+            set { SetProperty(StateProperty, value); }
+          }
+
+          public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(nameof(Country));
+          public string Country => ReadProperty(CountryProperty)!;
+
+          public static readonly PropertyInfo<string> RegionProperty = RegisterProperty<string>(nameof(Region), RelationshipTypes.LazyLoad);
+          public string Region => LazyGetProperty(RegionProperty, () => "North")!;
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenGetterUsesNullForgivingOperatorWithOtherLogic()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City));
+          public string City
+          {
+            get => ("x" + GetProperty(CityProperty))!;
+            set => SetProperty(CityProperty, value);
+          }
+
+          public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State));
+          public string State
+          {
+            get { return GetProperty(StateProperty)!.Trim(); }
+            set { SetProperty(StateProperty, value); }
+          }
+
+          public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(nameof(Country));
+          public string Country => "x" + GetProperty(CountryProperty)!;
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+      [
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+        Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+      ]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenGetterUsesNullForgivingOperatorAndCallsAnotherMethod()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City));
+          public string City => GetProperty(CityProperty)!.ToUpper();
+
+          public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State));
+          public string State
+          {
+            get => GetProperty(StateProperty)!.ToUpper();
+            set => SetProperty(StateProperty, value);
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule,
+          Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule
+        ],
+        diagnostics => AssertLocations(diagnostics,
+          "GetProperty(CityProperty)!.ToUpper()",
+          "=> GetProperty(StateProperty)!.ToUpper()"));
+    }
+
     [TestMethod]
     public async Task AnalyzeWhenClassHasOnlySetMethodExpression()
     {

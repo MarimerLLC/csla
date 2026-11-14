@@ -41,7 +41,7 @@ namespace ProjectTracker.Library
     }
 
     [CreateChild]
-    private void Create(int projectId, [Inject] IProjectDal dal)
+    private async Task Create(int projectId, [Inject] IProjectDal dal, [Inject] IDataPortal<RoleList> rolePortal)
     {
       using (BypassPropertyChecks)
       {
@@ -49,8 +49,11 @@ namespace ProjectTracker.Library
         Assigned = DateTime.Today;
         var project = dal.Fetch(projectId) ?? throw new DataNotFoundException("Project");
         ProjectName = project.Name ?? string.Empty;
+        var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        Role = roles.DefaultRole;
       }
-      BusinessRules.CheckRules();
+      // wait for the async ValidRole rule, so its result travels with the object
+      await BusinessRules.CheckRulesAsync();
     }
 
     [FetchChild]

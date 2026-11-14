@@ -41,6 +41,10 @@ Other samples include
 * DataPortalInstrumentation - shows the use of the data portal dashboard instrumentation feature
 * RoutedDataPortal - shows the use of the data portal routing capability for versioning and workload routing
 
+### Properties
+
+* NullablePropertiesExample - declaring CSLA properties with nullable reference types enabled, including lazy-loaded and authorization-restricted properties
+
 ### Web API
 
 * CslaFastStart - simple web API example

@@ -84,9 +84,9 @@ namespace Csla.Analyzers.Tests.Extensions
             this.ReadProperty(null);
             this.ReadPropertyConvert<string, string>(null);
             this.LazyGetProperty<string>(null, null);
-            this.LazyGetPropertyAsync<string>(null, null);
+            this.LazyGetPropertyAsync<string>(null, () => null);
             this.LazyReadProperty<string>(null, null);
-            this.LazyReadPropertyAsync<string>(null, null);
+            this.LazyReadPropertyAsync<string>(null, () => null);
             this.Something();
           }
       

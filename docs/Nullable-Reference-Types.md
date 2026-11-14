@@ -79,28 +79,35 @@ public CreditSummary? Credit
 }
 ```
 
-Use `PropertyInfo<CreditSummary>`, not `PropertyInfo<CreditSummary?>`. The `PropertyInfo<T>` type argument has to match the type used with the property methods: with `PropertyInfo<ShipmentInfo?>`, passing a `Task<ShipmentInfo>` to `LazyGetPropertyAsync` produces warning `CS8620`.
+Use `PropertyInfo<CreditSummary>`, not `PropertyInfo<CreditSummary?>`. The `PropertyInfo<T>` type argument has to match the type used with the property methods: with `PropertyInfo<ShipmentInfo?>`, a factory that returns `Task<ShipmentInfo>` (such as `FetchChildAsync`) doesn't match the `Func<Task<ShipmentInfo?>>` that `LazyGetPropertyAsync` expects, and produces a nullability warning.
 
 ## Async lazy loading
 
-`LazyGetPropertyAsync` takes a `Task<P>`, and the task is already running by the time it's passed in. If the getter creates the task on every read, every read starts another fetch, even though only the first result is kept. Check whether the value is already loaded or loading first:
+Pass `LazyGetPropertyAsync` (or `LazyReadPropertyAsync`) a factory that starts the load. The factory only runs when the value isn't loaded and isn't already loading, so reading the property again doesn't start another fetch:
 
 ```csharp
 public static readonly PropertyInfo<ShipmentInfo> ShipmentProperty =
   RegisterProperty<ShipmentInfo>(nameof(Shipment), RelationshipTypes.LazyLoad);
-public ShipmentInfo? Shipment
+public ShipmentInfo? Shipment =>
+  LazyGetPropertyAsync(ShipmentProperty,
+    () => ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
+```
+
+The property is nullable because the first read returns `null`. Bind to it, or handle `PropertyChanged`, so the UI updates when the value arrives. Use `await obj.WaitForIdle()` when code needs the loaded value.
+
+The overloads that take a `Task<P>` instead of a factory are obsolete in CSLA 11. The task is already running by the time it's passed in, so a getter that creates it on every read starts another fetch on every read, even though only the first result is kept. In CSLA 10, which only has the `Task<P>` overloads, check whether the value is already loaded or loading before creating the task:
+
+```csharp
+get
 {
-  get
-  {
-    if (FieldManager.FieldExists(ShipmentProperty) || PropertyIsLoading(ShipmentProperty))
-      return GetProperty(ShipmentProperty);
-    return LazyGetPropertyAsync(ShipmentProperty,
-      ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
-  }
+  if (FieldManager.FieldExists(ShipmentProperty) || PropertyIsLoading(ShipmentProperty))
+    return GetProperty(ShipmentProperty);
+  return LazyGetPropertyAsync(ShipmentProperty,
+    ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
 }
 ```
 
-The property is nullable because the first read returns `null`. Bind to it, or handle `PropertyChanged`, so the UI updates when the value arrives. Use `await obj.WaitForIdle()` when code needs the loaded value. Because this getter does more than call a property method, it needs a suppression for CSLA0007 (the sample uses `[SuppressMessage]` with a justification).
+Because that getter does more than call a property method, CSLA0007 reports it, so it needs a suppression (for example `[SuppressMessage]` with a justification).
 
 ## Don't suppress `CS8603` everywhere
 

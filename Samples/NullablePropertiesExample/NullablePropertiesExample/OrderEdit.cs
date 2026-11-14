@@ -1,4 +1,3 @@
-using System.Diagnostics.CodeAnalysis;
 using Csla;
 using Csla.Rules;
 using Csla.Rules.CommonRules;
@@ -55,22 +54,13 @@ namespace NullablePropertiesExample
     // so callers have to handle null.
     // The PropertyInfo type argument stays non-nullable (PropertyInfo<ShipmentInfo>);
     // only the property is declared ShipmentInfo?.
+    // The factory only runs when the value isn't loaded or loading yet, so
+    // reading the property again doesn't start another fetch.
     public static readonly PropertyInfo<ShipmentInfo> ShipmentProperty =
       RegisterProperty<ShipmentInfo>(nameof(Shipment), RelationshipTypes.LazyLoad);
-    [SuppressMessage("Usage", "CSLA0007", Justification = "The guard keeps each read from starting another fetch.")]
-    public ShipmentInfo? Shipment
-    {
-      get
-      {
-        // LazyGetPropertyAsync takes a Task, which is already running by the
-        // time it's passed in. Only start the fetch when the value isn't
-        // loaded or loading yet, so reading the property doesn't fetch again.
-        if (FieldManager.FieldExists(ShipmentProperty) || PropertyIsLoading(ShipmentProperty))
-          return GetProperty(ShipmentProperty);
-        return LazyGetPropertyAsync(ShipmentProperty,
-          ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
-      }
-    }
+    public ShipmentInfo? Shipment =>
+      LazyGetPropertyAsync(ShipmentProperty,
+        () => ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
 
     // Child with a read authorization rule: declare it nullable.
     // Fetch always loads a value, but GetProperty returns the default (null)

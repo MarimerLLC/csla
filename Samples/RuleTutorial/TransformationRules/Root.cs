@@ -32,13 +32,11 @@ namespace TransformationRules
     /// <summary>
     /// Gets or sets Name.
     /// </summary>
-#pragma warning disable CSLA0007
     public string Name
     {
-      get { return GetProperty(NameProperty) ?? string.Empty; }
+      get { return GetProperty(NameProperty)!; }
       set { SetProperty(NameProperty, value); }
     }
-#pragma warning restore CSLA0007
 
     /// <summary>
     /// The num 1 property.

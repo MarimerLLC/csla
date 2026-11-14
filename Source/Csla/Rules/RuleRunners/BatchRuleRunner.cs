@@ -78,6 +78,8 @@ namespace Csla.Rules
           return RunAllRules(new StreamRun(host, stream, sequential));
         case RuleStreamKind.Property:
           return sequential ? RunPropertyRules(new StreamRun(host, stream, true), stream.Root!) : base.Run(host, stream);
+        case RuleStreamKind.Cascade:
+          return sequential ? RunCompletionCascade(new StreamRun(host, stream, true), stream.CompletedContext!) : base.Run(host, stream);
         default:
           return sequential ? RunObjectRulesOnly(new StreamRun(host, stream, true)) : base.Run(host, stream);
       }
@@ -255,15 +257,9 @@ namespace Csla.Rules
       }
       run.Frames.Remove(frame);
 
-      // async rules that completed during the pass count for the next pass
-      if (run.Sequential)
-        foreach (var completed in stream.UnfoldedRuns.Where(r => r.IsCompleted).ToList())
-        {
-          stream.UnfoldedRuns.Remove(completed);
-          completed.IsFolded = true;
-          FoldIntoBatch(run, completed);
-        }
-
+      // Async rules that are not followed by a sequential rule are not folded
+      // here, even if they already completed: they complete as they always
+      // did, whatever the timing.
       foreach (var property in groups)
         stream.AddAffected(property.Name);
     }
@@ -291,20 +287,34 @@ namespace Csla.Rules
     // Iterator versions of the LegacyRuleRunner cascade. They run only when
     // the rules have a sequential async rule; otherwise the base class runs.
 
-    private IEnumerable<RuleStreamPause> RunPropertyRules(StreamRun run, IPropertyInfo property)
-    {
-      foreach (var pause in CheckRulesForProperty(run, property, true, RuleContextModes.PropertyChanged))
-        yield return pause;
-      foreach (var pause in FoldCompletedRuns(run))
-        yield return pause;
-    }
+    // Async rules still unfolded when a stream ends complete outside it,
+    // through a cascade stream (see BusinessRules.RunCompletionCascade).
 
-    private IEnumerable<RuleStreamPause> RunObjectRulesOnly(StreamRun run)
+    private IEnumerable<RuleStreamPause> RunPropertyRules(StreamRun run, IPropertyInfo property) =>
+      CheckRulesForProperty(run, property, true, RuleContextModes.PropertyChanged);
+
+    private IEnumerable<RuleStreamPause> RunObjectRulesOnly(StreamRun run) =>
+      RunObjectRules(run, RuleContextModes.CheckObjectRules, true, new RunRulesResult([], []));
+
+    /// <summary>
+    /// Runs the rules of the affected properties of an async rule that
+    /// completed after its stream ended, as the legacy completion handler
+    /// does, but waiting at sequential rules.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> RunCompletionCascade(StreamRun run, IRuleContext context)
     {
-      foreach (var pause in RunObjectRules(run, RuleContextModes.CheckObjectRules, true, new RunRulesResult([], [])))
-        yield return pause;
-      foreach (var pause in FoldCompletedRuns(run))
-        yield return pause;
+      var frame = new Frame(context.Rule.AffectedProperties);
+      run.Frames.Add(frame);
+      foreach (var item in context.Rule.AffectedProperties.Distinct().ToList())
+        if (!ReferenceEquals(context.Rule.PrimaryProperty, item))
+        {
+          var doCascade = run.Host.CascadeOnDirtyProperties && context.DirtyProperties != null && context.DirtyProperties.Any(p => p.Name == item.Name);
+          foreach (var pause in CheckRulesForProperty(run, item, doCascade, context.ExecuteContext | RuleContextModes.AsAffectedProperty))
+            yield return pause;
+          if (run.Stream.IsDiscarded)
+            yield break;
+        }
+      run.Frames.Remove(frame);
     }
 
     /// <summary>
@@ -474,27 +484,6 @@ namespace Csla.Rules
           group.Stopped = true;
       }
       run.Frames.Remove(frame);
-    }
-
-    /// <summary>
-    /// Folds in the async rules that completed before the stream ends.
-    /// The rest complete outside the stream.
-    /// </summary>
-    private IEnumerable<RuleStreamPause> FoldCompletedRuns(StreamRun run)
-    {
-      var stream = run.Stream;
-      while (true)
-      {
-        if (stream.IsDiscarded)
-          yield break;
-        var completed = stream.UnfoldedRuns.FirstOrDefault(r => r.IsCompleted);
-        if (completed == null)
-          yield break;
-        stream.UnfoldedRuns.Remove(completed);
-        completed.IsFolded = true;
-        foreach (var pause in FoldIntoCascade(run, completed))
-          yield return pause;
-      }
     }
 
     #endregion

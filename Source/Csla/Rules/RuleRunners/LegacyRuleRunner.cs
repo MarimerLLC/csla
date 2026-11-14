@@ -28,6 +28,7 @@ namespace Csla.Rules
       {
         RuleStreamKind.AllRules => CheckRules(host),
         RuleStreamKind.Property => CheckRules(host, stream.Root!),
+        RuleStreamKind.Cascade => AsyncCascadeHandler(host)(stream.CompletedContext!),
         _ => CheckObjectRules(host)
       });
       yield break;

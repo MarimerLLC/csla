@@ -853,10 +853,20 @@ namespace Csla.Rules
       {
         // a paused stream this run replaces must not continue
         var discarded = DiscardStreams(kind, root);
-        stream = StartStream(kind, root, awaited);
+        try
+        {
+          stream = StartStream(kind, root, awaited);
+        }
+        catch
+        {
+          // release the replaced streams, but don't restart them after a failed run
+          if (discarded.Count > 0)
+            EndDiscardedStreams(discarded, kind, root, restart: false);
+          throw;
+        }
         affectedProperties = stream.GetRunnerAffected().Distinct().ToList();
         if (discarded.Count > 0)
-          EndDiscardedStreams(discarded, kind, root);
+          EndDiscardedStreams(discarded, kind, root, restart: true);
       }
       finally
       {
@@ -945,8 +955,9 @@ namespace Csla.Rules
         {
           lock (_syncRoot)
           {
-            // a newer run replaced the stream of this sequential rule: its results are stale
-            if (run != null && run.IsOwned && rule.IsSequential && run.Stream.IsDiscarded)
+            // a newer run replaced the stream that owns this rule and reruns
+            // the rule: its results are stale
+            if (run != null && run.IsOwned && run.Stream.IsDiscarded)
             {
               run.Complete(r, RuleRunOutcome.Pending);
               CompleteAsyncRule(r.Rule, []);
@@ -1113,10 +1124,10 @@ namespace Csla.Rules
     /// <summary>
     /// Creates a stream and runs it to its end or its first pause.
     /// </summary>
-    private RuleStream StartStream(RuleStreamKind kind, IPropertyInfo? root, bool awaited)
+    private RuleStream StartStream(RuleStreamKind kind, IPropertyInfo? root, bool awaited, IRuleContext? completedContext = null, RuleStream? parent = null)
     {
       var runner = RuleRunner;
-      var stream = new RuleStream(this, kind, root, runner.CollectsAsyncResults) { HasAwaiter = awaited };
+      var stream = new RuleStream(this, kind, root, runner.CollectsAsyncResults, completedContext, parent) { HasAwaiter = awaited };
       stream.Steps = runner.Run(this, stream).GetEnumerator();
       DriveStream(stream);
       return stream;
@@ -1170,6 +1181,7 @@ namespace Csla.Rules
               _streams.Add(stream);
             // the properties whose rules wait are busy; the object is busy
             // until the stream ends
+            var wasBusy = _isBusy;
             foreach (var item in pause.WaitingProperties)
             {
               var alreadyBusy = BusyProperties.Contains(item);
@@ -1179,6 +1191,10 @@ namespace Csla.Rules
                 _target.RuleStart(item);
             }
             RunningAsyncRules = true;
+            // with no busy property (a rule with no affected properties),
+            // report the object busy itself
+            if (!wasBusy && BusyProperties.Count == 0)
+              (_target as IHostRulesBusy)?.ObjectBusyChanged(true);
             return;
           }
         }
@@ -1191,8 +1207,9 @@ namespace Csla.Rules
 
     /// <summary>
     /// Ends a stream. Async rules that completed and that the stream did
-    /// not fold in complete the way an async rule outside a stream does.
-    /// Async rules still running complete that way when they finish.
+    /// not fold in run their completion cascade now. Async rules still
+    /// running run it when they finish. A discarded stream runs no
+    /// cascades: the run that replaced it reruns its rules.
     /// </summary>
     /// <returns>The names of the properties whose rules those completions ran.</returns>
     private List<string> FinishStream(RuleStream stream)
@@ -1205,15 +1222,15 @@ namespace Csla.Rules
         stream.IsFinished = true;
         stream.CurrentPause = null;
         _streams?.Remove(stream);
-        foreach (var run in stream.UnfoldedRuns)
+        if (!stream.IsDiscarded)
         {
-          if (run.IsCompleted && !run.IsDetached && run.Context != null)
+          foreach (var run in stream.UnfoldedRuns)
           {
-            run.IsDetached = true;
-            var cascade = InvokeInStream(stream, run.OnCompleted, run.Context);
-            affected.AddRange(cascade);
-            if (stream.CollectsAsyncResults)
-              stream.AddAsyncAffected(cascade);
+            if (run.IsCompleted && !run.IsDetached && run.Context != null)
+            {
+              run.IsDetached = true;
+              affected.AddRange(RunCompletionCascade(run, run.Context));
+            }
           }
         }
         stream.UnfoldedRuns.Clear();
@@ -1243,11 +1260,13 @@ namespace Csla.Rules
 
       if (!run.IsOwned || stream.IsFinished || stream.IsDiscarded)
       {
-        // completes the way an async rule outside a stream does
+        // completes outside its stream
         run.IsDetached = true;
-        var cascade = InvokeInStream(stream, run.OnCompleted, context);
         if (stream.CollectsAsyncResults)
-          stream.AddAsyncAffected(affectedNames.Concat(cascade));
+          stream.AddAsyncAffected(affectedNames);
+        var cascade = RunCompletionCascade(run, context);
+        if (stream.CollectsAsyncResults)
+          stream.AddAsyncAffected(cascade);
         run.Complete(context, outcome);
         CompleteAsyncRule(rule, cascade);
         return;
@@ -1296,6 +1315,24 @@ namespace Csla.Rules
       // from the rule completion, as one in a completion cascade does
       if (error != null && !stream.HasAwaiter)
         error.Throw();
+    }
+
+    /// <summary>
+    /// Runs the completion cascade of an async rule that completed outside
+    /// its stream: the rules of its affected properties. For a rule a
+    /// stream owned (the rules have sequential async rules), the cascade
+    /// runs as a stream of its own, so sequential rules in it wait.
+    /// </summary>
+    /// <returns>The names of the properties the cascade affected so far.</returns>
+    /// <remarks>Called inside the lock on _syncRoot.</remarks>
+    private List<string> RunCompletionCascade(AsyncRuleRun run, IRuleContext context)
+    {
+      if (run.OnCompleted == null)
+        return [];
+      if (!run.IsOwned)
+        return InvokeInStream(run.Stream, run.OnCompleted, context);
+      var cascade = StartStream(RuleStreamKind.Cascade, null, awaited: false, context, run.Stream);
+      return cascade.GetRunnerAffected().Distinct().ToList();
     }
 
     /// <summary>
@@ -1349,7 +1386,14 @@ namespace Csla.Rules
     /// restarts those of another kind or root, so the rules they had not
     /// reached still run.
     /// </summary>
-    private void EndDiscardedStreams(List<RuleStream> discarded, RuleStreamKind kind, IPropertyInfo? root)
+    /// <param name="discarded">The discarded streams.</param>
+    /// <param name="kind">What the replacing run ran.</param>
+    /// <param name="root">The property of the replacing run.</param>
+    /// <param name="restart">
+    /// False if the replacing run failed: the discarded streams only
+    /// release their busy state.
+    /// </param>
+    private void EndDiscardedStreams(List<RuleStream> discarded, RuleStreamKind kind, IPropertyInfo? root, bool restart)
     {
       var notify = new List<string>();
       lock (_syncRoot)
@@ -1366,16 +1410,22 @@ namespace Csla.Rules
       foreach (var name in notify.Distinct())
         _target.RuleComplete(name);
 
+      // a new CheckRules() ran every rule: nothing to restart
+      if (!restart || kind == RuleStreamKind.AllRules)
+        return;
       var restarted = new List<(RuleStreamKind Kind, IPropertyInfo? Root)>();
       foreach (var stream in discarded)
       {
         if (stream.Kind == kind && ReferenceEquals(stream.Root, root))
           continue;
-        if (restarted.Exists(r => r.Kind == stream.Kind && ReferenceEquals(r.Root, stream.Root)))
-          continue;
-        restarted.Add((stream.Kind, stream.Root));
-        var restart = StartStream(stream.Kind, stream.Root, awaited: false);
-        foreach (var name in restart.GetRunnerAffected().Distinct())
+        if (stream.Kind != RuleStreamKind.Cascade)
+        {
+          if (restarted.Exists(r => r.Kind == stream.Kind && ReferenceEquals(r.Root, stream.Root)))
+            continue;
+          restarted.Add((stream.Kind, stream.Root));
+        }
+        var restartedStream = StartStream(stream.Kind, stream.Root, awaited: false, stream.CompletedContext, stream.Parent);
+        foreach (var name in restartedStream.GetRunnerAffected().Distinct())
           _target.RuleComplete(name);
       }
     }
@@ -1393,6 +1443,13 @@ namespace Csla.Rules
       if (stream.Root != null)
       {
         covered.Add(stream.Root.Name);
+      }
+      else if (stream.CompletedContext != null)
+      {
+        // a completion cascade runs the rules of the completed rule's affected properties
+        foreach (var item in stream.CompletedContext.Rule.AffectedProperties)
+          if (!ReferenceEquals(item, stream.CompletedContext.Rule.PrimaryProperty))
+            covered.Add(item.Name);
       }
       else
       {
@@ -1509,9 +1566,13 @@ namespace Csla.Rules
           _target.PropertyIdle(idle[i]);
       }
       // a stream with no busy property (such as one waiting for an object
-      // rule with no affected properties) kept the object busy
+      // rule with no affected properties) kept the object busy; with no
+      // property to report idle, report the object idle itself, last
       if (idle.Count == 0 && _isBusy && BusyProperties.Count == 0 && !HasPausedStreams)
+      {
         _isBusy = false;
+        (_target as IHostRulesBusy)?.ObjectBusyChanged(false);
+      }
 
       // release CheckRulesAsync last
       if (!_isBusy)

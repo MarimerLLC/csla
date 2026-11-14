@@ -26,7 +26,12 @@ namespace Csla.Rules
     /// <summary>
     /// The object-level rules (BusinessRules.CheckObjectRules()).
     /// </summary>
-    ObjectRules
+    ObjectRules,
+    /// <summary>
+    /// The rules of the affected properties of an async rule that
+    /// completed after its stream ended (the completion cascade).
+    /// </summary>
+    Cascade
   }
 
   /// <summary>
@@ -50,13 +55,28 @@ namespace Csla.Rules
     private readonly List<string> _runnerAffected = [];
     private readonly List<string> _asyncAffected = [];
 
-    public RuleStream(object host, RuleStreamKind kind, IPropertyInfo? root, bool collectsAsyncResults)
+    public RuleStream(object host, RuleStreamKind kind, IPropertyInfo? root, bool collectsAsyncResults, IRuleContext? completedContext = null, RuleStream? parent = null)
     {
       Host = host;
       Kind = kind;
       Root = root;
       CollectsAsyncResults = collectsAsyncResults;
+      CompletedContext = completedContext;
+      Parent = parent;
     }
+
+    /// <summary>
+    /// Gets the context of the completed async rule whose affected
+    /// properties a cascade stream runs the rules of.
+    /// </summary>
+    public IRuleContext? CompletedContext { get; }
+
+    /// <summary>
+    /// Gets the stream that started the async rule of a cascade stream.
+    /// The cascade's affected properties also count for the parent, so
+    /// CheckRulesAsync returns them.
+    /// </summary>
+    public RuleStream? Parent { get; }
 
     /// <summary>
     /// Gets the BusinessRules instance that runs the stream.
@@ -146,8 +166,10 @@ namespace Csla.Rules
     /// </summary>
     public void AddAffected(IEnumerable<string> names)
     {
+      var list = names as IReadOnlyCollection<string> ?? names.ToList();
       lock (_runnerAffected)
-        _runnerAffected.AddRange(names);
+        _runnerAffected.AddRange(list);
+      Parent?.AddAsyncAffected(list);
     }
 
     /// <summary>
@@ -157,6 +179,7 @@ namespace Csla.Rules
     {
       lock (_runnerAffected)
         _runnerAffected.Add(name);
+      Parent?.AddAsyncAffected([name]);
     }
 
     /// <summary>
@@ -186,8 +209,10 @@ namespace Csla.Rules
     /// </summary>
     public void AddAsyncAffected(IEnumerable<string> names)
     {
+      var list = names as IReadOnlyCollection<string> ?? names.ToList();
       lock (_runnerAffected)
-        _asyncAffected.AddRange(names);
+        _asyncAffected.AddRange(list);
+      Parent?.AddAsyncAffected(list);
     }
 
     /// <summary>
@@ -272,9 +297,11 @@ namespace Csla.Rules
 
     /// <summary>
     /// Gets a value indicating whether the stream folds the rule's
-    /// outcome into its run. A rule that is not owned, or that completes
-    /// after its stream ended, completes the way an async rule always
-    /// did: through <see cref="OnCompleted"/>.
+    /// outcome into its run. A rule that is not owned completes the way
+    /// an async rule always did: through <see cref="OnCompleted"/>. An
+    /// owned rule that completes after its stream ended runs the same
+    /// cascade as a stream of its own, so sequential rules in it wait.
+    /// The results of an owned rule whose stream was discarded are dropped.
     /// </summary>
     public bool IsOwned { get; }
 

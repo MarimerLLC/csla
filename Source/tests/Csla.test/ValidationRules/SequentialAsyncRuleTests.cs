@@ -450,6 +450,106 @@ namespace Csla.Test.ValidationRules
       obj.IsBusy.Should().BeFalse();
     }
 
+    [TestMethod]
+    public void CheckRulesDuringPause_ThatThrows_ReleasesTheDiscardedStream()
+    {
+      var obj = Create("unsettled");
+      obj.CascadeOnDirtyProperties = true;
+      obj.CheckRulesNow();
+      obj.IsPropertyBusy(SequentialRuleRoot.CProperty).Should().BeTrue();
+      obj.Outcomes.Enqueue("Lookup", "sync");
+
+      var act = () => obj.CheckRulesNow();
+
+      act.Should().Throw<InvalidOperationException>();
+      obj.IsPropertyBusy(SequentialRuleRoot.CProperty).Should().BeFalse();
+
+      // the discarded run's lookup completes: its result is dropped and the object is idle
+      obj.Gates.Release("Lookup");
+
+      obj.IsBusy.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void CheckRulesDuringPause_DropsTheDiscardedStreamsEarlierNonSequentialResults()
+    {
+      var obj = Create("earlier");
+      obj.Outcomes.Enqueue("Slow", "error");
+      obj.CheckRulesNow();
+
+      obj.CheckRulesNow();
+      // the first run's Slow completes after its stream was replaced
+      obj.Gates.Release("Slow");
+
+      obj.BrokenRulesCollection.ErrorCount.Should().Be(0);
+      obj.C.Should().BeEmpty();
+
+      obj.Gates.Release("Slow");
+      obj.Gates.Release("Lookup");
+
+      obj.C.Should().Be("Slow-out");
+      obj.IsValid.Should().BeTrue();
+      obj.IsBusy.Should().BeFalse();
+    }
+
+    #endregion
+
+    #region Completion cascades
+
+    [TestMethod]
+    public void AsyncRuleCompletingAfterItsStream_CascadeWaitsForSequentialRules()
+    {
+      var obj = Create("detached");
+      obj.CheckRulesNow();
+      obj.Gates.Release("LookupB");
+      obj.Log.Should().Equal("LookupB:start", "LookupB:end", "B2", "Bg:start");
+
+      // Bg affects B: B's rules run, and B2 waits for the sequential LookupB
+      obj.Gates.Release("Bg");
+
+      obj.Log.Should().Equal("LookupB:start", "LookupB:end", "B2", "Bg:start", "Bg:end", "LookupB:start");
+      obj.IsBusy.Should().BeTrue();
+
+      obj.Gates.Release("LookupB");
+
+      obj.Log.Should().Equal("LookupB:start", "LookupB:end", "B2", "Bg:start", "Bg:end", "LookupB:start", "LookupB:end", "B2");
+      obj.IsBusy.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public void AsyncRuleCompletingBeforeItsStreamEnds_StillRunsItsCompletionCascade()
+    {
+      var obj = Create("trailing");
+      obj.Outcomes.Enqueue("Bg", "sync");
+      obj.CheckRulesNow();
+
+      obj.Gates.Release("Lookup");
+
+      // Bg completed during the pass with no sequential rule after it: B's rules rerun, as always
+      obj.Log.Should().Equal("Lookup:start", "Lookup:end", "B1", "Bg:start", "Bg:end", "B1");
+      obj.IsBusy.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task SequentialRuleWithNoAffectedProperties_ReportsTheObjectBusyAndIdle()
+    {
+      var obj = Create("objectonly");
+      var log = LogEvents(obj);
+
+      obj.CheckObjectRulesNow();
+
+      obj.IsBusy.Should().BeTrue();
+      log.Should().Contain("BusyChanged::True");
+      var waiter = obj.WaitForIdle(TimeSpan.FromSeconds(5));
+
+      obj.Gates.Release("ObjNone");
+      await waiter;
+
+      obj.Log.Should().Equal("ObjNone:start", "ObjNone:end", "ObjAfter");
+      obj.IsBusy.Should().BeFalse();
+      log.Last().Should().Be("BusyChanged::False");
+    }
+
     #endregion
 
     #region Legacy runner
@@ -606,6 +706,12 @@ namespace Csla.Test.ValidationRules
     private RuleOutcomes _outcomes;
     public RuleOutcomes Outcomes => _outcomes ??= new RuleOutcomes();
 
+    public bool CascadeOnDirtyProperties
+    {
+      get => BusinessRules.CascadeOnDirtyProperties;
+      set => BusinessRules.CascadeOnDirtyProperties = value;
+    }
+
     public int ProcessThroughPriority
     {
       get => BusinessRules.ProcessThroughPriority;
@@ -671,11 +777,51 @@ namespace Csla.Test.ValidationRules
       rules.AddRule(new SeqRecordRule(DProperty, "D1", 0), "cascade");
       rules.AddRule(new SeqGatedRule(BProperty, "LookupB", 0, sequential: true), "cascade");
       rules.AddRule(new SeqRecordRule(BProperty, "B1", 1), "cascade");
+
+      // C and D keep changing each other: CheckRules() never settles
+      rules.AddRule(new SeqGatedRule(AProperty, "Lookup", 0, sequential: true), "unsettled");
+      rules.AddRule(new SeqToggleRule(CProperty, DProperty, 1), "unsettled");
+      rules.AddRule(new SeqToggleRule(DProperty, CProperty, 1), "unsettled");
+
+      // a background rule that affects B completes after the stream ended
+      rules.AddRule(new SeqGatedRule(BProperty, "LookupB", 0, sequential: true), "detached");
+      rules.AddRule(new SeqRecordRule(BProperty, "B2", 1), "detached");
+      rules.AddRule(new SeqGatedRule(AProperty, "Bg", 5, sequential: false, output: null, BProperty), "detached");
+
+      // a background rule that affects B completes before the stream ends
+      rules.AddRule(new SeqGatedRule(AProperty, "Lookup", 0, sequential: true), "trailing");
+      rules.AddRule(new SeqRecordRule(BProperty, "B1", 0), "trailing");
+      rules.AddRule(new SeqGatedRule(AProperty, "Bg", 1, sequential: false, output: null, BProperty), "trailing");
+
+      // a sequential object rule with no affected properties
+      rules.AddRule(new SeqGatedRule(null, "ObjNone", 0, sequential: true), "objectonly");
+      rules.AddRule(new SeqObjectRecordRule("ObjAfter", 1), "objectonly");
     }
 
     [Create]
     private void Create()
     {
+    }
+  }
+
+  /// <summary>
+  /// A sync rule that sets another property to a new value every time it runs.
+  /// </summary>
+  public class SeqToggleRule : BusinessRule
+  {
+    private readonly IPropertyInfo _output;
+
+    public SeqToggleRule(IPropertyInfo primaryProperty, IPropertyInfo output, int priority)
+      : base(primaryProperty)
+    {
+      _output = output;
+      Priority = priority;
+      AffectedProperties.Add(output);
+    }
+
+    protected override void Execute(IRuleContext context)
+    {
+      context.AddOutValue(_output, Guid.NewGuid().ToString());
     }
   }
 

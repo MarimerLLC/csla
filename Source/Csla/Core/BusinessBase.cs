@@ -44,6 +44,7 @@ namespace Csla.Core
     IDataPortalTarget,
     IManageProperties,
     IHostRules,
+    IHostRulesBusy,
     ICheckRules,
     INotifyChildChanged,
     ISerializationNotification,
@@ -1216,6 +1217,12 @@ namespace Csla.Core
       MetaPropertyHasChanged("IsSelfValid");
       MetaPropertyHasChanged("IsValid");
       MetaPropertyHasChanged("IsSavable");
+    }
+
+    /// <inheritdoc />
+    void IHostRulesBusy.ObjectBusyChanged(bool busy)
+    {
+      OnBusyChanged(new BusyChangedEventArgs("", busy));
     }
 
     /// <inheritdoc />

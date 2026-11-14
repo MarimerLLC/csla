@@ -230,6 +230,20 @@ services.AddCsla(o => o
 
 `UseLegacyCheckRules()` is temporary and will be removed in a future version. Each method takes only the settings that apply to that behavior. If you call both, the last call wins.
 
+## Async rule completion reports idle last
+
+When an async business rule completes, the object now reports itself idle as the very last step ([#4991](https://github.com/MarimerLLC/csla/issues/4991)). Previously the object became idle partway through the completion, so `WaitForIdle()` and `CheckRulesAsync()` could return, and code that disposed resources (such as a DI scope) could run, while the rest of the completion notifications (which can run authorization rules and use DI services) were still to come.
+
+Behavior changes to check for:
+
+* **Event order.** For a completed async rule, `PropertyChanged` for the rule's properties, the `IsSelfValid`, `IsValid` and `IsSavable` property changes, and `ValidationComplete` are raised **before** `BusyChanged(property, false)`. Handlers for these events now see `IsBusy == true` and `IsPropertyBusy(property) == true`, where they used to see `false`.
+* **Idle notifications.** When a property becomes idle, `PropertyChanged` is raised for `IsSavable` (it is always `false` while the object is busy), then for `IsSelfBusy` and `IsBusy`, then `BusyChanged`. `BusinessBase.OnBusyChanged` now raises the `IsSelfBusy` and `IsBusy` property changes before the `BusyChanged` event rather than after it. If a rule affects several properties, `IsBusy` becomes `false` with the last property's `BusyChanged`. A parent `BusinessBase` raises `PropertyChanged` for `IsSavable` whenever a child's busy state changes. These idle notifications are raised after `IsBusy` turns `false` (they report that change), so don't dispose resources the object uses from inside their handlers.
+* **Continuations run asynchronously.** Code after `await WaitForIdle()` (`BusyHelper.WaitForIdle`) or `await CheckRulesAsync()` (`AsyncManualResetEvent`) always continues asynchronously, never inline on the thread that completed the rule. Code that relied on running before the remaining completion notifications now runs after them.
+* **`IHostRules`.** `RuleComplete(IPropertyInfo)` no longer raises `BusyChanged`; the new `PropertyIdle(IPropertyInfo)` method is called when no async rules are running for the property any more. If you implement `IHostRules` yourself, add `PropertyIdle` and raise your busy notification there.
+* **`CommandBase` waits for its child objects.** After a create, fetch or execute operation, the server-side data portal now waits until the objects a command holds in managed properties are idle. Previously it returned (and a remote data portal serialized) the command right away, so the result of a child's still-running async rule was lost. A command whose child has a long-running async rule now takes that long to return, and fails with a `TimeoutException` after `DefaultWaitForIdleTimeoutInSeconds`.
+
+`WaitForIdle()` on an object covers its child objects. If a completion notification starts rules on an object outside that graph, wait for that object separately. For a `CommandBase`, the data portal covers the objects in the command's managed properties; an object the command keeps in a private field isn't covered, so wait for it in your operation method.
+
 ## Transaction settings resolved at runtime and `ITransactionScopeFactory`
 
 Transaction settings from `TransactionalAttribute` are now resolved when the transaction is created, not when the attribute is constructed ([#4780](https://github.com/MarimerLLC/csla/issues/4780)). Previously the attribute copied the defaults from `DataOptions` into itself. Because CSLA caches the attribute, later configuration changes were ignored.

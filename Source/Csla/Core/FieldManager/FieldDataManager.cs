@@ -507,6 +507,18 @@ namespace Csla.Core.FieldManager
       return false;
     }
 
+    /// <summary>
+    /// Gets the first field value that is currently busy,
+    /// or <see langword="null"/> if no field value is busy.
+    /// </summary>
+    internal INotifyBusy? GetBusyChild()
+    {
+      foreach (var item in _fieldData)
+        if (item != null && item.Value is INotifyBusy { IsBusy: true } child)
+          return child;
+      return null;
+    }
+
     #endregion
 
     #region  IUndoableObject

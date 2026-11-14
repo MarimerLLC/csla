@@ -71,7 +71,9 @@ namespace Csla.Core
         return;
       }
 
-      var tcs = new TaskCompletionSource<object?>();
+      // run the caller's continuation asynchronously, never inline in the
+      // code that raised BusyChanged (such as async rule completion)
+      var tcs = new TaskCompletionSource<object?>(TaskCreationOptions.RunContinuationsAsynchronously);
       try
       {
         source.BusyChanged += ObserverForIsBusyChange;

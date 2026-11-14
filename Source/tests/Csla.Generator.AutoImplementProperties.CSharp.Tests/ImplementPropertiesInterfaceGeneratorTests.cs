@@ -178,11 +178,18 @@ namespace Csla.Generator.Tests
           {
             public static string CustomerName => "";
           }
+
+          public class Outer<T>
+          {
+            public class Inner<U> { }
+            public class Plain { }
+          }
         }
         """;
       var source = """
         using System.Collections.Generic;
         using Test.Attributes;
+        using Label = Test.Attributes.Strings;
 
         namespace Test;
 
@@ -201,6 +208,11 @@ namespace Csla.Generator.Tests
             string Code { get; set; }
             [Info(order: 2, name: nameof(Code))]
             string Ordered { get; set; }
+            // nameof an alias is the alias name, not the name of the type it stands for
+            [Info(ResourceType = typeof(Outer<>.Inner<>), ResourceName = nameof(Label))]
+            string Nested { get; set; }
+            [Info(ResourceType = typeof(Outer<>.Plain))]
+            string Plain { get; set; }
           }
         }
         """;

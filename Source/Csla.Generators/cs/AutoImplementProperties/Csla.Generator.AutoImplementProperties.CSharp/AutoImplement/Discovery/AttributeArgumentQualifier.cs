@@ -25,6 +25,19 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     public string Qualify(ExpressionSyntax expression) => Visit(expression).ToString();
 
     /// <inheritdoc />
+    public override SyntaxNode? VisitInvocationExpression(InvocationExpressionSyntax node)
+    {
+      // A nameof expression is replaced by its value: qualifying its operand could change
+      // the value, as nameof(Alias) is the alias name, not the name of the aliased type
+      if (node.Expression is IdentifierNameSyntax { Identifier.Text: "nameof" }
+        && semanticModel.GetConstantValue(node) is { HasValue: true, Value: string value })
+      {
+        return SyntaxFactory.LiteralExpression(SyntaxKind.StringLiteralExpression, SyntaxFactory.Literal(value)).WithTriviaFrom(node);
+      }
+      return base.VisitInvocationExpression(node);
+    }
+
+    /// <inheritdoc />
     public override SyntaxNode? VisitIdentifierName(IdentifierNameSyntax node)
       => QualifyName(node, allowStaticMember: true) ?? node;
 
@@ -63,14 +76,29 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     }
 
     private static string GetTypeName(ITypeSymbol type)
+      => type is INamedTypeSymbol named && IsUnbound(named)
+        ? GetUnboundTypeName(named)
+        : type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+
+    /// <summary>
+    /// Whether the type is, or is nested in, an unbound generic type, as in
+    /// typeof(List&lt;&gt;) or typeof(Outer&lt;&gt;.Inner)
+    /// </summary>
+    private static bool IsUnbound(INamedTypeSymbol type)
+      => type.IsUnboundGenericType || (type.ContainingType is { } containingType && IsUnbound(containingType));
+
+    /// <summary>
+    /// Build the name of an unbound generic type one level at a time, since the display
+    /// format would show its type parameters, such as List&lt;T&gt;, where it needs List&lt;&gt;
+    /// </summary>
+    private static string GetUnboundTypeName(INamedTypeSymbol type)
     {
-      // typeof(List<>) names an unbound generic type, which has no type arguments to display
-      if (type is INamedTypeSymbol { IsUnboundGenericType: true } unbound)
-      {
-        var name = unbound.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat.WithGenericsOptions(SymbolDisplayGenericsOptions.None));
-        return $"{name}<{new string(',', unbound.Arity - 1)}>";
-      }
-      return type.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+      var prefix = type.ContainingType is { } containingType
+        ? $"{GetUnboundTypeName(containingType)}."
+        : type.ContainingNamespace is { IsGlobalNamespace: false } ns ? $"global::{ns.ToDisplayString()}." : "global::";
+      var name = SyntaxFacts.GetKeywordKind(type.Name) == SyntaxKind.None ? type.Name : $"@{type.Name}";
+      var typeArguments = type.Arity > 0 ? $"<{new string(',', type.Arity - 1)}>" : string.Empty;
+      return $"{prefix}{name}{typeArguments}";
     }
   }
 }

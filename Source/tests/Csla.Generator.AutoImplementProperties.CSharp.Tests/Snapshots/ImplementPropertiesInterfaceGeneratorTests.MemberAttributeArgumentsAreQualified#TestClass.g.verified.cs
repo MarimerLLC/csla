@@ -9,7 +9,7 @@ namespace Test;
 public partial class TestClass
 {
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-	[global::Test.Attributes.InfoAttribute( ResourceType=typeof(global::Test.Attributes.Strings), ResourceName=nameof(global::Test.Attributes.Strings.CustomerName))]
+	[global::Test.Attributes.InfoAttribute( ResourceType=typeof(global::Test.Attributes.Strings), ResourceName="CustomerName")]
 	public string Name
 	{
 		get => GetProperty(NameProperty)!;
@@ -30,10 +30,24 @@ public partial class TestClass
 		set => SetProperty(CodeProperty, value);
 	}
 	public static readonly PropertyInfo<string> OrderedProperty = RegisterProperty<string>(nameof(Ordered));
-	[global::Test.Attributes.InfoAttribute(order: 2, name: nameof(Code) )]
+	[global::Test.Attributes.InfoAttribute(order: 2, name: "Code" )]
 	public string Ordered
 	{
 		get => GetProperty(OrderedProperty)!;
 		set => SetProperty(OrderedProperty, value);
+	}
+	public static readonly PropertyInfo<string> NestedProperty = RegisterProperty<string>(nameof(Nested));
+	[global::Test.Attributes.InfoAttribute( ResourceType=typeof(global::Test.Attributes.Outer<>.Inner<>), ResourceName="Label")]
+	public string Nested
+	{
+		get => GetProperty(NestedProperty)!;
+		set => SetProperty(NestedProperty, value);
+	}
+	public static readonly PropertyInfo<string> PlainProperty = RegisterProperty<string>(nameof(Plain));
+	[global::Test.Attributes.InfoAttribute( ResourceType=typeof(global::Test.Attributes.Outer<>.Plain))]
+	public string Plain
+	{
+		get => GetProperty(PlainProperty)!;
+		set => SetProperty(PlainProperty, value);
 	}
 }

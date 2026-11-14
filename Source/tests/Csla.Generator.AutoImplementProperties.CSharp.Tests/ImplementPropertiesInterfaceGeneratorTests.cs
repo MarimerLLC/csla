@@ -42,7 +42,7 @@ namespace Csla.Generator.Tests
     // A class can also implement the interface: the generated properties must then
     // have the public setters the interface's set accessors require
     [TestMethod]
-    public async Task ReadOnlyBaseImplementingInterface()
+    public async Task ClassImplementingInterfaceCompiles()
     {
       var source = """
         namespace Test;
@@ -56,6 +56,32 @@ namespace Csla.Generator.Tests
         {
           int Id { get; }
           string Name { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
+    }
+
+    // The property methods come from the CSLA base class inherited through an intermediate base class
+    [TestMethod]
+    public async Task IntermediateBaseClass()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class AppBase<T> : Csla.ReadOnlyBase<T>
+          where T : AppBase<T>
+        {
+        }
+
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        public partial class TestClass : AppBase<TestClass>
+        {
+          private interface ITestClass
+          {
+            int Id { get; }
+            string Name { get; set; }
+          }
         }
         """;
 

@@ -100,29 +100,28 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
     #region Private Helper Methods
 
-    // The CSLA base classes whose property methods SerializationPartialBuilder knows
-    private static readonly string[] _cslaBaseClassNames = ["BusinessDocumentBase", "BusinessBase", "ReadOnlyBase", "CommandBase"];
-
     /// <summary>
     /// Extract the name of the base class of the type for which we will be generating code
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
-    /// <returns>The name of the nearest CSLA base class the type inherits, through any intermediate
-    /// base classes; otherwise the name of its direct base class</returns>
+    /// <returns>The name of the nearest base class in <see cref="CslaBaseClasses"/> the type inherits,
+    /// through any intermediate base classes; otherwise an empty string, and nothing is generated</returns>
     private static string GetBaseClassTypeName(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       var targetTypeSymbol = extractionContext.SemanticModel.GetDeclaredSymbol(targetTypeDeclaration) as INamedTypeSymbol;
 
       for (var baseType = targetTypeSymbol?.BaseType; baseType is not null; baseType = baseType.BaseType)
       {
-        if (baseType.ContainingNamespace?.ToDisplayString() == "Csla" && _cslaBaseClassNames.Contains(baseType.Name))
+        if (baseType.ContainingNamespace is { Name: "Csla" } containingNamespace
+          && containingNamespace.ContainingNamespace?.IsGlobalNamespace == true
+          && CslaBaseClasses.PropertyMethods.ContainsKey(baseType.Name))
         {
           return baseType.Name;
         }
       }
 
-      return targetTypeSymbol?.BaseType?.Name ?? string.Empty;
+      return string.Empty;
     }
 
     #endregion

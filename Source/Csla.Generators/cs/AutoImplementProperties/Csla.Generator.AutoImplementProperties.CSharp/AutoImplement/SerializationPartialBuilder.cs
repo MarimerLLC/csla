@@ -142,10 +142,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <param name="typeDefinition"></param>
     private void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, ExtractedTypeDefinition typeDefinition)
     {
-      var getter = GetGetterMethod(typeDefinition);
-      var setter = GetSetterMethod(typeDefinition);
-      if (string.IsNullOrEmpty(getter) || string.IsNullOrEmpty(setter))
+      if (!CslaBaseClasses.PropertyMethods.TryGetValue(typeDefinition.BaseClassTypeName, out var methods))
         return;
+      var (getter, setter) = methods;
 
       textWriter.WriteLine($"public static readonly PropertyInfo<{propertyDefinition.TypeDefinition.FullyQualifiedType}> {propertyDefinition.PropertyName}Property = RegisterProperty<{propertyDefinition.TypeDefinition.FullyQualifiedType}>(nameof({propertyDefinition.PropertyName}));");
 
@@ -181,46 +180,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       AppendBlockEnd(textWriter);
     }
 
-    private string GetGetterMethod(ExtractedTypeDefinition typeDefinition)
-    {
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessDocumentBase"))
-      {
-        return "GetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
-      {
-        return "GetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase"))
-      {
-        return "GetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("CommandBase"))
-      {
-        return "ReadProperty";
-      }
-      return string.Empty;
-    }
-    private string GetSetterMethod(ExtractedTypeDefinition typeDefinition)
-    {
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessDocumentBase"))
-      {
-        return "SetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
-      {
-        return "SetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase"))
-      {
-        return "LoadProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("CommandBase"))
-      {
-        return "LoadProperty";
-      }
-      return string.Empty;
-    }
     #endregion
 
   }

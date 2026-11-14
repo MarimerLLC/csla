@@ -369,4 +369,19 @@
   <data name="FluentConfigurationSuppressor_ResultUnusedJustification" xml:space="preserve">
     <value>CSLA configuration methods return their target only to allow chaining, so the return value does not need to be used</value>
   </data>
+  <data name="ImplementPropertiesInterfaceAnalyzer_Title" xml:space="preserve">
+    <value>Interface properties cannot be generated</value>
+  </data>
+  <data name="ImplementPropertiesInterfaceAnalyzer_Message" xml:space="preserve">
+    <value>Properties are not generated for '{0}' because {1}</value>
+  </data>
+  <data name="ImplementPropertiesInterfaceAnalyzer_NotInterface" xml:space="preserve">
+    <value>'{0}' is not an interface</value>
+  </data>
+  <data name="ImplementPropertiesInterfaceAnalyzer_NotInSource" xml:space="preserve">
+    <value>the interface '{0}' is not declared in this project</value>
+  </data>
+  <data name="ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct" xml:space="preserve">
+    <value>it is not a partial class or struct</value>
+  </data>
 </root>

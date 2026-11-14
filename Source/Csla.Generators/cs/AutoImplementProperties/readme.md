@@ -63,6 +63,8 @@ namespace Csla.Generator.AutoImplementProperties.TestObjects
 
 ```
 
+The class (or struct) must be partial, and the interface must be declared in the same project, in any file. Otherwise nothing is generated and analyzer [CSLA0030](../../../../docs/analyzers/CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) reports it.
+
 ## Understanding [CslaImplementProperties]
 
 - **Source Generators:** Introduced in .NET 5, source generators allow for compile-time code generation based on the existing codebase. They are a powerful tool for reducing boilerplate code and automating repetitive coding tasks.
@@ -144,7 +146,7 @@ public partial class InterfaceImplementBusinessPOCO
 		private set => SetProperty(IdProperty, value);
 	}
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-	[System.ComponentModel.DataAnnotations.Display( Name="Interface Name")]
+	[global::System.ComponentModel.DataAnnotations.DisplayAttribute( Name="Interface Name")]
 	public string Name
 	{
 		get => GetProperty(NameProperty);

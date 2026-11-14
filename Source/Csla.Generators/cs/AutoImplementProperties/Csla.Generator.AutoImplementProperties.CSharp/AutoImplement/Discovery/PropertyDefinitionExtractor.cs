@@ -124,13 +124,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
           {
             AttributeName = attribute.Name.ToString()
           };
-          var namespaceSymbol = extractionContext.SemanticModel.GetSymbolInfo(attribute.Name).Symbol?.ContainingNamespace;
-          if (namespaceSymbol != null)
+          // Name the attribute type by its fully qualified name, however the name is written
+          // (short, namespace-qualified, aliased or nested), so it binds in the generated file
+          var attributeType = (extractionContext.SemanticModel.GetSymbolInfo(attribute).Symbol as IMethodSymbol)?.ContainingType;
+          if (attributeType is not null)
           {
-            var namespaceName = namespaceSymbol.ToDisplayString();
-            attributeDefinition.AttributeName = $"{namespaceName}.{attributeDefinition.AttributeName}";
-
-            attributeDefinition.AttributeNamespace = namespaceName;
+            attributeDefinition.AttributeName = attributeType.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat);
+            attributeDefinition.AttributeNamespace = attributeType.ContainingNamespace?.ToDisplayString() ?? string.Empty;
           }
           // Add named properties
           foreach (var argument in attribute.ArgumentList?.Arguments ?? [])

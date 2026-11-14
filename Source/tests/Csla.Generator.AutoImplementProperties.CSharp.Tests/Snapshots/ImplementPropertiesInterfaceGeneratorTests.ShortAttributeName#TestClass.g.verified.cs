@@ -15,7 +15,7 @@ public partial class TestClass
 		private set => SetProperty(IdProperty, value);
 	}
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-	[System.ComponentModel.Description("The name" )]
+	[global::System.ComponentModel.DescriptionAttribute("The name" )]
 	public string Name
 	{
 		get => GetProperty(NameProperty)!;

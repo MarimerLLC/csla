@@ -67,6 +67,55 @@ namespace Csla.Generator.Tests
       Generate(source).Should().Be(expected);
     }
 
+    // An attribute on an interface member is copied to the generated property by the
+    // attribute type's fully qualified name, however the attribute name is written.
+    [TestMethod]
+    [DataRow("", "System.ComponentModel.Description(\"The name\")")]
+    [DataRow("", "global::System.ComponentModel.DescriptionAttribute(\"The name\")")]
+    [DataRow("using System.ComponentModel;", "DescriptionAttribute(\"The name\")")]
+    [DataRow("using Desc = System.ComponentModel.DescriptionAttribute;", "Desc(\"The name\")")]
+    public void MemberAttributeNameGeneratesSameCodeAsShortName(string usingDirective, string attribute)
+    {
+      var expected = Generate(MemberAttributeSource("using System.ComponentModel;", "Description(\"The name\")"));
+
+      Generate(MemberAttributeSource(usingDirective, attribute)).Should().Be(expected);
+    }
+
+    [TestMethod]
+    public async Task MemberAttributesOfNestedAndGenericTypes()
+    {
+      var source = """
+        namespace Test
+        {
+          [Csla.CslaImplementPropertiesInterface<ITestClass>]
+          public partial class TestClass : Csla.BusinessBase<TestClass>
+          {
+            private interface ITestClass
+            {
+              [Outer.Marker]
+              string Name { get; set; }
+              [Tag<int>(Label = "count")]
+              int Count { get; set; }
+            }
+          }
+
+          public class Outer
+          {
+            [System.AttributeUsage(System.AttributeTargets.Property)]
+            public class MarkerAttribute : System.Attribute { }
+          }
+
+          [System.AttributeUsage(System.AttributeTargets.Property)]
+          public class TagAttribute<T> : System.Attribute
+          {
+            public string Label { get; set; } = "";
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
+    }
+
     [TestMethod]
     [DataRow("NotAnInterface", "public class NotAnInterface { }")]
     [DataRow("System.IServiceProvider", "")]
@@ -106,6 +155,22 @@ namespace Csla.Generator.Tests
       outputCompilation.SyntaxTrees.Should().HaveCount(2, "the generator should add one file");
       return outputCompilation.SyntaxTrees.Last().ToString();
     }
+
+    private static string MemberAttributeSource(string usingDirective, string attribute) => $$"""
+      {{usingDirective}}
+
+      namespace Test;
+
+      [Csla.CslaImplementPropertiesInterface<ITestClass>]
+      public partial class TestClass : Csla.BusinessBase<TestClass>
+      {
+        private interface ITestClass
+        {
+          [{{attribute}}]
+          string Name { get; set; }
+        }
+      }
+      """;
 
     private static string NestedInterfaceSource(string attribute) => $$"""
       using System.ComponentModel;

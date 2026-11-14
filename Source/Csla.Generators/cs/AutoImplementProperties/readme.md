@@ -146,7 +146,7 @@ public partial class InterfaceImplementBusinessPOCO
 		private set => SetProperty(IdProperty, value);
 	}
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
-	[System.ComponentModel.DataAnnotations.Display( Name="Interface Name")]
+	[global::System.ComponentModel.DataAnnotations.DisplayAttribute( Name="Interface Name")]
 	public string Name
 	{
 		get => GetProperty(NameProperty);

@@ -1,5 +1,5 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
-
+using Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations;
 
 namespace Csla.Generator.Tests
 {
@@ -203,6 +203,39 @@ namespace Csla.Generator.Tests
 
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
+
+    [TestMethod("A partial property marked [CslaIgnoreProperty] is not implemented by the generator.")]
+    public async Task Case11()
+    {
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(IgnoredPropertySource);
+    }
+
+    [TestMethod("Pipeline stages are cacheable")]
+    public void StageCaching()
+    {
+      StageCachingTester.VerifyStageCaching<IncrementalAutoImplementPropertiesPartialsGenerator>(IgnoredPropertySource, typeof(TrackingNames));
+    }
+
+    private const string IgnoredPropertySource = """
+      using System.ComponentModel;
+
+      namespace Test;
+
+      [Csla.CslaImplementProperties]
+      public partial class BusinessBaseTestClass : Csla.BusinessBase<BusinessBaseTestClass>
+      {
+        [Description("Address line 1")]
+        public partial string? AddressLine1 { get; private set; }
+        public partial string Town { get; set; }
+        [Csla.CslaIgnoreProperty]
+        public partial string IgnoredProperty { get; set; }
+      }
+
+      public partial class BusinessBaseTestClass
+      {
+        public partial string IgnoredProperty { get => ""; set { } }
+      }
+      """;
 
     public static IEnumerable<object[]> Case09TestData()
     {

@@ -1,4 +1,5 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
+using Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -25,6 +26,22 @@ namespace Csla.Generator.Tests
     public async Task ShortAttributeName()
     {
       await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(NestedInterfaceSource("CslaImplementPropertiesInterface<ITestClass>"));
+    }
+
+    // Each base type has its own property accessors (SetProperty, LoadProperty, ...)
+    [TestMethod]
+    [DataRow("BusinessBase")]
+    [DataRow("ReadOnlyBase")]
+    [DataRow("CommandBase")]
+    public async Task BaseTypes(string baseType)
+    {
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(BaseTypeSource(baseType));
+    }
+
+    [TestMethod("Pipeline stages are cacheable")]
+    public void StageCaching()
+    {
+      StageCachingTester.VerifyStageCaching<IncrementalAutoImplementInterfacePartialsGenerator>(BaseTypeSource("BusinessBase"), typeof(TrackingNames));
     }
 
     // The other forms of the attribute name must generate the same code as the
@@ -304,6 +321,28 @@ namespace Csla.Generator.Tests
         {
           [{{attribute}}]
           string Name { get; set; }
+        }
+      }
+      """;
+
+    private static string BaseTypeSource(string baseType) => $$"""
+      using System.ComponentModel;
+
+      namespace Test;
+
+      [Csla.CslaImplementPropertiesInterface<ITestClass>]
+      public partial class TestClass : Csla.{{baseType}}<TestClass>
+      {
+        private interface ITestClass
+        {
+          int Id { get; }
+          [Description("The name")]
+          string Name { get; set; }
+          string? Description { get; set; }
+          string? Code { get; }
+
+          [Csla.CslaIgnoreProperty]
+          string IgnoredProperty { get; set; }
         }
       }
       """;

@@ -350,6 +350,15 @@ namespace Csla.Test.ValidationRules
     }
 
     /// <summary>
+    /// Gets whether a running rule is waiting at a gate with the given tag.
+    /// </summary>
+    public bool IsWaitingAt(string tag)
+    {
+      lock (_gates)
+        return _gates.Exists(g => g.Tag == tag);
+    }
+
+    /// <summary>
     /// Opens the gate of the first running rule with the given tag.
     /// </summary>
     public void Release(string tag)

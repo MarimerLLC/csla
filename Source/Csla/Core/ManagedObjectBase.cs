@@ -508,14 +508,10 @@ namespace Csla.Core
     object? IManageProperties.GetProperty(IPropertyInfo propertyInfo) => throw new NotImplementedException();
     [DoesNotReturn]
     object? IManageProperties.LazyGetProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) => throw new NotImplementedException();
-    [DoesNotReturn]
-    object? IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) => throw new NotImplementedException();
     object? IManageProperties.ReadProperty(IPropertyInfo propertyInfo) => ReadProperty(propertyInfo);
     P? IManageProperties.ReadProperty<P>(PropertyInfo<P> propertyInfo) where P: default => ReadProperty(propertyInfo);
     [DoesNotReturn]
     P? IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator) where P: default => throw new NotImplementedException();
-    [DoesNotReturn]
-    P? IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory) where P: default => throw new NotImplementedException();
     [DoesNotReturn]
     void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object? newValue) => throw new NotImplementedException();
     void IManageProperties.LoadProperty(IPropertyInfo propertyInfo, object? newValue) => LoadProperty(propertyInfo, newValue);

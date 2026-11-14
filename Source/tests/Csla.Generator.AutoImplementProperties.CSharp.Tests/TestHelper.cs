@@ -10,35 +10,7 @@ namespace Csla.Generator.Tests
   {
     public static Task Verify(string source, IEnumerable<string>? additionalSources = null)
     {
-      var syntaxTrees = new List<SyntaxTree>
-      {
-        CSharpSyntaxTree.ParseText(source)
-      };
-
-      foreach (var src in additionalSources ?? [])
-      {
-        syntaxTrees.Add(CSharpSyntaxTree.ParseText(src));
-      }
-
-      // Parse the provided string into a C# syntax tree
-      var references = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
-        .Select(a => MetadataReference.CreateFromFile(a.Location))
-        .Concat([
-                MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
-                MetadataReference.CreateFromFile(typeof(CslaIgnorePropertyAttribute).Assembly.Location)
-        ]);
-
-      var compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
-        .WithNullableContextOptions(NullableContextOptions.Enable)
-        .WithSpecificDiagnosticOptions(new Dictionary<string, ReportDiagnostic> { { "CS8019", ReportDiagnostic.Suppress } });
-      // Create a Roslyn compilation for the syntax tree.
-      CSharpCompilation compilation = CSharpCompilation.Create(
-          assemblyName: "Tests",
-          syntaxTrees: syntaxTrees,
-          references: references,
-          options: compilationOptions);
-
+      var compilation = TestCompilation.Create([source, .. (additionalSources ?? [])]);
 
       // Create an instance of our EnumGenerator incremental source generator
       var generator = new T().AsSourceGenerator();
@@ -58,6 +30,34 @@ namespace Csla.Generator.Tests
 
 
       return Verifier.Verify(driver).UseDirectory("Snapshots");
+    }
+  }
+
+  public static class TestCompilation
+  {
+    /// <summary>
+    /// Creates a nullable-enabled compilation of the sources that references
+    /// the assemblies loaded in the test process, including Csla.
+    /// </summary>
+    public static CSharpCompilation Create(IEnumerable<string> sources)
+    {
+      var references = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
+        .Select(a => MetadataReference.CreateFromFile(a.Location))
+        .Concat([
+                MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
+                MetadataReference.CreateFromFile(typeof(CslaIgnorePropertyAttribute).Assembly.Location)
+        ]);
+
+      var compilationOptions = new CSharpCompilationOptions(OutputKind.DynamicallyLinkedLibrary)
+        .WithNullableContextOptions(NullableContextOptions.Enable)
+        .WithSpecificDiagnosticOptions(new Dictionary<string, ReportDiagnostic> { { "CS8019", ReportDiagnostic.Suppress } });
+
+      return CSharpCompilation.Create(
+          assemblyName: "Tests",
+          syntaxTrees: sources.Select(s => CSharpSyntaxTree.ParseText(s)),
+          references: references,
+          options: compilationOptions);
     }
   }
 }

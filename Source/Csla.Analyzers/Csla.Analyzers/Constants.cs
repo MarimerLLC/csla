@@ -123,6 +123,11 @@
       /// A type is mapped to more than one custom serializer.
       /// </summary>
       public const string ConflictingCustomSerializers = "CSLA0029";
+      /// <summary>
+      /// The type argument of <c>[CslaImplementPropertiesInterface&lt;T&gt;]</c> is not
+      /// an interface declared in the same project.
+      /// </summary>
+      public const string InvalidImplementPropertiesInterface = "CSLA0030";
 
     }
 

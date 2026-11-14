@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="TypeDefinitionExtractor.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -18,60 +18,52 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
   /// </summary>
   internal static class TypeDefinitionExtractor
   {
-    public static ExtractedTypeDefinition ExtractTypeDefinitionForInterfaces(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax typeDeclarationSyntax)
+    /// <summary>
+    /// Extract the data needed to implement the properties of an interface on a type
+    /// </summary>
+    /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
+    /// <param name="typeDeclarationSyntax">The declaration of the type that carries the attribute</param>
+    /// <param name="interfaceType">The type argument of the CslaImplementPropertiesInterface attribute</param>
+    /// <returns>The extracted definition, or null if the type argument is not an interface declared in source</returns>
+    public static ExtractedTypeDefinition? ExtractTypeDefinitionForInterfaces(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax typeDeclarationSyntax, ITypeSymbol? interfaceType)
     {
+      if (interfaceType is not INamedTypeSymbol { TypeKind: TypeKind.Interface } namedTypeSymbol)
+      {
+        return null;
+      }
+
+      // The properties are read from the interface's source declaration, which must be
+      // in this compilation so it can be bound. ImplementPropertiesInterfaceAnalyzer (CSLA0030)
+      // in Csla.Analyzers reports the cases this rejects; keep the two in step.
+      var compilation = extractionContext.SemanticModel.Compilation;
+      var interfaceDeclarationSyntax = namedTypeSymbol.DeclaringSyntaxReferences
+          .Where(r => compilation.ContainsSyntaxTree(r.SyntaxTree))
+          .Select(r => r.GetSyntax())
+          .OfType<InterfaceDeclarationSyntax>()
+          .FirstOrDefault();
+
+      if (interfaceDeclarationSyntax is null)
+      {
+        return null;
+      }
+
       var extractedTypeDefinition = ExtractTypeDefinition(extractionContext, typeDeclarationSyntax);
 
-      // Assuming you have the typeDeclarationSyntax of the class
-      if (typeDeclarationSyntax.AttributeLists.Count > 0)
+      // The interface may be declared in another file, so bind it with its own tree's semantic model
+      var interfaceContext = new DefinitionExtractionContext(
+        compilation.GetSemanticModel(interfaceDeclarationSyntax.SyntaxTree), extractionContext.AddAttributes, extractionContext.FilterPartialProperties);
+      foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(interfaceContext, interfaceDeclarationSyntax))
       {
-        // Find the AutoImplementPropertiesInterfaceAttribute attribute
-        var attribute = typeDeclarationSyntax.AttributeLists
-            .SelectMany(al => al.Attributes)
-            .FirstOrDefault(a => a.Name.ToString().StartsWith(DefinitionExtractionContext.CslaImplementPropertiesAttribute));
-
-        if (attribute?.Name is GenericNameSyntax genericName)
+        if (!propertyDefinition.Modifiers.Any())
         {
-          // Get the generic argument of the attribute
-          var genericArgument = genericName.TypeArgumentList?.Arguments.FirstOrDefault();
-
-          if (genericArgument is null)
-          {
-            return extractedTypeDefinition;
-          }
-
-          // Get the type symbol of the generic argument
-          var semanticModel = extractionContext.SemanticModel;
-          var typeSymbol = semanticModel.GetTypeInfo(genericArgument).Type;
-
-          // Check if the type symbol is an interface
-          if (typeSymbol is INamedTypeSymbol namedTypeSymbol && namedTypeSymbol.TypeKind == TypeKind.Interface)
-          {
-            // Get the InterfaceDeclarationSyntax of the generic parameter
-            var interfaceDeclarationSyntax = namedTypeSymbol.DeclaringSyntaxReferences
-                .Select(r => r.GetSyntax())
-                .OfType<InterfaceDeclarationSyntax>()
-                .FirstOrDefault();
-
-            if (interfaceDeclarationSyntax != null)
-            {
-              foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, interfaceDeclarationSyntax))
-              {
-                if (!propertyDefinition.Modifiers.Any())
-                {
-                  propertyDefinition.Modifiers = extractedTypeDefinition.DefaultPropertyModifiers;
-                }
-                if (!propertyDefinition.Setter)
-                {
-                  propertyDefinition.SetterModifiers = ["private"];
-                  propertyDefinition.Setter = true;
-                }
-                extractedTypeDefinition.Properties.Add(propertyDefinition);
-              }
-            }
-          }
-
+          propertyDefinition.Modifiers = extractedTypeDefinition.DefaultPropertyModifiers;
         }
+        if (!propertyDefinition.Setter)
+        {
+          propertyDefinition.SetterModifiers = ["private"];
+          propertyDefinition.Setter = true;
+        }
+        extractedTypeDefinition.Properties.Add(propertyDefinition);
       }
       return extractedTypeDefinition;
     }

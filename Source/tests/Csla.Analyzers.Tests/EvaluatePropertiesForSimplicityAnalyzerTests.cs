@@ -517,6 +517,66 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenGetterCallsLazyAsyncMethodWithFactoryLambda()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+        using System.Threading.Tasks;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City), RelationshipTypes.LazyLoad);
+          public string? City => LazyGetPropertyAsync(CityProperty, () => FetchAsync("city"));
+
+          public static readonly PropertyInfo<string> StateProperty = RegisterProperty<string>(nameof(State), RelationshipTypes.LazyLoad);
+          public string? State
+          {
+            get { return LazyGetPropertyAsync(StateProperty, () => FetchAsync("state")); }
+          }
+
+          public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(nameof(Country), RelationshipTypes.LazyLoad);
+          public string? Country => LazyReadPropertyAsync(CountryProperty, async () => await FetchAsync("country"));
+
+          public static readonly PropertyInfo<string> RegionProperty = RegisterProperty<string>(nameof(Region), RelationshipTypes.LazyLoad);
+          public string? Region => LazyGetPropertyAsync(RegionProperty, FetchRegionAsync);
+
+          private Task<string> FetchAsync(string value) => Task.FromResult(value);
+          private Task<string> FetchRegionAsync() => Task.FromResult("region");
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenLazyAsyncGetterHasLoadedGuard()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+        using System.Threading.Tasks;
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly PropertyInfo<string> CityProperty = RegisterProperty<string>(nameof(City), RelationshipTypes.LazyLoad);
+          public string? City
+          {
+            get
+            {
+              if (FieldManager.FieldExists(CityProperty) || PropertyIsLoading(CityProperty))
+                return GetProperty(CityProperty);
+              return LazyGetPropertyAsync(CityProperty, () => Task.FromResult("city"));
+            }
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<EvaluatePropertiesForSimplicityAnalyzer>(code,
+        [Constants.AnalyzerIdentifiers.OnlyUseCslaPropertyMethodsInGetSetRule]);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenGetterUsesNullForgivingOperatorWithOtherLogic()
     {
       var code =

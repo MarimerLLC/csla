@@ -127,7 +127,24 @@ namespace Csla.Analyzers.Tests
 
         public class A : BusinessBase<A>
         {
-          public void Go() => this.LazyGetPropertyAsync<int>(null, null);
+          public void Go() => this.LazyGetPropertyAsync<int>(null, () => null);
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+    }
+
+    [TestMethod]
+    public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyGetPropertyAsyncWithTask()
+    {
+      var code =
+        """
+        using Csla;
+        using System.Threading.Tasks;
+
+        public class A : BusinessBase<A>
+        {
+          public void Go() => this.LazyGetPropertyAsync<int>(null, (Task<int>)null);
         }
         """;
       var walker = await GetWalker(code);
@@ -159,7 +176,24 @@ namespace Csla.Analyzers.Tests
 
         public class A : BusinessBase<A>
         {
-          public void Go() => this.LazyReadPropertyAsync<int>(null, null);
+          public void Go() => this.LazyReadPropertyAsync<int>(null, () => null);
+        }
+        """;
+      var walker = await GetWalker(code);
+      Assert.IsNotNull(walker.Invocation);
+    }
+
+    [TestMethod]
+    public async Task WalkWhenContainingTypeIsBusinessBaseAndInvocationIsLazyReadPropertyAsyncWithTask()
+    {
+      var code =
+        """
+        using Csla;
+        using System.Threading.Tasks;
+
+        public class A : BusinessBase<A>
+        {
+          public void Go() => this.LazyReadPropertyAsync<int>(null, (Task<int>)null);
         }
         """;
       var walker = await GetWalker(code);

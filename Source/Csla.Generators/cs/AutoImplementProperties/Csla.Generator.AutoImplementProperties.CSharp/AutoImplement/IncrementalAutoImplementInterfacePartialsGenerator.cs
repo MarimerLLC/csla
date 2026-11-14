@@ -35,7 +35,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
               {
                 if (ctx.TargetNode is TypeDeclarationSyntax typeDeclarationSyntax)
                 {
-                  return TypeDefinitionExtractor.ExtractTypeDefinitionForInterfaces(new DefinitionExtractionContext(ctx.SemanticModel, true, false), typeDeclarationSyntax);
+                  // Read the interface from the attribute's semantic data, so that qualified,
+                  // global:: qualified and aliased attribute names all work
+                  var interfaceType = ctx.Attributes.FirstOrDefault()?.AttributeClass?.TypeArguments.FirstOrDefault();
+                  return TypeDefinitionExtractor.ExtractTypeDefinitionForInterfaces(new DefinitionExtractionContext(ctx.SemanticModel, true, false), typeDeclarationSyntax, interfaceType)!;
                 }
                 return default!;
               })

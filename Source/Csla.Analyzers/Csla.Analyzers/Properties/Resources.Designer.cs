@@ -818,5 +818,50 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("FluentConfigurationSuppressor_ResultUnusedJustification", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Interface properties cannot be generated.
+        /// </summary>
+        internal static string ImplementPropertiesInterfaceAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Properties are not generated for &apos;{0}&apos; because {1}.
+        /// </summary>
+        internal static string ImplementPropertiesInterfaceAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; is not an interface.
+        /// </summary>
+        internal static string ImplementPropertiesInterfaceAnalyzer_NotInterface {
+            get {
+                return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_NotInterface", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to the interface &apos;{0}&apos; is not declared in this project.
+        /// </summary>
+        internal static string ImplementPropertiesInterfaceAnalyzer_NotInSource {
+            get {
+                return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_NotInSource", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to it is not a partial class or struct.
+        /// </summary>
+        internal static string ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct {
+            get {
+                return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct", resourceCulture);
+            }
+        }
     }
 }

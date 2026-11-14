@@ -20,7 +20,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private const string _cslaNamespace = "Csla";
 
     private const string _ignorePropertyAttributeName = "CslaIgnorePropertyAttribute";
-    public const string CslaImplementPropertiesAttribute = "CslaImplementPropertiesInterface";
     public const string CslaImplementPropertiesAttributeFullName = "Csla.CslaImplementPropertiesAttribute";
     public const string CslaImplementPropertiesInterfaceAttributeFullName = "Csla.CslaImplementPropertiesInterfaceAttribute`1";
     public bool AddAttributes => _addAttributes;

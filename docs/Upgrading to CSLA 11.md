@@ -295,6 +295,28 @@ protected override void OnSetState(SerializationInfo info)
 
 Existing overrides of the obsolete overloads keep working: they still run, and `base.OnSetState(info, mode)` still restores the base class state before your code runs. The compiler reports warnings `CS0672` and `CS0618` until you move them. If an override checks `mode == StateMode.Undo`, delete that branch, because that code hasn't run for several versions. The obsolete members will be removed in a future major version.
 
+## `LazyGetPropertyAsync` and `LazyReadPropertyAsync` take a factory
+
+`LazyGetPropertyAsync` and `LazyReadPropertyAsync` in `BusinessBase` and `ReadOnlyBase` have overloads that take a `Func<Task<P>>`, and the overloads that take a `Task<P>` are marked `[Obsolete]` ([#5018](https://github.com/MarimerLLC/csla/issues/5018)). A `Task<P>` is already running by the time it's passed in, so a getter that creates it starts another load on every read, and every result after the first is thrown away. The factory only runs when the value isn't loaded and isn't already loading.
+
+Wrap the task in a lambda:
+
+```csharp
+// CSLA 10
+public ShipmentInfo? Shipment =>
+  LazyGetPropertyAsync(ShipmentProperty,
+    ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
+
+// CSLA 11
+public ShipmentInfo? Shipment =>
+  LazyGetPropertyAsync(ShipmentProperty,
+    () => ApplicationContext.GetRequiredService<IChildDataPortal<ShipmentInfo>>().FetchChildAsync(Id));
+```
+
+A getter that checks `FieldManager.FieldExists` and `PropertyIsLoading` before calling `LazyGetPropertyAsync` can drop the check, along with the CSLA0007 suppression it needed.
+
+The factory runs after the property is marked as loading. If it throws, returns `null`, or returns a task that fails, the object raises `UnhandledAsyncException` and the getter returns the default value; the next read calls the factory again. This also applies to the `Task<P>` overloads: a task that has already failed is reported through `UnhandledAsyncException` instead of making the getter throw `InvalidOperationException`. The compiler reports `CS0618` for calls to the `Task<P>` overloads until you change them. A call that passes `null` as the second argument no longer compiles (`CS0121`), because it matches both overloads.
+
 ## Async `SafeDataReader`
 
 `SafeDataReader` has async members ([#4975](https://github.com/MarimerLLC/csla/issues/4975)):

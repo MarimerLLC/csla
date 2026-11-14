@@ -452,17 +452,7 @@ namespace Csla
       throw new NotImplementedException();
     }
 
-    object IManageProperties.LazyGetPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
-    {
-      throw new NotImplementedException();
-    }
-
     P IManageProperties.LazyReadProperty<P>(PropertyInfo<P> propertyInfo, Func<P> valueGenerator)
-    {
-      throw new NotImplementedException();
-    }
-
-    P IManageProperties.LazyReadPropertyAsync<P>(PropertyInfo<P> propertyInfo, Task<P> factory)
     {
       throw new NotImplementedException();
     }

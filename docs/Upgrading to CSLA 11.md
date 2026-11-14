@@ -27,6 +27,8 @@ The `Csla.Generator.AutoImplementProperties.CSharp` package is retired. Referenc
 
 The `[CslaImplementProperties]`, `[CslaImplementPropertiesInterface<T>]` and `[CslaIgnoreProperty]` attributes are now part of `Csla.dll`, in the same `Csla` namespace, so code that uses them doesn't change.
 
+On a `ReadOnlyBase` class, the properties that `[CslaImplementPropertiesInterface<T>]` implements now have a `private` setter even when the interface member has a `set` accessor. Code outside the class that set those properties no longer compiles; load the values in the object's data portal operations instead.
+
 ### Make business classes `partial`
 
 For each `partial` class that declares data portal operation methods, the generator adds code that lets the data portal call those methods directly instead of using reflection. This also means IDEs, analyzers and the trimmer see private operation methods as used.

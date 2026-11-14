@@ -11,6 +11,11 @@
     public bool Nullable { get; internal set; }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the type is a value type.
+    /// </summary>
+    public bool IsValueType { get; internal set; }
+
+    /// <summary>
     /// The globally fully qualified type name.
     /// </summary>
     public string FullyQualifiedType { get; set; } = "";
@@ -25,7 +30,7 @@
       if (other == null)
         return false;
 
-      return FullyQualifiedType == other.FullyQualifiedType && Nullable == other.Nullable;
+      return FullyQualifiedType == other.FullyQualifiedType && Nullable == other.Nullable && IsValueType == other.IsValueType;
     }
 
     /// <summary>
@@ -47,7 +52,7 @@
     /// <returns>The calculated hash code.</returns>
     public override int GetHashCode()
     {
-      return HashCode.Combine(FullyQualifiedType, Nullable);
+      return HashCode.Combine(FullyQualifiedType, Nullable, IsValueType);
     }
   }
 }

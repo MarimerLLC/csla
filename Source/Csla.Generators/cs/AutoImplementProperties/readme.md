@@ -65,6 +65,16 @@ namespace Csla.Generator.AutoImplementProperties.TestObjects
 
 The class (or struct) must be partial, and the interface must be declared in the same project, in any file. Otherwise nothing is generated and analyzer [CSLA0030](../../../../docs/analyzers/CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) reports it.
 
+The generated properties use the property methods of the base class:
+
+| Base class | Getter | Setter |
+|---|---|---|
+| `BusinessBase` | `GetProperty` | `SetProperty` |
+| `ReadOnlyBase` | `GetProperty` | `LoadProperty` |
+| `CommandBase` | `ReadProperty` | `LoadProperty` |
+
+An interface member without a `set` accessor gets a `private` setter. On a `ReadOnlyBase` class every property implemented from an interface gets a `private` setter, so only the object's own code, such as its data portal operations, can load the values.
+
 ## Understanding [CslaImplementProperties]
 
 - **Source Generators:** Introduced in .NET 5, source generators allow for compile-time code generation based on the existing codebase. They are a powerful tool for reducing boilerplate code and automating repetitive coding tasks.

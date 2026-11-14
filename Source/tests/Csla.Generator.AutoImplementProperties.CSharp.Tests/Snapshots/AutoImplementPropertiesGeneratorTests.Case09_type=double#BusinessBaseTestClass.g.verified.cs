@@ -11,7 +11,7 @@ public partial class BusinessBaseTestClass
 	public static readonly PropertyInfo<double> NameProperty = RegisterProperty<double>(nameof(Name));
 	public partial double Name
 	{
-		get => GetProperty(NameProperty)!;
+		get => GetProperty(NameProperty);
 		private set => SetProperty(NameProperty, value);
 	}
 }

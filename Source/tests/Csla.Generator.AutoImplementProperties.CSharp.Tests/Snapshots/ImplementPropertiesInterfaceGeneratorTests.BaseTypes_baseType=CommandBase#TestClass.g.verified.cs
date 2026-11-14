@@ -11,7 +11,7 @@ public partial class TestClass
 	public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
 	public int Id
 	{
-		get => ReadProperty(IdProperty)!;
+		get => ReadProperty(IdProperty);
 		private set => LoadProperty(IdProperty, value);
 	}
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));

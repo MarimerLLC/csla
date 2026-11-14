@@ -162,7 +162,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       if (propertyDefinition.Getter)
       {
         textWriter.Write($"get => {getter}({propertyDefinition.PropertyName}Property)");
-        if (!propertyDefinition.TypeDefinition.Nullable)
+        // GetProperty and ReadProperty return T? for reference types; the null-forgiving
+        // operator has no meaning on a value type
+        if (!propertyDefinition.TypeDefinition.Nullable && !propertyDefinition.TypeDefinition.IsValueType)
         {
           textWriter.Write('!');
         }

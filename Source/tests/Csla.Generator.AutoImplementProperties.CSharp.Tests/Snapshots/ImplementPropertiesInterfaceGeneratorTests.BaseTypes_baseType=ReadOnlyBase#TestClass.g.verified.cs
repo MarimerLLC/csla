@@ -11,7 +11,7 @@ public partial class TestClass
 	public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
 	public int Id
 	{
-		get => GetProperty(IdProperty)!;
+		get => GetProperty(IdProperty);
 		private set => LoadProperty(IdProperty, value);
 	}
 	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
@@ -19,13 +19,13 @@ public partial class TestClass
 	public string Name
 	{
 		get => GetProperty(NameProperty)!;
-		set => LoadProperty(NameProperty, value);
+		private set => LoadProperty(NameProperty, value);
 	}
 	public static readonly PropertyInfo<string?> DescriptionProperty = RegisterProperty<string?>(nameof(Description));
 	public string? Description
 	{
 		get => GetProperty(DescriptionProperty);
-		set => LoadProperty(DescriptionProperty, value);
+		private set => LoadProperty(DescriptionProperty, value);
 	}
 	public static readonly PropertyInfo<string?> CodeProperty = RegisterProperty<string?>(nameof(Code));
 	public string? Code

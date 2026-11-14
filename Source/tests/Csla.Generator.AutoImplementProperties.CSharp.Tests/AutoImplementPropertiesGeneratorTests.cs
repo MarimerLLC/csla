@@ -1,5 +1,5 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
-using Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations;
+using Csla.Generator.AutoImplementProperties.CSharp.Tests;
 
 namespace Csla.Generator.Tests
 {
@@ -204,25 +204,29 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
 
-    [TestMethod("A partial property marked [CslaIgnoreProperty] is not implemented by the generator.")]
-    public async Task Case11()
+    // A partial property marked [CslaIgnoreProperty] is not implemented by the generator
+    [TestMethod]
+    [DataRow("BusinessBase")]
+    [DataRow("ReadOnlyBase")]
+    [DataRow("CommandBase")]
+    public async Task Case11(string baseType)
     {
-      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(IgnoredPropertySource);
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(IgnoredPropertySource(baseType));
     }
 
     [TestMethod("Pipeline stages are cacheable")]
     public void StageCaching()
     {
-      StageCachingTester.VerifyStageCaching<IncrementalAutoImplementPropertiesPartialsGenerator>(IgnoredPropertySource, typeof(TrackingNames));
+      StageCachingTester.VerifyStageCaching<IncrementalAutoImplementPropertiesPartialsGenerator>(IgnoredPropertySource("BusinessBase"), typeof(TrackingNames));
     }
 
-    private const string IgnoredPropertySource = """
+    private static string IgnoredPropertySource(string baseType) => $$"""
       using System.ComponentModel;
 
       namespace Test;
 
       [Csla.CslaImplementProperties]
-      public partial class BusinessBaseTestClass : Csla.BusinessBase<BusinessBaseTestClass>
+      public partial class TestClass : Csla.{{baseType}}<TestClass>
       {
         [Description("Address line 1")]
         public partial string? AddressLine1 { get; private set; }
@@ -231,7 +235,7 @@ namespace Csla.Generator.Tests
         public partial string IgnoredProperty { get; set; }
       }
 
-      public partial class BusinessBaseTestClass
+      public partial class TestClass
       {
         public partial string IgnoredProperty { get => ""; set { } }
       }

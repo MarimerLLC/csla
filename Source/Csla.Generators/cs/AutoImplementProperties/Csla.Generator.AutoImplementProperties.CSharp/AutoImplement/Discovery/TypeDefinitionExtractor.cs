@@ -58,7 +58,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         {
           propertyDefinition.Modifiers = extractedTypeDefinition.DefaultPropertyModifiers;
         }
-        if (!propertyDefinition.Setter)
+        // A read-only object's properties are loaded only by its own code, such as its
+        // data portal operations, so they get a private setter like a get-only member
+        if (!propertyDefinition.Setter || IsReadOnlyType(extractedTypeDefinition))
         {
           propertyDefinition.SetterModifiers = ["private"];
           propertyDefinition.Setter = true;
@@ -100,7 +102,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
     #region Private Helper Methods
 
-    // ... existing helper methods ...
+    /// <summary>
+    /// Determine whether the type derives from ReadOnlyBase, matching the base class
+    /// name the same way SerializationPartialBuilder chooses the property methods
+    /// </summary>
+    private static bool IsReadOnlyType(ExtractedTypeDefinition typeDefinition)
+    {
+      return typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase");
+    }
 
     /// <summary>
     /// Extract the name of the base class of the type for which we will be generating code

@@ -19,7 +19,7 @@ public partial class TestClass
 	[global::Test.Attributes.InfoAttribute( Limit=global::Test.Attributes.Limits.Max, Mode=global::Test.Attributes.Mode.Fast)]
 	public int Count
 	{
-		get => GetProperty(CountProperty)!;
+		get => GetProperty(CountProperty);
 		set => SetProperty(CountProperty, value);
 	}
 	public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(nameof(Code));

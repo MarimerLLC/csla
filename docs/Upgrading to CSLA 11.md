@@ -354,6 +354,33 @@ A getter that checks `FieldManager.FieldExists` and `PropertyIsLoading` before c
 
 The factory runs after the property is marked as loading. If it throws, returns `null`, or returns a task that fails, the object raises `UnhandledAsyncException` and the getter returns the default value; the next read calls the factory again. This also applies to the `Task<P>` overloads: a task that has already failed is reported through `UnhandledAsyncException` instead of making the getter throw `InvalidOperationException`. The compiler reports `CS0618` for calls to the `Task<P>` overloads until you change them. A call that passes `null` as the second argument no longer compiles (`CS0121`), because it matches both overloads.
 
+## CSLA0007 reports more property getters
+
+Analyzer [CSLA0007](analyzers/CSLA0007-EvaluatePropertiesForSimplicityAnalyzer.md) reports properties with managed backing fields that do more than call a property method. In CSLA 11 it checks more getters ([#5016](https://github.com/MarimerLLC/csla/issues/5016), [#5020](https://github.com/MarimerLLC/csla/issues/5020)):
+
+* **New warnings.** Expression-bodied properties that call a property method inside another call are now reported, for example `public string Name => GetProperty(NameProperty).ToUpper();`. CSLA 10 missed them. If your projects treat warnings as errors, the build fails until you fix them. Move the extra logic into a separate property that reads the managed property, into a business rule, or suppress the warning with a justification.
+* **Warning location.** For `get =>`, `get { ... }` and `set { ... }` accessors that call a property method inside another call, the warning is now reported on the accessor's expression or body rather than on the whole accessor.
+* **Fewer false positives.** A getter that applies the null-forgiving operator to a property method call, such as `get => GetProperty(NameProperty)!;`, is no longer reported, so you can remove those suppressions. See [Nullable reference types and CSLA properties](Nullable-Reference-Types.md).
+* **Generated properties.** Properties generated for `[CslaImplementProperties]` and `[CslaImplementPropertiesInterface<T>]` are no longer wrapped in `#pragma warning disable CSLA0007` ([#5019](https://github.com/MarimerLLC/csla/issues/5019)). They only call property methods, so they don't produce warnings.
+
+## Custom `MobileFormatter` serializers can be declared with attributes
+
+Analyzer CSLA0010 reports data portal operation arguments whose types aren't serializable. Before CSLA 11 it also reported types handled by a `MobileFormatter` custom serializer, because those were registered only in runtime code the analyzer can't see ([#4428](https://github.com/MarimerLLC/csla/issues/4428)). You can now declare the serializer, and the analyzer reads the declaration:
+
+```csharp
+[MobileSerializer(typeof(MoneySerializer))]       // on a type you own
+public class Money { ... }
+
+[MobileSerializerFor(typeof(ThirdParty.Widget))]   // on a serializer, for a type you don't own
+public class WidgetSerializer : IMobileSerializer { ... }
+
+builder.Services.AddCsla(o => o
+  .Serialization(s => s
+    .UseMobileFormatter(m => m.AddCustomSerializers(typeof(Money).Assembly))));
+```
+
+Existing code that registers serializers with `CustomSerializers.Add(new TypeMap<T, S>(...))` keeps working, and is still the way to register generic types. If you move to the attributes, pass each assembly that declares serializers to `AddCustomSerializers`; an assembly that isn't passed satisfies the analyzer but fails at run time. See [Declaring custom serializers with attributes](serialization.md#declaring-custom-serializers-with-attributes-csla-11).
+
 ## Async `SafeDataReader`
 
 `SafeDataReader` has async members ([#4975](https://github.com/MarimerLLC/csla/issues/4975)):

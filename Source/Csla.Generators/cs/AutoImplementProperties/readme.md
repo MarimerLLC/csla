@@ -65,15 +65,16 @@ namespace Csla.Generator.AutoImplementProperties.TestObjects
 
 The class (or struct) must be partial, and the interface must be declared in the same project, in any file. Otherwise nothing is generated and analyzer [CSLA0030](../../../../docs/analyzers/CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) reports it.
 
-The generated properties use the property methods of the base class:
+The generated properties use the property methods of the CSLA base class the type inherits, directly or through an intermediate base class:
 
 | Base class | Getter | Setter |
 |---|---|---|
 | `BusinessBase` | `GetProperty` | `SetProperty` |
+| `BusinessDocumentBase` | `GetProperty` | `SetProperty` |
 | `ReadOnlyBase` | `GetProperty` | `LoadProperty` |
 | `CommandBase` | `ReadProperty` | `LoadProperty` |
 
-An interface member without a `set` accessor gets a `private` setter. On a `ReadOnlyBase` class every property implemented from an interface gets a `private` setter, so only the object's own code, such as its data portal operations, can load the values. The exception is a class that also implements the interface: a member with a `set` accessor then keeps a public setter, which the interface requires. Declare those members get-only if callers shouldn't set them.
+An interface member without a `set` accessor gets a `private` setter. Declare a member get-only when only the object's own code, such as its data portal operations, should load its value; this is usually what you want on a `ReadOnlyBase` class.
 
 ## Understanding [CslaImplementProperties]
 
@@ -113,25 +114,25 @@ public partial class AddressPOCO
 	public static readonly PropertyInfo<string> AddressLine2Property = RegisterProperty<string>(nameof(AddressLine2));
 	public partial string AddressLine2
 	{
-		get => GetProperty(AddressLine2Property);
+		get => GetProperty(AddressLine2Property)!;
 		set => SetProperty(AddressLine2Property, value);
 	}
 	public static readonly PropertyInfo<string> TownProperty = RegisterProperty<string>(nameof(Town));
 	public partial string Town
 	{
-		get => GetProperty(TownProperty);
+		get => GetProperty(TownProperty)!;
 		set => SetProperty(TownProperty, value);
 	}
 	public static readonly PropertyInfo<string> CountyProperty = RegisterProperty<string>(nameof(County));
 	public partial string County
 	{
-		get => GetProperty(CountyProperty);
+		get => GetProperty(CountyProperty)!;
 		set => SetProperty(CountyProperty, value);
 	}
 	public static readonly PropertyInfo<string> PostcodeProperty = RegisterProperty<string>(nameof(Postcode));
 	public partial string Postcode
 	{
-		get => GetProperty(PostcodeProperty);
+		get => GetProperty(PostcodeProperty)!;
 		set => SetProperty(PostcodeProperty, value);
 	}
 }
@@ -159,7 +160,7 @@ public partial class InterfaceImplementBusinessPOCO
 	[global::System.ComponentModel.DataAnnotations.DisplayAttribute( Name="Interface Name")]
 	public string Name
 	{
-		get => GetProperty(NameProperty);
+		get => GetProperty(NameProperty)!;
 		set => SetProperty(NameProperty, value);
 	}
 	public static readonly PropertyInfo<string?> DescriptionProperty = RegisterProperty<string?>(nameof(Description));

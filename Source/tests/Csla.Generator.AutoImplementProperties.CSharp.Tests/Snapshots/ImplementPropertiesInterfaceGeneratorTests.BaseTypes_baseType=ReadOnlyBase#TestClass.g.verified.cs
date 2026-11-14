@@ -19,13 +19,13 @@ public partial class TestClass
 	public string Name
 	{
 		get => GetProperty(NameProperty)!;
-		private set => LoadProperty(NameProperty, value);
+		set => LoadProperty(NameProperty, value);
 	}
 	public static readonly PropertyInfo<string?> DescriptionProperty = RegisterProperty<string?>(nameof(Description));
 	public string? Description
 	{
 		get => GetProperty(DescriptionProperty);
-		private set => LoadProperty(DescriptionProperty, value);
+		set => LoadProperty(DescriptionProperty, value);
 	}
 	public static readonly PropertyInfo<string?> CodeProperty = RegisterProperty<string?>(nameof(Code));
 	public string? Code

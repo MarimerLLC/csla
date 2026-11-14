@@ -214,6 +214,27 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(IgnoredPropertySource(baseType));
     }
 
+    [TestMethod("The property methods come from the CSLA base class inherited through an intermediate base class.")]
+    public async Task Case12()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class InfoBase<T> : Csla.ReadOnlyBase<T>
+          where T : InfoBase<T>
+        {
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class TestClass : InfoBase<TestClass>
+        {
+          public partial string Name { get; private set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
     [TestMethod("Pipeline stages are cacheable")]
     public void StageCaching()
     {

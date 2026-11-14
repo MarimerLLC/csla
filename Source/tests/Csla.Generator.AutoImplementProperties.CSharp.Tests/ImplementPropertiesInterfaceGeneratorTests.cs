@@ -39,8 +39,8 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(NestedInterfaceSource("CslaImplementPropertiesInterface<ITestClass>", baseType));
     }
 
-    // A ReadOnlyBase class that implements the interface keeps the public setters
-    // the interface's set accessors require; otherwise it doesn't compile
+    // A class can also implement the interface: the generated properties must then
+    // have the public setters the interface's set accessors require
     [TestMethod]
     public async Task ReadOnlyBaseImplementingInterface()
     {

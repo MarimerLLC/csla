@@ -49,12 +49,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
       var extractedTypeDefinition = ExtractTypeDefinition(extractionContext, typeDeclarationSyntax);
 
-      // A read-only object's properties are loaded only by its own code, such as its data
-      // portal operations, so they get a private setter like a get-only member. If the class
-      // implements the interface, its set accessors need the public setter, so it is kept.
-      var privateSetters = IsReadOnlyType(extractedTypeDefinition)
-        && !ImplementsInterface(extractionContext.SemanticModel, typeDeclarationSyntax, namedTypeSymbol);
-
       // The interface may be declared in another file, so bind it with its own tree's semantic model
       var interfaceContext = new DefinitionExtractionContext(
         compilation.GetSemanticModel(interfaceDeclarationSyntax.SyntaxTree), extractionContext.AddAttributes, extractionContext.FilterPartialProperties);
@@ -64,7 +58,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         {
           propertyDefinition.Modifiers = extractedTypeDefinition.DefaultPropertyModifiers;
         }
-        if (!propertyDefinition.Setter || privateSetters)
+        if (!propertyDefinition.Setter)
         {
           propertyDefinition.SetterModifiers = ["private"];
           propertyDefinition.Setter = true;
@@ -106,36 +100,29 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
     #region Private Helper Methods
 
-    /// <summary>
-    /// Determine whether the type derives from ReadOnlyBase, matching the base class
-    /// name the same way SerializationPartialBuilder chooses the property methods
-    /// </summary>
-    private static bool IsReadOnlyType(ExtractedTypeDefinition typeDefinition)
-    {
-      return typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase");
-    }
-
-    /// <summary>
-    /// Determine whether the type implements the interface, in any of its partial declarations
-    /// </summary>
-    private static bool ImplementsInterface(SemanticModel semanticModel, TypeDeclarationSyntax typeDeclarationSyntax, INamedTypeSymbol interfaceType)
-    {
-      return semanticModel.GetDeclaredSymbol(typeDeclarationSyntax) is INamedTypeSymbol typeSymbol
-        && typeSymbol.AllInterfaces.Contains(interfaceType, SymbolEqualityComparer.Default);
-    }
+    // The CSLA base classes whose property methods SerializationPartialBuilder knows
+    private static readonly string[] _cslaBaseClassNames = ["BusinessDocumentBase", "BusinessBase", "ReadOnlyBase", "CommandBase"];
 
     /// <summary>
     /// Extract the name of the base class of the type for which we will be generating code
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
-    /// <returns>The name of the base class of the type for which generation is being performed</returns>
+    /// <returns>The name of the nearest CSLA base class the type inherits, through any intermediate
+    /// base classes; otherwise the name of its direct base class</returns>
     private static string GetBaseClassTypeName(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       var targetTypeSymbol = extractionContext.SemanticModel.GetDeclaredSymbol(targetTypeDeclaration) as INamedTypeSymbol;
-      var baseTypeSymbol = targetTypeSymbol?.BaseType;
 
-      return baseTypeSymbol?.Name ?? string.Empty;
+      for (var baseType = targetTypeSymbol?.BaseType; baseType is not null; baseType = baseType.BaseType)
+      {
+        if (baseType.ContainingNamespace?.ToDisplayString() == "Csla" && _cslaBaseClassNames.Contains(baseType.Name))
+        {
+          return baseType.Name;
+        }
+      }
+
+      return targetTypeSymbol?.BaseType?.Name ?? string.Empty;
     }
 
     #endregion

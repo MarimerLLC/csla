@@ -230,6 +230,31 @@ services.AddCsla(o => o
 
 `UseLegacyCheckRules()` is temporary and will be removed in a future version. Each method takes only the settings that apply to that behavior. If you call both, the last call wins.
 
+## Sequential async rules
+
+Async business rules can now run in priority order like sync rules ([#5014](https://github.com/MarimerLLC/csla/issues/5014)). An async rule normally starts when the rules reach it and then runs in the background, so a rule that is async only because it reads a database can't stop later rules from running. Set `IsSequential` to run it in the rule stream instead:
+
+```csharp
+BusinessRules.AddRule(new CustomerExists(CustomerIdProperty) { Priority = 1, IsSequential = true });
+```
+
+For a sequential async rule, during `CheckRules()`, `CheckRules(property)` and `CheckObjectRules()`:
+
+* The rules after it, for every property, wait until it completes. Before it starts, the async rules that started earlier in the same run complete, and their results count.
+* Its result short-circuits later rules like a sync rule's: a broken rule with `Error` severity stops the rules of its property above `ProcessThroughPriority`, and `StopProcessing` stops them. Its output values feed the `CheckRules()` rerun pass, and its affected properties cascade in `CheckRules(property)`.
+* While it runs, its affected properties and the properties whose rules wait for it are busy, and the object is busy until the rules after it have run. `WaitForIdle()`, `CheckRulesAsync()` and `ValidationComplete` wait for the whole run.
+* The synchronous `CheckRules()` returns when the rules reach a sequential rule that is still running, with the properties affected so far. The rules after it run on the thread that completes the rule and raise `PropertyChanged` for the properties they affect.
+* An async rule that is not followed by a sequential rule completes as it always did, in the background, however quickly it finishes. If it completes after the run ended, the rules of its affected properties run as their own run, so sequential rules among them still wait.
+* If a property's rules run again (the property is set, or `CheckRules()` is called) while a run waits for a sequential rule, the waiting run is discarded: its remaining rules never run, and the results of the async rules it started are dropped when they complete, because the new run reruns them. A discarded `CheckRules()` or `CheckObjectRules()` run starts again after the new run, so the rules it had not reached still run.
+* A sequential rule that throws completes with a broken rule (`RuleName:message`), which short-circuits like any error, instead of raising an unhandled exception.
+
+`IsSequential` is `true` for sync rules and `false` by default for async rules, so existing rules behave as before. The legacy runner (`UseLegacyCheckRules()`) ignores it.
+
+Behavior changes to check for:
+
+* **`IBusinessRuleBase.IsSequential`.** If you implement `IBusinessRuleBase` (or `IBusinessRule`/`IBusinessRuleAsync`) without inheriting `BusinessRuleBase`, add the property: `true` for a sync rule, `false` for an async rule.
+* **`CheckRulesAsync()` returns more property names.** With the batch runner, `CheckRulesAsync()` and `CheckRulesAsync(property)` also return the affected and output properties of the async rules they started, and of the rules those rules' completions ran, even without sequential rules. Before, they returned only what the synchronous part of the run affected. The synchronous `CheckRules()` result is unchanged.
+
 ## Async rule completion reports idle last
 
 When an async business rule completes, the object now reports itself idle as the very last step ([#4991](https://github.com/MarimerLLC/csla/issues/4991)). Previously the object became idle partway through the completion, so `WaitForIdle()` and `CheckRulesAsync()` could return, and code that disposed resources (such as a DI scope) could run, while the rest of the completion notifications (which can run authorization rules and use DI services) were still to come.

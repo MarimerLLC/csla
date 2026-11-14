@@ -126,7 +126,9 @@ an input to.
    confirmed this.
 5. **Async rules** start in run order. Their completion keeps the legacy behavior: the handler
    reruns the rules of the async rule's affected properties. The batch can't see their output
-   values.
+   values. A *sequential* async rule (#5014) is the exception: the run is an iterator
+   (`RuleStream`) that pauses at it, folds in the earlier async rules' outcomes, and resumes on
+   completion, treating the rule like a sync rule. See `RuleStream.cs` and `BatchRuleRunner.Run`.
 6. **Return value:** every group that ran, plus affected and output property names (same contents
    as before).
 

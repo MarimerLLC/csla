@@ -72,6 +72,26 @@ namespace Csla.Rules
     /// </summary>
     public abstract bool IsAsync { get; protected set; }
 
+    private bool _isSequential;
+
+    /// <summary>
+    /// Gets a value indicating whether the rule runs in priority order
+    /// with the other rules: the rules after it wait until it completes.
+    /// True for a sync rule; false for an async rule unless the rule
+    /// sets <see cref="BusinessRuleAsync.IsSequential"/>.
+    /// </summary>
+    public bool IsSequential => !IsAsync || _isSequential;
+
+    /// <summary>
+    /// Sets whether an async rule runs in priority order with the other rules.
+    /// </summary>
+    /// <param name="value">True to run the rule sequentially.</param>
+    private protected void SetIsSequential(bool value)
+    {
+      CanWriteProperty(nameof(IsSequential));
+      _isSequential = value;
+    }
+
     /// <summary>
     /// Gets a value indicating that the Target property should
     /// be set even for an async rule (note that using Target

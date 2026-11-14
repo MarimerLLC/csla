@@ -687,9 +687,14 @@ namespace Csla.Rules
     /// <exception cref="System.ArgumentNullException">If property is null</exception>
     public async Task<List<string>> CheckRulesAsync(IPropertyInfo property, TimeSpan timeout)
     {
-      var affectedProperties = CheckRules(property);
-      await WaitForAsyncRulesToComplete(timeout);
-      return affectedProperties;
+      // async, so exceptions fault the returned task
+      if (property == null)
+        throw new ArgumentNullException(nameof(property));
+      if (_suppressRuleChecking)
+        return await AwaitRulesAsync(null, [], timeout);
+
+      var stream = CheckRulesCore(RuleStreamKind.Property, property, awaited: true, out var affectedProperties);
+      return await AwaitRulesAsync(stream, affectedProperties, timeout);
     }
 
     /// <summary>
@@ -730,9 +735,30 @@ namespace Csla.Rules
     /// </returns>
     public async Task<List<string>> CheckRulesAsync(TimeSpan timeout)
     {
-      var result = CheckRules();
+      // async, so exceptions fault the returned task
+      if (_suppressRuleChecking)
+        return await AwaitRulesAsync(null, [], timeout);
+
+      var stream = CheckRulesCore(RuleStreamKind.AllRules, null, awaited: true, out var affectedProperties);
+      return await AwaitRulesAsync(stream, affectedProperties, timeout);
+    }
+
+    /// <summary>
+    /// Waits until the object is idle, then returns the affected properties
+    /// of the whole rule stream: the synchronous part, the parts that ran
+    /// after a sequential async rule, and the async rules the stream
+    /// started, with their completion cascades.
+    /// </summary>
+    private async Task<List<string>> AwaitRulesAsync(RuleStream? stream, List<string> affectedProperties, TimeSpan timeout)
+    {
       await WaitForAsyncRulesToComplete(timeout);
-      return result;
+      if (stream == null)
+        return affectedProperties;
+      if (stream.Error != null)
+        System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(stream.Error).Throw();
+      if (!stream.CollectsAsyncResults)
+        return affectedProperties;
+      return stream.GetAllAffected();
     }
 
     private async Task WaitForAsyncRulesToComplete(TimeSpan timeout)
@@ -756,24 +782,19 @@ namespace Csla.Rules
     /// The PropertyChanged event should be raised for each affected
     /// property.
     /// </returns>
+    /// <remarks>
+    /// If a sequential async rule is still running, this method returns
+    /// when the rules reach it, with the properties affected so far. The
+    /// rules after it run when it completes, and raise PropertyChanged for
+    /// the properties they affect.
+    /// </remarks>
     public List<string> CheckRules()
     {
       if (_suppressRuleChecking)
         return new List<string>();
 
-      RunningRules = true;
-      List<string> affectedProperties;
-      try
-      {
-        affectedProperties = RuleRunner.CheckRules(this);
-      }
-      finally
-      {
-        RunningRules = false;
-      }
-      if (!RunningRules && !RunningAsyncRules)
-        _target.AllRulesComplete();
-      return affectedProperties.Distinct().ToList();
+      CheckRulesCore(RuleStreamKind.AllRules, null, awaited: false, out var affectedProperties);
+      return affectedProperties;
     }
 
     /// <summary>
@@ -790,20 +811,8 @@ namespace Csla.Rules
       if (_suppressRuleChecking)
         return new List<string>();
 
-      var oldRR = RunningRules;
-      RunningRules = true;
-      List<string> affectedProperties;
-      try
-      {
-        affectedProperties = RuleRunner.CheckObjectRules(this);
-      }
-      finally
-      {
-        RunningRules = oldRR;
-      }
-      if (!RunningRules && !RunningAsyncRules)
-        _target.AllRulesComplete();
-      return affectedProperties.Distinct().ToList();
+      CheckRulesCore(RuleStreamKind.ObjectRules, null, awaited: false, out var affectedProperties);
+      return affectedProperties;
     }
 
     /// <summary>
@@ -824,20 +833,50 @@ namespace Csla.Rules
       if (_suppressRuleChecking)
         return new List<string>();
 
+      CheckRulesCore(RuleStreamKind.Property, property, awaited: false, out var affectedProperties);
+      return affectedProperties;
+    }
+
+    /// <summary>
+    /// Runs a rule stream up to its end or its first wait for a
+    /// sequential async rule.
+    /// </summary>
+    /// <param name="kind">What the stream runs.</param>
+    /// <param name="root">The property, for a property stream.</param>
+    /// <param name="awaited">True if CheckRulesAsync awaits the stream.</param>
+    /// <param name="affectedProperties">Receives the distinct names of the properties affected so far.</param>
+    /// <returns>The stream.</returns>
+    private RuleStream CheckRulesCore(RuleStreamKind kind, IPropertyInfo? root, bool awaited, out List<string> affectedProperties)
+    {
       var oldRR = RunningRules;
       RunningRules = true;
-      List<string> affectedProperties;
+      RuleStream stream;
       try
       {
-        affectedProperties = RuleRunner.CheckRules(this, property);
+        // a paused stream this run replaces must not continue
+        var discarded = DiscardStreams(kind, root);
+        try
+        {
+          stream = StartStream(kind, root, awaited);
+        }
+        catch
+        {
+          // release the replaced streams, but don't restart them after a failed run
+          if (discarded.Count > 0)
+            EndDiscardedStreams(discarded, kind, root, restart: false);
+          throw;
+        }
+        affectedProperties = stream.GetRunnerAffected().Distinct().ToList();
+        if (discarded.Count > 0)
+          EndDiscardedStreams(discarded, kind, root, restart: true);
       }
       finally
       {
-        RunningRules = oldRR;
+        RunningRules = kind == RuleStreamKind.AllRules ? false : oldRR;
       }
       if (!RunningRules && !RunningAsyncRules)
         _target.AllRulesComplete();
-      return affectedProperties.Distinct().ToList();
+      return stream;
     }
 
     [NonSerialized]
@@ -890,14 +929,25 @@ namespace Csla.Rules
 
     IReadOnlyList<IBusinessRuleBase> IRuleRunnerHost.Rules => TypeRules.Rules;
 
+    bool IRuleRunnerHost.HasSequentialAsyncRules => TypeRules.HasSequentialAsyncRules;
+
     void IRuleRunnerHost.ClearBrokenRules(IPropertyInfo? property) => BrokenRules.ClearRules(property);
 
     void IRuleRunnerHost.ClearBrokenRules(IPropertyInfo? property, ICollection<string> keepRuleNames) => BrokenRules.ClearRules(property, keepRuleNames);
 
-    RuleRunOutcome IRuleRunnerHost.RunRule(IBusinessRuleBase rule, RuleContextModes executionContext, AsyncRuleCompletedHandler? onAsyncRuleCompleted)
+    RuleRunOutcome IRuleRunnerHost.RunRule(IBusinessRuleBase rule, RuleContextModes executionContext, AsyncRuleCompletedHandler? onAsyncRuleCompleted, bool foldIntoStream)
     {
       bool complete = false;
       bool hasBrokenError = false;
+
+      // an async rule started by a rule stream is tracked by the stream
+      AsyncRuleRun? run = null;
+      if (rule.IsAsync)
+      {
+        var stream = CurrentStream;
+        if (stream != null && (foldIntoStream || stream.CollectsAsyncResults))
+          run = new AsyncRuleRun(rule, stream, foldIntoStream, onAsyncRuleCompleted);
+      }
 
       object? ruleTarget = null;
       if (!rule.IsAsync || rule.ProvideTargetWhenAsync)
@@ -909,6 +959,15 @@ namespace Csla.Rules
         {
           lock (_syncRoot)
           {
+            // a newer run replaced the stream that owns this rule and reruns
+            // the rule: its results are stale (unless the newer run failed)
+            if (run != null && run.IsOwned && run.Stream.IsDiscarded && !run.Stream.KeepsResults)
+            {
+              run.Complete(r, RuleRunOutcome.Pending);
+              CompleteAsyncRule(r.Rule, []);
+              return;
+            }
+
             // update output values
             if (r.OutputPropertyValues != null)
               foreach (var item in r.OutputPropertyValues)
@@ -920,10 +979,16 @@ namespace Csla.Rules
             // update broken rules list
             BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
-            // run rules on affected properties for this async rule
-            var affected = onAsyncRuleCompleted?.Invoke(r) ?? [];
-
-            CompleteAsyncRule(r.Rule, affected);
+            if (run == null)
+            {
+              // run rules on affected properties for this async rule
+              var affected = onAsyncRuleCompleted?.Invoke(r) ?? [];
+              CompleteAsyncRule(r.Rule, affected);
+            }
+            else
+            {
+              CompleteAsyncRuleRun(run, r);
+            }
           }
         }
         else  // Rule is Sync
@@ -991,7 +1056,7 @@ namespace Csla.Rules
         if (rule is IBusinessRule syncRule)
           syncRule.Execute(context);
         else if (rule is IBusinessRuleAsync asyncRule)
-          RunAsyncRule(asyncRule, context, _unhandledAsyncRuleExceptionHandler);
+          RunAsyncRule(asyncRule, context, _unhandledAsyncRuleExceptionHandler, catchAll: run != null && run.IsOwned && rule.IsSequential);
         else
           throw new ArgumentOutOfRangeException(rule.GetType().FullName);
       }
@@ -1003,7 +1068,7 @@ namespace Csla.Rules
       }
 
       if (rule.IsAsync)
-        return RuleRunOutcome.Pending;
+        return run != null ? new RuleRunOutcome(run) : RuleRunOutcome.Pending;
 
       // process results
       if (!complete)
@@ -1021,6 +1086,424 @@ namespace Csla.Rules
 
     #endregion
 
+    #region Rule streams
+
+    // A rule stream is one run of CheckRules(), CheckRules(property) or
+    // CheckObjectRules(). It waits at a sequential async rule (#5014) and
+    // resumes, on the thread that completed the rule, inside the lock on
+    // _syncRoot, as the completion cascade of an async rule always ran.
+
+    [ThreadStatic]
+    private static RuleStream? t_currentStream;
+
+    /// <summary>
+    /// Gets the stream whose rules run on this thread for this object, or null.
+    /// </summary>
+    private RuleStream? CurrentStream
+    {
+      get
+      {
+        var stream = t_currentStream;
+        return stream != null && ReferenceEquals(stream.Host, this) ? stream : null;
+      }
+    }
+
+    // the streams waiting at a pause; guarded by _syncRoot
+    [NonSerialized]
+    private List<RuleStream>? _streams;
+
+    private bool HasPausedStreams
+    {
+      get
+      {
+        if (_streams == null)
+          return false;
+        foreach (var stream in _streams)
+          if (stream.IsPaused)
+            return true;
+        return false;
+      }
+    }
+
+    /// <summary>
+    /// Creates a stream and runs it to its end or its first pause.
+    /// </summary>
+    private RuleStream StartStream(RuleStreamKind kind, IPropertyInfo? root, bool awaited, IRuleContext? completedContext = null, RuleStream? parent = null)
+    {
+      var runner = RuleRunner;
+      // only an awaited stream (or a cascade collecting for one) needs the
+      // affected properties of its async rules
+      var collects = runner.CollectsAsyncResults && (awaited || parent != null);
+      var stream = new RuleStream(this, kind, root, collects, completedContext, parent) { HasAwaiter = awaited };
+      stream.Steps = runner.Run(this, stream).GetEnumerator();
+      DriveStream(stream);
+      return stream;
+    }
+
+    /// <summary>
+    /// Runs a stream until it ends or waits for async rules that are not complete.
+    /// </summary>
+    private void DriveStream(RuleStream stream)
+    {
+      var previous = t_currentStream;
+      t_currentStream = stream;
+      try
+      {
+        var steps = stream.Steps!;
+        while (true)
+        {
+          bool more;
+          try
+          {
+            more = !stream.IsDiscarded && steps.MoveNext();
+          }
+          catch
+          {
+            FinishStream(stream);
+            throw;
+          }
+          if (!more)
+          {
+            FinishStream(stream);
+            return;
+          }
+
+          var pause = steps.Current;
+          lock (_syncRoot)
+          {
+            if (stream.IsDiscarded)
+            {
+              FinishStream(stream);
+              return;
+            }
+            // the rules may have completed while the stream got here
+            if (pause.IsSatisfied)
+              continue;
+
+            stream.CurrentPause = pause;
+            if (stream.Kind != RuleStreamKind.AllRules && stream.Coverage == null)
+              stream.Coverage = GetCoverage(stream);
+            _streams ??= [];
+            if (!_streams.Contains(stream))
+              _streams.Add(stream);
+            // the properties whose rules wait are busy; the object is busy
+            // until the stream ends
+            var wasBusy = _isBusy;
+            foreach (var item in pause.WaitingProperties)
+            {
+              var alreadyBusy = BusyProperties.Contains(item);
+              BusyProperties.Add(item);
+              stream.WaitEntries.Add(item);
+              if (!alreadyBusy)
+                _target.RuleStart(item);
+            }
+            RunningAsyncRules = true;
+            // with no busy property (a rule with no affected properties),
+            // report the object busy itself
+            if (!wasBusy && BusyProperties.Count == 0)
+              (_target as IHostRulesBusy)?.ObjectBusyChanged(true);
+            return;
+          }
+        }
+      }
+      finally
+      {
+        t_currentStream = previous;
+      }
+    }
+
+    /// <summary>
+    /// Ends a stream. Async rules that completed and that the stream did
+    /// not fold in run their completion cascade now. Async rules still
+    /// running run it when they finish. A discarded stream runs no
+    /// cascades: the run that replaced it reruns its rules.
+    /// </summary>
+    /// <returns>The names of the properties whose rules those completions ran.</returns>
+    private List<string> FinishStream(RuleStream stream)
+    {
+      lock (_syncRoot)
+      {
+        var affected = new List<string>();
+        if (stream.IsFinished)
+          return affected;
+        stream.IsFinished = true;
+        stream.CurrentPause = null;
+        _streams?.Remove(stream);
+        if (!stream.IsDiscarded || stream.KeepsResults)
+        {
+          foreach (var run in stream.UnfoldedRuns)
+          {
+            if (run.IsCompleted && !run.IsDetached && run.Context != null)
+            {
+              run.IsDetached = true;
+              affected.AddRange(RunCompletionCascade(run, run.Context));
+            }
+          }
+        }
+        stream.UnfoldedRuns.Clear();
+        stream.AddAffected(affected);
+        stream.Steps?.Dispose();
+        return affected;
+      }
+    }
+
+    /// <summary>
+    /// Records the completion of an async rule started by a stream, and
+    /// resumes the stream when it waits for no other rule.
+    /// </summary>
+    /// <remarks>Called inside the lock on _syncRoot, after the rule's output values and broken rules are applied.</remarks>
+    private void CompleteAsyncRuleRun(AsyncRuleRun run, IRuleContext context)
+    {
+      var rule = context.Rule;
+      var affectedNames = new List<string>(rule.AffectedProperties.Count + context.OutputPropertyValues.Count);
+      affectedNames.AddRange(rule.AffectedProperties.Select(c => c.Name));
+      affectedNames.AddRange(context.OutputPropertyValues.Select(c => c.Key.Name));
+      var outcome = new RuleRunOutcome(
+        affectedNames,
+        context.DirtyProperties.Select(c => c.Name).ToList(),
+        context.Results.Any(p => !p.Success && p.Severity == RuleSeverity.Error),
+        context.Results.Any(p => p.StopProcessing));
+      var stream = run.Stream;
+
+      if (!run.IsOwned || stream.IsFinished || stream.IsDiscarded)
+      {
+        // completes outside its stream
+        run.IsDetached = true;
+        if (stream.CollectsAsyncResults)
+          stream.AddAsyncAffected(affectedNames);
+        var cascade = RunCompletionCascade(run, context);
+        if (stream.CollectsAsyncResults)
+          stream.AddAsyncAffected(cascade);
+        run.Complete(context, outcome);
+        CompleteAsyncRule(rule, cascade);
+        return;
+      }
+
+      if (stream.CollectsAsyncResults)
+        stream.AddAsyncAffected(affectedNames);
+      run.Complete(context, outcome);
+      if (stream.IsPaused && stream.CurrentPause!.IsSatisfied)
+        ResumeStream(stream, rule.AffectedProperties);
+      else
+        CompleteAsyncRule(rule, []);
+    }
+
+    /// <summary>
+    /// Runs the next part of a stream that no longer waits, then releases
+    /// the busy state of the completed rule and of the stream's old pause.
+    /// The object stays busy between the parts of a stream.
+    /// </summary>
+    /// <param name="stream">The stream.</param>
+    /// <param name="completedEntries">The busy entries of the rule whose completion resumes the stream.</param>
+    /// <remarks>Called inside the lock on _syncRoot.</remarks>
+    private void ResumeStream(RuleStream stream, IReadOnlyList<IPropertyInfo> completedEntries)
+    {
+      var entries = new List<IPropertyInfo>(completedEntries);
+      entries.AddRange(stream.WaitEntries);
+      stream.WaitEntries = [];
+      stream.CurrentPause = null;
+      // a running stream is not waiting: a nested run on this thread must
+      // not discard it (DriveStream adds it again if it pauses)
+      _streams?.Remove(stream);
+      var start = stream.RunnerAffectedCount;
+      System.Runtime.ExceptionServices.ExceptionDispatchInfo? error = null;
+      try
+      {
+        DriveStream(stream);
+      }
+      catch (Exception ex)
+      {
+        error = System.Runtime.ExceptionServices.ExceptionDispatchInfo.Capture(ex);
+        if (stream.HasAwaiter)
+          stream.Error = ex;
+      }
+
+      // PropertyChanged for the properties the resumed rules affected
+      ReleaseBusy(entries, stream.GetRunnerAffected(start));
+
+      // with no CheckRulesAsync to report it to, the exception propagates
+      // from the rule completion, as one in a completion cascade does
+      if (error != null && !stream.HasAwaiter)
+        error.Throw();
+    }
+
+    /// <summary>
+    /// Runs the completion cascade of an async rule that completed outside
+    /// its stream: the rules of its affected properties. For a rule a
+    /// stream owned (the rules have sequential async rules), the cascade
+    /// runs as a stream of its own, so sequential rules in it wait.
+    /// </summary>
+    /// <returns>The names of the properties the cascade affected so far.</returns>
+    /// <remarks>Called inside the lock on _syncRoot.</remarks>
+    private List<string> RunCompletionCascade(AsyncRuleRun run, IRuleContext context)
+    {
+      if (run.OnCompleted == null)
+        return [];
+      if (!run.IsOwned)
+        return InvokeInStream(run.Stream, run.OnCompleted, context);
+      // collect into the root stream, and only if it collects (CheckRulesAsync awaits it)
+      var collector = run.Stream.Parent ?? run.Stream;
+      var cascade = StartStream(RuleStreamKind.Cascade, null, awaited: false, context, collector.CollectsAsyncResults ? collector : null);
+      return cascade.GetRunnerAffected().Distinct().ToList();
+    }
+
+    /// <summary>
+    /// Runs an async rule completion handler with the stream as the current
+    /// stream, so the async rules it starts belong to the stream.
+    /// </summary>
+    private List<string> InvokeInStream(RuleStream stream, AsyncRuleCompletedHandler? handler, IRuleContext context)
+    {
+      if (handler == null)
+        return [];
+      var previous = t_currentStream;
+      t_currentStream = stream;
+      try
+      {
+        return handler(context).ToList();
+      }
+      finally
+      {
+        t_currentStream = previous;
+      }
+    }
+
+    /// <summary>
+    /// Discards the paused streams a new run replaces: any stream for a
+    /// new CheckRules(); streams whose rules can run for the property for
+    /// CheckRules(property); object-rule streams for CheckObjectRules().
+    /// </summary>
+    private List<RuleStream> DiscardStreams(RuleStreamKind kind, IPropertyInfo? root)
+    {
+      lock (_syncRoot)
+      {
+        if (_streams == null || _streams.Count == 0)
+          return [];
+        var discarded = _streams.Where(s => kind switch
+        {
+          RuleStreamKind.AllRules => true,
+          RuleStreamKind.Property => s.Covers(root!),
+          _ => s.Kind == RuleStreamKind.ObjectRules
+        }).ToList();
+        foreach (var stream in discarded)
+        {
+          stream.IsDiscarded = true;
+          _streams.Remove(stream);
+        }
+        return discarded;
+      }
+    }
+
+    /// <summary>
+    /// Ends the discarded streams after the run that replaced them, and
+    /// restarts those of another kind or root, so the rules they had not
+    /// reached still run.
+    /// </summary>
+    /// <param name="discarded">The discarded streams.</param>
+    /// <param name="kind">What the replacing run ran.</param>
+    /// <param name="root">The property of the replacing run.</param>
+    /// <param name="restart">
+    /// False if the replacing run failed: the discarded streams only
+    /// release their busy state.
+    /// </param>
+    private void EndDiscardedStreams(List<RuleStream> discarded, RuleStreamKind kind, IPropertyInfo? root, bool restart)
+    {
+      var notify = new List<string>();
+      lock (_syncRoot)
+      {
+        foreach (var stream in discarded)
+        {
+          // nothing reruns the rules of a failed replacement: keep their results
+          if (!restart)
+            stream.KeepsResults = true;
+          notify.AddRange(FinishStream(stream));
+          var entries = stream.WaitEntries;
+          stream.WaitEntries = [];
+          if (entries.Count > 0)
+            ReleaseBusy(entries, []);
+        }
+      }
+      foreach (var name in notify.Distinct())
+        _target.RuleComplete(name);
+
+      // a new CheckRules() ran every rule: nothing to restart
+      if (!restart || kind == RuleStreamKind.AllRules)
+        return;
+      var restarted = new List<(RuleStreamKind Kind, IPropertyInfo? Root)>();
+      foreach (var stream in discarded)
+      {
+        if (stream.Kind == kind && ReferenceEquals(stream.Root, root))
+          continue;
+        if (stream.Kind != RuleStreamKind.Cascade)
+        {
+          if (restarted.Exists(r => r.Kind == stream.Kind && ReferenceEquals(r.Root, stream.Root)))
+            continue;
+          restarted.Add((stream.Kind, stream.Root));
+        }
+        var restartedStream = StartStream(stream.Kind, stream.Root, awaited: false, stream.CompletedContext, stream.Parent);
+        foreach (var name in restartedStream.GetRunnerAffected().Distinct())
+          _target.RuleComplete(name);
+      }
+    }
+
+    /// <summary>
+    /// Gets the names of the properties whose rules a property or
+    /// object-rule stream can run: from the root, the affected and input
+    /// properties of covered rules, and the primary properties of rules
+    /// that take a covered property as input.
+    /// </summary>
+    private HashSet<string> GetCoverage(RuleStream stream)
+    {
+      var rules = TypeRules.Rules;
+      var covered = new HashSet<string>();
+      if (stream.Root != null)
+      {
+        covered.Add(stream.Root.Name);
+      }
+      else if (stream.CompletedContext != null)
+      {
+        // a completion cascade runs the rules of the completed rule's affected properties
+        foreach (var item in stream.CompletedContext.Rule.AffectedProperties)
+          if (!ReferenceEquals(item, stream.CompletedContext.Rule.PrimaryProperty))
+            covered.Add(item.Name);
+      }
+      else
+      {
+        foreach (var rule in rules)
+          if (rule.PrimaryProperty == null)
+          {
+            foreach (var item in rule.AffectedProperties)
+              covered.Add(item.Name);
+            foreach (var item in rule.InputProperties)
+              covered.Add(item.Name);
+          }
+      }
+
+      var changed = true;
+      while (changed)
+      {
+        changed = false;
+        foreach (var rule in rules)
+        {
+          if (rule.PrimaryProperty == null)
+            continue;
+          if (covered.Contains(rule.PrimaryProperty.Name))
+          {
+            foreach (var item in rule.AffectedProperties)
+              changed |= covered.Add(item.Name);
+            foreach (var item in rule.InputProperties)
+              changed |= covered.Add(item.Name);
+          }
+          else if (rule.InputProperties.Exists(p => covered.Contains(p.Name)))
+          {
+            changed |= covered.Add(rule.PrimaryProperty.Name);
+          }
+        }
+      }
+      return covered;
+    }
+
+    #endregion
+
     /// <summary>
     /// Raises the notifications for a completed async rule, then clears
     /// its busy state. The object reports itself idle last, so once
@@ -1030,18 +1513,34 @@ namespace Csla.Rules
     /// <param name="rule">The completed rule.</param>
     /// <param name="affected">Names of further properties whose rules ran on completion.</param>
     /// <remarks>Called inside the lock on _syncRoot.</remarks>
-    private void CompleteAsyncRule(IBusinessRuleBase rule, IEnumerable<string> affected)
+    private void CompleteAsyncRule(IBusinessRuleBase rule, IEnumerable<string> affected) =>
+      ReleaseBusy(rule.AffectedProperties, affected);
+
+    /// <summary>
+    /// Raises the completion notifications for a list of busy entries,
+    /// then removes them. The object reports itself idle last, so once
+    /// IsBusy is false (and WaitForIdle or CheckRulesAsync returns), no
+    /// more completion work runs.
+    /// </summary>
+    /// <param name="entries">
+    /// The busy entries to release: one per property for a running rule
+    /// (its affected properties) or for a stream's wait.
+    /// </param>
+    /// <param name="affected">Names of further properties whose rules ran.</param>
+    /// <remarks>Called inside the lock on _syncRoot.</remarks>
+    private void ReleaseBusy(IReadOnlyList<IPropertyInfo> entries, IEnumerable<string> affected)
     {
       // BusyProperties holds one entry per running rule for each of its affected
-      // properties. The handlers of the notifications below can start rules, or
-      // complete other rules, so each decision checks the live list, discounting
-      // this rule's own entries (they stay until the object reports idle).
+      // properties, and one per waiting property for each paused stream. The
+      // handlers of the notifications below can start rules, or complete other
+      // rules, so each decision checks the live list, discounting the entries
+      // being released (they stay until the object reports idle).
 
       // raise the completion notifications while the object is still busy
       var completed = new List<IPropertyInfo>();
-      foreach (var item in rule.AffectedProperties.Distinct())
+      foreach (var item in entries.Distinct())
       {
-        if (!IsBusyForOtherRules(item, rule))
+        if (!IsBusyForOthers(item, entries))
         {
           completed.Add(item);
           _target.RuleComplete(item);
@@ -1050,22 +1549,22 @@ namespace Csla.Rules
 
       foreach (var property in affected.Distinct())
       {
-        // property is not in AffectedProperties (already signalled to UI)
-        if (!rule.AffectedProperties.Any(p => p.Name == property))
+        // property is not in the entries (already signalled to UI)
+        if (!entries.Any(p => p.Name == property))
           _target.RuleComplete(property);
       }
 
-      if (!RunningRules && BusyProperties.Count == rule.AffectedProperties.Count)
+      if (!RunningRules && BusyProperties.Count == entries.Count && !HasPausedStreams)
         _target.AllRulesComplete();
 
       // clear the busy state
-      foreach (var item in rule.AffectedProperties)
+      foreach (var item in entries)
         BusyProperties.Remove(item);
-      var idle = rule.AffectedProperties.Distinct().Where(p => !BusyProperties.Contains(p)).ToList();
+      var idle = entries.Distinct().Where(p => !BusyProperties.Contains(p)).ToList();
 
       // another rule for a property may have kept it busy when its notification
       // was due, then completed in a handler above without notifying, because
-      // this rule's entry was still there
+      // these entries were still there
       foreach (var item in idle)
       {
         if (!completed.Contains(item))
@@ -1076,10 +1575,18 @@ namespace Csla.Rules
       for (var i = 0; i < idle.Count; i++)
       {
         if (i == idle.Count - 1)
-          _isBusy = BusyProperties.Count > 0;
+          _isBusy = BusyProperties.Count > 0 || HasPausedStreams;
         // a handler may have started a rule for this property again
         if (!BusyProperties.Contains(idle[i]))
           _target.PropertyIdle(idle[i]);
+      }
+      // a stream with no busy property (such as one waiting for an object
+      // rule with no affected properties) kept the object busy; with no
+      // property to report idle, report the object idle itself, last
+      if (idle.Count == 0 && _isBusy && BusyProperties.Count == 0 && !HasPausedStreams)
+      {
+        _isBusy = false;
+        (_target as IHostRulesBusy)?.ObjectBusyChanged(false);
       }
 
       // release CheckRulesAsync last
@@ -1088,13 +1595,13 @@ namespace Csla.Rules
     }
 
     /// <summary>
-    /// Gets a value indicating whether rules other than the specified
-    /// running rule keep a property busy.
+    /// Gets a value indicating whether busy entries other than the
+    /// specified ones keep a property busy.
     /// </summary>
-    private bool IsBusyForOtherRules(IPropertyInfo property, IBusinessRuleBase rule) =>
-      BusyProperties.Count(p => Equals(p, property)) > rule.AffectedProperties.Count(p => Equals(p, property));
+    private bool IsBusyForOthers(IPropertyInfo property, IReadOnlyList<IPropertyInfo> entries) =>
+      BusyProperties.Count(p => Equals(p, property)) > entries.Count(p => Equals(p, property));
 
-    private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler)
+    private static async void RunAsyncRule(IBusinessRuleAsync asyncRule, IRuleContext context, IUnhandledAsyncRuleExceptionHandler unhandledAsyncRuleExceptionHandler, bool catchAll)
     {
       try
       {
@@ -1103,6 +1610,12 @@ namespace Csla.Rules
       catch (Exception exc) when (unhandledAsyncRuleExceptionHandler.CanHandle(exc, asyncRule))
       {
         await unhandledAsyncRuleExceptionHandler.Handle(exc, asyncRule, context);
+      }
+      catch (Exception exc) when (catchAll)
+      {
+        // a sequential rule completes with an error result, which
+        // short-circuits the rules after it like any broken rule
+        context.AddErrorResult($"{asyncRule.RuleName}:{exc.Message}");
       }
       finally
       {

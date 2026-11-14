@@ -29,6 +29,12 @@ namespace Csla.Rules
     IReadOnlyList<IBusinessRuleBase> Rules { get; }
 
     /// <summary>
+    /// Gets a value indicating whether <see cref="Rules"/> has a
+    /// sequential async rule.
+    /// </summary>
+    bool HasSequentialAsyncRules { get; }
+
+    /// <summary>
     /// Gets a value indicating whether rules should cascade when a rule
     /// changes a property value through its output values.
     /// </summary>
@@ -65,11 +71,20 @@ namespace Csla.Rules
     /// values and broken rules are applied. Returns the names of any further
     /// properties whose rules it ran. Null to do nothing on completion.
     /// </param>
+    /// <param name="foldIntoStream">
+    /// For an async rule started by a rule stream: true if the stream
+    /// folds the rule's outcome into its run. The rule's completion then
+    /// records the outcome in <see cref="RuleRunOutcome.Run"/> and resumes
+    /// the stream when it waits for the rule, instead of calling
+    /// <paramref name="onAsyncRuleCompleted"/>. The handler still runs if
+    /// the rule completes after the stream ended.
+    /// </param>
     /// <returns>
     /// The outcome of a sync rule. For an async rule, an empty outcome,
-    /// because the rule is still running.
+    /// because the rule may still be running; <see cref="RuleRunOutcome.Run"/>
+    /// tracks the rule when a stream started it.
     /// </returns>
-    RuleRunOutcome RunRule(IBusinessRuleBase rule, RuleContextModes executionContext, AsyncRuleCompletedHandler? onAsyncRuleCompleted);
+    RuleRunOutcome RunRule(IBusinessRuleBase rule, RuleContextModes executionContext, AsyncRuleCompletedHandler? onAsyncRuleCompleted, bool foldIntoStream = false);
   }
 
   /// <summary>
@@ -96,6 +111,21 @@ namespace Csla.Rules
       HasBrokenError = hasBrokenError;
       StopProcessing = stopProcessing;
     }
+
+    /// <summary>
+    /// The outcome of an async rule started by a rule stream.
+    /// </summary>
+    /// <param name="run">The rule's run.</param>
+    public RuleRunOutcome(AsyncRuleRun run)
+      : this([], [], false, false)
+    {
+      Run = run;
+    }
+
+    /// <summary>
+    /// Gets the run of an async rule started by a rule stream, or null.
+    /// </summary>
+    public AsyncRuleRun? Run { get; }
 
     /// <summary>
     /// Names of the rule's affected properties and of the properties it set

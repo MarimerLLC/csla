@@ -85,6 +85,18 @@ namespace Csla.Rules
     /// </summary>
     bool IsAsync { get; }
     /// <summary>
+    /// Gets a value indicating whether the rule runs in priority order
+    /// with the other rules: the rules after it wait until it completes,
+    /// and its result short-circuits them like a sync rule's result.
+    /// True for every sync rule. An async rule that is not sequential
+    /// starts in priority order and then runs in the background.
+    /// </summary>
+    /// <remarks>
+    /// Only the batch CheckRules runner (the default) runs async rules
+    /// sequentially. The legacy runner ignores this value.
+    /// </remarks>
+    bool IsSequential { get; }
+    /// <summary>
     /// Gets the rule Display Index in UI.
     /// </summary>
     int DisplayIndex { get; }

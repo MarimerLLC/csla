@@ -25,6 +25,29 @@ namespace Csla.Rules
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the rule runs in priority
+    /// order with the other rules. When true, the rules after it (for
+    /// every property) wait until it completes, and its result
+    /// short-circuits them like a sync rule's result
+    /// (<see cref="BusinessRules.ProcessThroughPriority"/>,
+    /// <see cref="RuleResult.StopProcessing"/>). Defaults to false: the
+    /// rule starts in priority order and then runs in the background.
+    /// </summary>
+    /// <remarks>
+    /// Use this for a rule that is async only because it does I/O, such
+    /// as a database lookup, and whose result decides whether later rules
+    /// run. While the rule runs, the properties whose rules wait for it
+    /// are busy. Only the batch CheckRules runner (the default) honors
+    /// this value; the legacy runner ignores it.
+    /// </remarks>
+    /// <exception cref="ArgumentException">The value is set after the rule has run.</exception>
+    public new bool IsSequential
+    {
+      get => base.IsSequential;
+      set => SetIsSequential(value);
+    }
+
+    /// <summary>
     /// Creates an instance of the rule that applies
     /// to a business object as a whole.
     /// </summary>

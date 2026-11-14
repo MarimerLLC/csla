@@ -1,4 +1,4 @@
-//-----------------------------------------------------------------------
+﻿//-----------------------------------------------------------------------
 // <copyright file="BatchRuleRunner.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -14,7 +14,8 @@ namespace Csla.Rules
   /// Runs BusinessRules.CheckRules() as a batch: every property rule runs
   /// once, then only the rules invalidated by changed values rerun.
   /// CheckRules(property) and CheckObjectRules() behave as in
-  /// <see cref="LegacyRuleRunner"/>.
+  /// <see cref="LegacyRuleRunner"/>, except that they also wait for
+  /// sequential async rules.
   /// </summary>
   /// <remarks>
   /// <list type="number">
@@ -34,8 +35,19 @@ namespace Csla.Rules
   /// change, up to the configured number of passes.
   /// </item>
   /// </list>
+  /// <para>
   /// Short-circuiting (ProcessThroughPriority and StopProcessing) applies
   /// per property, as it does in <see cref="LegacyRuleRunner"/>.
+  /// </para>
+  /// <para>
+  /// Sequential async rules (<see cref="IBusinessRuleBase.IsSequential"/>,
+  /// #5014) run in the rule stream: at such a rule the stream waits until
+  /// the async rules it started earlier are complete and folds in their
+  /// outcomes, then runs the rule and waits for it, and treats its outcome
+  /// like a sync rule's. The run is an iterator that yields at each wait.
+  /// When the rules have no sequential async rule, nothing waits and
+  /// async rules complete as they always did.
+  /// </para>
   /// </remarks>
   internal sealed class BatchRuleRunner : LegacyRuleRunner
   {
@@ -54,15 +66,61 @@ namespace Csla.Rules
     }
 
     /// <inheritdoc />
-    public override List<string> CheckRules(IRuleRunnerHost host)
+    public override bool CollectsAsyncResults => true;
+
+    /// <inheritdoc />
+    public override IEnumerable<RuleStreamPause> Run(IRuleRunnerHost host, RuleStream stream)
     {
-      var objectResult = RunObjectRules(host, RuleContextModes.CheckRules, false);
-      var affectedProperties = objectResult.AffectedProperties;
-      var dirtyProperties = new HashSet<string>(objectResult.DirtyProperties);
+      var sequential = host.HasSequentialAsyncRules;
+      switch (stream.Kind)
+      {
+        case RuleStreamKind.AllRules:
+          return RunAllRules(new StreamRun(host, stream, sequential));
+        case RuleStreamKind.Property:
+          return sequential ? RunPropertyRules(new StreamRun(host, stream, true), stream.Root!) : base.Run(host, stream);
+        case RuleStreamKind.Cascade:
+          return sequential ? RunCompletionCascade(new StreamRun(host, stream, true), stream.CompletedContext!) : base.Run(host, stream);
+        default:
+          return sequential ? RunObjectRulesOnly(new StreamRun(host, stream, true)) : base.Run(host, stream);
+      }
+    }
+
+    private static bool IsSequentialAsync(IBusinessRuleBase rule) => rule.IsAsync && rule.IsSequential;
+
+    #region CheckRules()
+
+    /// <summary>
+    /// Runs all rules (BusinessRules.CheckRules()).
+    /// </summary>
+    private IEnumerable<RuleStreamPause> RunAllRules(StreamRun run)
+    {
+      var host = run.Host;
+      var stream = run.Stream;
+      HashSet<string> dirtyProperties;
+      if (run.Sequential)
+      {
+        var objectResult = new RunRulesResult([], []);
+        dirtyProperties = [];
+        run.CurrentDirty = dirtyProperties;
+        foreach (var pause in RunObjectRules(run, RuleContextModes.CheckRules, false, objectResult))
+          yield return pause;
+        if (stream.IsDiscarded)
+          yield break;
+        dirtyProperties.UnionWith(objectResult.DirtyProperties);
+      }
+      else
+      {
+        var objectResult = RunObjectRules(host, RuleContextModes.CheckRules, false);
+        stream.AddAffected(objectResult.AffectedProperties);
+        dirtyProperties = new HashSet<string>(objectResult.DirtyProperties);
+      }
       var plan = new BatchPlan(host.Rules);
 
       // pass 1: every property rule once
-      RunGroups(host, plan, plan.Properties, RuleContextModes.CheckRules, isRerun: false, affectedProperties, dirtyProperties);
+      foreach (var pause in RunGroups(run, plan, plan.Properties, RuleContextModes.CheckRules, isRerun: false, dirtyProperties))
+        yield return pause;
+      if (stream.IsDiscarded)
+        yield break;
 
       // pass 2: rerun what changed values invalidate
       var passes = 0;
@@ -77,19 +135,20 @@ namespace Csla.Rules
         passes++;
 
         var newlyDirty = new HashSet<string>();
-        RunGroups(host, plan, groups, RuleContextModes.CheckRules | RuleContextModes.AsAffectedProperty, isRerun: true, affectedProperties, newlyDirty);
+        foreach (var pause in RunGroups(run, plan, groups, RuleContextModes.CheckRules | RuleContextModes.AsAffectedProperty, isRerun: true, newlyDirty))
+          yield return pause;
+        if (stream.IsDiscarded)
+          yield break;
         if (!host.CascadeOnDirtyProperties)
           break;
         dirtyProperties = newlyDirty;
       }
-
-      return affectedProperties;
     }
 
     /// <summary>
     /// Runs the rules of the given property groups, interleaved in plan order.
     /// </summary>
-    /// <param name="host">The rule runner host.</param>
+    /// <param name="run">The stream run.</param>
     /// <param name="plan">The run order and dependencies.</param>
     /// <param name="groups">The properties whose rules run.</param>
     /// <param name="executionContext">The execution context.</param>
@@ -99,17 +158,17 @@ namespace Csla.Rules
     /// deny running as an affected property), because they still describe
     /// the current state. Pass 1 clears them, as the legacy runner does.
     /// </param>
-    /// <param name="affectedProperties">Receives the affected property names.</param>
     /// <param name="dirtyProperties">Receives the names of properties changed by output values.</param>
-    private void RunGroups(
-      IRuleRunnerHost host,
+    private IEnumerable<RuleStreamPause> RunGroups(
+      StreamRun run,
       BatchPlan plan,
       IReadOnlyCollection<IPropertyInfo> groups,
       RuleContextModes executionContext,
       bool isRerun,
-      List<string> affectedProperties,
       HashSet<string> dirtyProperties)
     {
+      var host = run.Host;
+      var stream = run.Stream;
       var states = new Dictionary<IPropertyInfo, GroupState>(groups.Count);
       foreach (var property in groups)
       {
@@ -126,13 +185,33 @@ namespace Csla.Rules
         states[property] = new GroupState();
       }
 
+      run.CurrentDirty = dirtyProperties;
       var onAsyncRuleCompleted = AsyncCascadeHandler(host);
-      foreach (var rule in plan.Rules)
+      var frame = new Frame(plan.Rules, r => states.TryGetValue(r.PrimaryProperty!, out var state) && !state.Stopped);
+      run.Frames.Add(frame);
+      for (var i = 0; i < plan.Rules.Count; i++)
       {
+        if (stream.IsDiscarded)
+          yield break;
+        var rule = plan.Rules[i];
         if (!states.TryGetValue(rule.PrimaryProperty!, out var group) || group.Stopped)
           continue;
         if (!BusinessRules.CanRunRule(host.ApplicationContext, rule, executionContext))
           continue;
+
+        var sequential = run.Sequential && IsSequentialAsync(rule);
+        if (sequential)
+        {
+          // the async rules started earlier complete first
+          frame.Index = i;
+          foreach (var pause in WaitAndFold(run))
+            yield return pause;
+          if (stream.IsDiscarded)
+            yield break;
+          if (group.Stopped)
+            continue;
+        }
+
         // implicit short-circuiting
         if (group.AnyRuleBroken && rule.Priority > host.ProcessThroughPriority)
         {
@@ -140,8 +219,26 @@ namespace Csla.Rules
           continue;
         }
 
-        var outcome = host.RunRule(rule, executionContext, onAsyncRuleCompleted);
-        affectedProperties.AddRange(outcome.AffectedProperties);
+        var outcome = host.RunRule(rule, executionContext, onAsyncRuleCompleted, run.Sequential);
+        if (outcome.Run is { IsOwned: true } asyncRun)
+        {
+          if (!sequential)
+          {
+            asyncRun.Group = group;
+            stream.UnfoldedRuns.Add(asyncRun);
+            continue;
+          }
+          if (!asyncRun.IsCompleted)
+          {
+            frame.Index = i + 1;
+            yield return run.Pause([asyncRun]);
+            if (stream.IsDiscarded)
+              yield break;
+          }
+          outcome = asyncRun.Outcome!;
+        }
+
+        stream.AddAffected(outcome.AffectedProperties);
         dirtyProperties.UnionWith(outcome.DirtyProperties);
         if (outcome.HasBrokenError)
           group.AnyRuleBroken = true;
@@ -149,9 +246,384 @@ namespace Csla.Rules
         if (outcome.StopProcessing)
           group.Stopped = true;
       }
+      run.Frames.Remove(frame);
 
+      // Async rules that are not followed by a sequential rule are not folded
+      // here, even if they already completed: they complete as they always
+      // did, whatever the timing.
       foreach (var property in groups)
-        affectedProperties.Add(property.Name);
+        stream.AddAffected(property.Name);
+    }
+
+    /// <summary>
+    /// Applies a completed async rule's outcome to a CheckRules() run.
+    /// </summary>
+    private static void FoldIntoBatch(StreamRun run, AsyncRuleRun asyncRun)
+    {
+      var outcome = asyncRun.Outcome!;
+      if (asyncRun.Group is GroupState group)
+      {
+        if (outcome.HasBrokenError)
+          group.AnyRuleBroken = true;
+        if (outcome.StopProcessing)
+          group.Stopped = true;
+      }
+      run.CurrentDirty?.UnionWith(outcome.DirtyProperties);
+    }
+
+    #endregion
+
+    #region CheckRules(property) and CheckObjectRules() with sequential rules
+
+    // Iterator versions of the LegacyRuleRunner cascade. They run only when
+    // the rules have a sequential async rule; otherwise the base class runs.
+
+    // Async rules still unfolded when a stream ends complete outside it,
+    // through a cascade stream (see BusinessRules.RunCompletionCascade).
+
+    private IEnumerable<RuleStreamPause> RunPropertyRules(StreamRun run, IPropertyInfo property) =>
+      CheckRulesForProperty(run, property, true, RuleContextModes.PropertyChanged);
+
+    private IEnumerable<RuleStreamPause> RunObjectRulesOnly(StreamRun run) =>
+      RunObjectRules(run, RuleContextModes.CheckObjectRules, true, new RunRulesResult([], []));
+
+    /// <summary>
+    /// Runs the rules of the affected properties of an async rule that
+    /// completed after its stream ended, as the legacy completion handler
+    /// does, but waiting at sequential rules.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> RunCompletionCascade(StreamRun run, IRuleContext context)
+    {
+      var frame = new Frame(context.Rule.AffectedProperties);
+      run.Frames.Add(frame);
+      foreach (var pause in CascadeAffected(run, context))
+        yield return pause;
+      run.Frames.Remove(frame);
+    }
+
+    /// <summary>
+    /// Runs the object-level rules.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> RunObjectRules(StreamRun run, RuleContextModes executionContext, bool cascade, RunRulesResult result)
+    {
+      var host = run.Host;
+      var rules = (from r in host.Rules
+                   where r.PrimaryProperty == null
+                     && BusinessRules.CanRunRule(host.ApplicationContext, r, executionContext)
+                   orderby r.Priority
+                   select r).ToList();
+      host.ClearBrokenRules(null);
+      IEnumerable<IPropertyInfo> pending = cascade
+        ? rules.SelectMany(r => r.AffectedProperties)
+        : run.Stream.Kind == RuleStreamKind.AllRules ? host.Rules.Where(r => r.PrimaryProperty != null).SelectMany(r => r.AffectedProperties) : [];
+      var frame = new Frame(pending);
+      run.Frames.Add(frame);
+      foreach (var pause in RunRules(run, rules, false, executionContext, result))
+        yield return pause;
+      if (run.Stream.IsDiscarded)
+        yield break;
+
+      // rerun property level rules for affected properties
+      if (cascade)
+      {
+        var propertiesToRun = new List<IPropertyInfo>();
+        foreach (var item in rules)
+          if (!item.IsAsync || IsSequentialAsync(item))
+            propertiesToRun.AddRange(item.AffectedProperties);
+        foreach (var item in propertiesToRun.Distinct())
+        {
+          var doCascade = host.CascadeOnDirtyProperties && result.DirtyProperties.Any(p => p == item.Name);
+          foreach (var pause in CheckRulesForProperty(run, item, doCascade, executionContext | RuleContextModes.AsAffectedProperty))
+            yield return pause;
+          if (run.Stream.IsDiscarded)
+            yield break;
+        }
+      }
+      run.Frames.Remove(frame);
+    }
+
+    /// <summary>
+    /// Runs the rules for a property and cascades to the properties they affect.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> CheckRulesForProperty(StreamRun run, IPropertyInfo property, bool cascade, RuleContextModes executionMode)
+    {
+      var host = run.Host;
+      var primaryRules = (from r in host.Rules
+                          where ReferenceEquals(r.PrimaryProperty, property)
+                            && BusinessRules.CanRunRule(host.ApplicationContext, r, executionMode)
+                          orderby r.Priority
+                          select r).ToList();
+      var inputRules = (from r in host.Rules
+                        where !ReferenceEquals(r.PrimaryProperty, property)
+                              && r.PrimaryProperty != null
+                              && r.InputProperties != null
+                              && r.InputProperties.Contains(property)
+                        select r).ToList();
+
+      host.ClearBrokenRules(property);
+      var frame = new Frame(primaryRules.SelectMany(r => r.AffectedProperties).Concat(inputRules.Select(r => r.PrimaryProperty!)));
+      run.Frames.Add(frame);
+      var primaryResult = new RunRulesResult([], []);
+      foreach (var pause in RunRules(run, primaryRules, cascade, executionMode, primaryResult))
+        yield return pause;
+      if (run.Stream.IsDiscarded)
+        yield break;
+
+      if (host.CascadeOnDirtyProperties)
+        cascade = cascade || primaryResult.DirtyProperties.Any();
+      if (cascade)
+      {
+        // a sequential rule's affected properties cascade like a sync rule's
+        var propertiesToRun = new List<IPropertyInfo>();
+        foreach (var item in primaryRules)
+          if (!item.IsAsync || IsSequentialAsync(item))
+          {
+            foreach (var p in item.AffectedProperties)
+              if (!ReferenceEquals(property, p))
+                propertiesToRun.Add(p);
+          }
+
+        var dirtyProperties = primaryResult.DirtyProperties;
+        foreach (var r in inputRules)
+          if (!r.CascadeIfDirty || dirtyProperties.Contains(r.PrimaryProperty!.Name))
+            propertiesToRun.Add(r.PrimaryProperty!);
+
+        foreach (var item in propertiesToRun.Distinct())
+        {
+          var doCascade = host.CascadeOnDirtyProperties && primaryResult.DirtyProperties.Any(p => p == item.Name);
+          foreach (var pause in CheckRulesForProperty(run, item, doCascade, executionMode | RuleContextModes.AsAffectedProperty))
+            yield return pause;
+          if (run.Stream.IsDiscarded)
+            yield break;
+        }
+      }
+      run.Frames.Remove(frame);
+
+      // always make sure to add PrimaryProperty
+      run.Stream.AddAffected(property.Name);
+    }
+
+    /// <summary>
+    /// Runs a list of rules for one property (or the object), with short-circuiting.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> RunRules(StreamRun run, List<IBusinessRuleBase> rules, bool cascade, RuleContextModes executionContext, RunRulesResult result)
+    {
+      var host = run.Host;
+      var stream = run.Stream;
+      var onAsyncRuleCompleted = cascade ? AsyncCascadeHandler(host) : null;
+      var group = new GroupState();
+      var frame = new Frame(rules, null);
+      run.Frames.Add(frame);
+      for (var i = 0; i < rules.Count; i++)
+      {
+        if (stream.IsDiscarded)
+          yield break;
+        if (group.Stopped)
+          break;
+        var rule = rules[i];
+        var sequential = IsSequentialAsync(rule);
+        if (sequential)
+        {
+          // the async rules started earlier complete first
+          frame.Index = i;
+          foreach (var pause in WaitAndFold(run))
+            yield return pause;
+          if (stream.IsDiscarded)
+            yield break;
+          if (group.Stopped)
+            break;
+        }
+
+        // implicit short-circuiting
+        if (group.AnyRuleBroken && rule.Priority > host.ProcessThroughPriority)
+          break;
+
+        var outcome = host.RunRule(rule, executionContext, onAsyncRuleCompleted, true);
+        if (outcome.Run is { IsOwned: true } asyncRun)
+        {
+          if (!sequential)
+          {
+            asyncRun.Group = group;
+            asyncRun.Cascade = cascade;
+            stream.UnfoldedRuns.Add(asyncRun);
+            continue;
+          }
+          if (!asyncRun.IsCompleted)
+          {
+            frame.Index = i + 1;
+            yield return run.Pause([asyncRun]);
+            if (stream.IsDiscarded)
+              yield break;
+          }
+          outcome = asyncRun.Outcome!;
+        }
+
+        stream.AddAffected(outcome.AffectedProperties);
+        result.DirtyProperties.AddRange(outcome.DirtyProperties);
+        if (outcome.HasBrokenError)
+          group.AnyRuleBroken = true;
+        // explicit short-circuiting
+        if (outcome.StopProcessing)
+          group.Stopped = true;
+      }
+      run.Frames.Remove(frame);
+    }
+
+    #endregion
+
+    /// <summary>
+    /// Waits until every async rule the stream started and has not folded
+    /// is complete, then folds in their outcomes.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> WaitAndFold(StreamRun run)
+    {
+      var stream = run.Stream;
+      while (stream.UnfoldedRuns.Count > 0)
+      {
+        var runs = stream.UnfoldedRuns.ToList();
+        if (runs.Exists(r => !r.IsCompleted))
+        {
+          yield return run.Pause(runs);
+          if (stream.IsDiscarded)
+            yield break;
+        }
+        stream.UnfoldedRuns.RemoveAll(runs.Contains);
+        foreach (var asyncRun in runs)
+        {
+          if (stream.Kind == RuleStreamKind.AllRules)
+          {
+            FoldIntoBatch(run, asyncRun);
+          }
+          else
+          {
+            foreach (var pause in FoldIntoCascade(run, asyncRun))
+              yield return pause;
+            if (stream.IsDiscarded)
+              yield break;
+          }
+        }
+      }
+    }
+
+    /// <summary>
+    /// Applies a completed async rule's outcome to a CheckRules(property)
+    /// or CheckObjectRules() run: its result short-circuits its property's
+    /// rules, and the rules of its affected properties run, as the legacy
+    /// completion handler runs them.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> FoldIntoCascade(StreamRun run, AsyncRuleRun asyncRun)
+    {
+      // not an iterator: the short-circuit state applies right away
+      var outcome = asyncRun.Outcome!;
+      if (asyncRun.Group is GroupState group)
+      {
+        if (outcome.HasBrokenError)
+          group.AnyRuleBroken = true;
+        if (outcome.StopProcessing)
+          group.Stopped = true;
+      }
+      if (!asyncRun.Cascade || asyncRun.Context == null)
+        return [];
+      return CascadeAffected(run, asyncRun.Context);
+    }
+
+    /// <summary>
+    /// Runs the rules of a completed async rule's affected properties (other
+    /// than its primary property), as the legacy completion handler
+    /// (<see cref="LegacyRuleRunner.AsyncCascadeHandler"/>) does, but waiting
+    /// at sequential rules.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> CascadeAffected(StreamRun run, IRuleContext context)
+    {
+      foreach (var item in context.Rule.AffectedProperties.Distinct().ToList())
+        if (!ReferenceEquals(context.Rule.PrimaryProperty, item))
+        {
+          var doCascade = run.Host.CascadeOnDirtyProperties && context.DirtyProperties != null && context.DirtyProperties.Any(p => p.Name == item.Name);
+          foreach (var pause in CheckRulesForProperty(run, item, doCascade, context.ExecuteContext | RuleContextModes.AsAffectedProperty))
+            yield return pause;
+          if (run.Stream.IsDiscarded)
+            yield break;
+        }
+    }
+
+    /// <summary>
+    /// The state of one stream's run.
+    /// </summary>
+    private sealed class StreamRun
+    {
+      public StreamRun(IRuleRunnerHost host, RuleStream stream, bool sequential)
+      {
+        Host = host;
+        Stream = stream;
+        Sequential = sequential;
+      }
+
+      public IRuleRunnerHost Host { get; }
+
+      public RuleStream Stream { get; }
+
+      /// <summary>
+      /// Gets a value indicating whether the rules have a sequential async
+      /// rule. If not, nothing waits and async rules complete as they always did.
+      /// </summary>
+      public bool Sequential { get; }
+
+      /// <summary>
+      /// Gets or sets the dirty set of the current CheckRules() pass.
+      /// </summary>
+      public HashSet<string>? CurrentDirty { get; set; }
+
+      /// <summary>
+      /// Gets the rule lists in progress, to find the properties whose
+      /// rules have not run yet at a pause.
+      /// </summary>
+      public List<Frame> Frames { get; } = [];
+
+      public RuleStreamPause Pause(List<AsyncRuleRun> waitFor)
+      {
+        var waiting = new List<IPropertyInfo>();
+        foreach (var frame in Frames)
+          foreach (var property in frame.Pending())
+            if (!waiting.Contains(property))
+              waiting.Add(property);
+        return new RuleStreamPause(waitFor, waiting);
+      }
+    }
+
+    /// <summary>
+    /// A rule list in progress, or the properties a step will cascade to.
+    /// </summary>
+    private sealed class Frame
+    {
+      private readonly IReadOnlyList<IBusinessRuleBase>? _rules;
+      private readonly Func<IBusinessRuleBase, bool>? _filter;
+      private readonly IEnumerable<IPropertyInfo>? _properties;
+
+      public Frame(IReadOnlyList<IBusinessRuleBase> rules, Func<IBusinessRuleBase, bool>? filter)
+      {
+        _rules = rules;
+        _filter = filter;
+      }
+
+      public Frame(IEnumerable<IPropertyInfo> properties)
+      {
+        _properties = properties;
+      }
+
+      /// <summary>
+      /// Gets or sets the index of the next rule to run.
+      /// </summary>
+      public int Index { get; set; }
+
+      /// <summary>
+      /// Gets the affected properties of the rules that have not run yet.
+      /// </summary>
+      public IEnumerable<IPropertyInfo> Pending()
+      {
+        if (_properties != null)
+          return _properties;
+        return _rules!.Skip(Index).Where(r => _filter == null || _filter(r)).SelectMany(r => r.AffectedProperties);
+      }
     }
 
     /// <summary>

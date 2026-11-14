@@ -63,6 +63,8 @@ namespace Csla.Generator.AutoImplementProperties.TestObjects
 
 ```
 
+The interface must be declared in the same project as the class. If the type argument isn't such an interface, nothing is generated and analyzer [CSLA0030](../../../../docs/analyzers/CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) reports it.
+
 ## Understanding [CslaImplementProperties]
 
 - **Source Generators:** Introduced in .NET 5, source generators allow for compile-time code generation based on the existing codebase. They are a powerful tool for reducing boilerplate code and automating repetitive coding tasks.

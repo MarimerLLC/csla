@@ -102,6 +102,27 @@ namespace Csla.Rules
     /// </summary>
     public bool Initialized { get; set; }
 
+    // cached for the rule count it was computed for, since Rules is a public list
+    private (int Count, bool Value) _hasSequentialAsyncRules = (-1, false);
+
+    /// <summary>
+    /// Gets a value indicating whether the rules include a sequential async rule.
+    /// </summary>
+    internal bool HasSequentialAsyncRules
+    {
+      get
+      {
+        var cached = _hasSequentialAsyncRules;
+        var count = Rules.Count;
+        if (cached.Count != count)
+        {
+          cached = (count, Rules.Exists(r => r.IsAsync && r.IsSequential));
+          _hasSequentialAsyncRules = cached;
+        }
+        return cached.Value;
+      }
+    }
+
     private BusinessRuleManager()
     {
       Rules = [];

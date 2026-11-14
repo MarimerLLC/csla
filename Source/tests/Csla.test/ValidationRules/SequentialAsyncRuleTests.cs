@@ -455,6 +455,7 @@ namespace Csla.Test.ValidationRules
     {
       var obj = Create("unsettled");
       obj.CascadeOnDirtyProperties = true;
+      obj.Outcomes.Enqueue("Lookup", "error");
       obj.CheckRulesNow();
       obj.IsPropertyBusy(SequentialRuleRoot.CProperty).Should().BeTrue();
       obj.Outcomes.Enqueue("Lookup", "sync");
@@ -464,10 +465,42 @@ namespace Csla.Test.ValidationRules
       act.Should().Throw<InvalidOperationException>();
       obj.IsPropertyBusy(SequentialRuleRoot.CProperty).Should().BeFalse();
 
-      // the discarded run's lookup completes: its result is dropped and the object is idle
+      // the discarded run's lookup completes: nothing reran it, so its error applies
       obj.Gates.Release("Lookup");
 
+      obj.BrokenRulesCollection.ErrorCount.Should().Be(1);
       obj.IsBusy.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task ExceptionAfterAPause_IsRethrownByCheckRulesAsync_AndReleasesBusyState()
+    {
+      var obj = Create("unsettled");
+      obj.CascadeOnDirtyProperties = true;
+      var task = obj.CheckRulesForTestAsync();
+      obj.IsPropertyBusy(SequentialRuleRoot.CProperty).Should().BeTrue();
+
+      // the rules after the lookup never settle: the resumed run throws
+      obj.Gates.Release("Lookup");
+
+      var act = async () => await task;
+      await act.Should().ThrowAsync<InvalidOperationException>();
+      obj.IsPropertyBusy(SequentialRuleRoot.CProperty).Should().BeFalse();
+      obj.IsBusy.Should().BeFalse();
+    }
+
+    [TestMethod]
+    public async Task CheckRulesAsync_SynchronousFailure_FaultsTheTask()
+    {
+      var obj = Create("unsettled");
+      obj.CascadeOnDirtyProperties = true;
+      obj.Outcomes.Enqueue("Lookup", "sync");
+
+      // the exception is in the returned task, not thrown by the call
+      var task = obj.CheckRulesForTestAsync();
+
+      var act = async () => await task;
+      await act.Should().ThrowAsync<InvalidOperationException>();
     }
 
     [TestMethod]

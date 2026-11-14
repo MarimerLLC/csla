@@ -139,6 +139,13 @@ namespace Csla.Rules
     }
 
     /// <summary>
+    /// Gets or sets a value indicating whether the results of the async
+    /// rules of a discarded stream still apply, because the run that
+    /// replaced it failed and nothing reruns them.
+    /// </summary>
+    public bool KeepsResults { get; set; }
+
+    /// <summary>
     /// Gets or sets a value indicating whether a CheckRulesAsync call
     /// awaits the stream.
     /// </summary>
@@ -315,11 +322,6 @@ namespace Csla.Rules
     /// outside its stream, through <see cref="OnCompleted"/>.
     /// </summary>
     public bool IsDetached { get; set; }
-
-    /// <summary>
-    /// Gets or sets a value indicating whether the stream has applied the outcome.
-    /// </summary>
-    public bool IsFolded { get; set; }
 
     /// <summary>
     /// Gets or sets the short-circuit state the outcome applies to.

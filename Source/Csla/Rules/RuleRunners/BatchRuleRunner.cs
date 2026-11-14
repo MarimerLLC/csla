@@ -71,7 +71,7 @@ namespace Csla.Rules
     /// <inheritdoc />
     public override IEnumerable<RuleStreamPause> Run(IRuleRunnerHost host, RuleStream stream)
     {
-      var sequential = HasSequentialAsyncRule(host.Rules);
+      var sequential = host.HasSequentialAsyncRules;
       switch (stream.Kind)
       {
         case RuleStreamKind.AllRules:
@@ -83,14 +83,6 @@ namespace Csla.Rules
         default:
           return sequential ? RunObjectRulesOnly(new StreamRun(host, stream, true)) : base.Run(host, stream);
       }
-    }
-
-    private static bool HasSequentialAsyncRule(IReadOnlyList<IBusinessRuleBase> rules)
-    {
-      for (var i = 0; i < rules.Count; i++)
-        if (IsSequentialAsync(rules[i]))
-          return true;
-      return false;
     }
 
     private static bool IsSequentialAsync(IBusinessRuleBase rule) => rule.IsAsync && rule.IsSequential;
@@ -243,7 +235,6 @@ namespace Csla.Rules
             if (stream.IsDiscarded)
               yield break;
           }
-          asyncRun.IsFolded = true;
           outcome = asyncRun.Outcome!;
         }
 
@@ -305,15 +296,8 @@ namespace Csla.Rules
     {
       var frame = new Frame(context.Rule.AffectedProperties);
       run.Frames.Add(frame);
-      foreach (var item in context.Rule.AffectedProperties.Distinct().ToList())
-        if (!ReferenceEquals(context.Rule.PrimaryProperty, item))
-        {
-          var doCascade = run.Host.CascadeOnDirtyProperties && context.DirtyProperties != null && context.DirtyProperties.Any(p => p.Name == item.Name);
-          foreach (var pause in CheckRulesForProperty(run, item, doCascade, context.ExecuteContext | RuleContextModes.AsAffectedProperty))
-            yield return pause;
-          if (run.Stream.IsDiscarded)
-            yield break;
-        }
+      foreach (var pause in CascadeAffected(run, context))
+        yield return pause;
       run.Frames.Remove(frame);
     }
 
@@ -471,7 +455,6 @@ namespace Csla.Rules
             if (stream.IsDiscarded)
               yield break;
           }
-          asyncRun.IsFolded = true;
           outcome = asyncRun.Outcome!;
         }
 
@@ -507,7 +490,6 @@ namespace Csla.Rules
         stream.UnfoldedRuns.RemoveAll(runs.Contains);
         foreach (var asyncRun in runs)
         {
-          asyncRun.IsFolded = true;
           if (stream.Kind == RuleStreamKind.AllRules)
           {
             FoldIntoBatch(run, asyncRun);
@@ -531,6 +513,7 @@ namespace Csla.Rules
     /// </summary>
     private IEnumerable<RuleStreamPause> FoldIntoCascade(StreamRun run, AsyncRuleRun asyncRun)
     {
+      // not an iterator: the short-circuit state applies right away
       var outcome = asyncRun.Outcome!;
       if (asyncRun.Group is GroupState group)
       {
@@ -540,10 +523,19 @@ namespace Csla.Rules
           group.Stopped = true;
       }
       if (!asyncRun.Cascade || asyncRun.Context == null)
-        yield break;
+        return [];
+      return CascadeAffected(run, asyncRun.Context);
+    }
 
-      var context = asyncRun.Context;
-      foreach (var item in context.Rule.AffectedProperties.Distinct())
+    /// <summary>
+    /// Runs the rules of a completed async rule's affected properties (other
+    /// than its primary property), as the legacy completion handler
+    /// (<see cref="LegacyRuleRunner.AsyncCascadeHandler"/>) does, but waiting
+    /// at sequential rules.
+    /// </summary>
+    private IEnumerable<RuleStreamPause> CascadeAffected(StreamRun run, IRuleContext context)
+    {
+      foreach (var item in context.Rule.AffectedProperties.Distinct().ToList())
         if (!ReferenceEquals(context.Rule.PrimaryProperty, item))
         {
           var doCascade = run.Host.CascadeOnDirtyProperties && context.DirtyProperties != null && context.DirtyProperties.Any(p => p.Name == item.Name);

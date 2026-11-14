@@ -29,6 +29,12 @@ namespace Csla.Rules
     IReadOnlyList<IBusinessRuleBase> Rules { get; }
 
     /// <summary>
+    /// Gets a value indicating whether <see cref="Rules"/> has a
+    /// sequential async rule.
+    /// </summary>
+    bool HasSequentialAsyncRules { get; }
+
+    /// <summary>
     /// Gets a value indicating whether rules should cascade when a rule
     /// changes a property value through its output values.
     /// </summary>

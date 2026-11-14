@@ -685,15 +685,16 @@ namespace Csla.Rules
     /// property.
     /// </returns>
     /// <exception cref="System.ArgumentNullException">If property is null</exception>
-    public Task<List<string>> CheckRulesAsync(IPropertyInfo property, TimeSpan timeout)
+    public async Task<List<string>> CheckRulesAsync(IPropertyInfo property, TimeSpan timeout)
     {
+      // async, so exceptions fault the returned task
       if (property == null)
         throw new ArgumentNullException(nameof(property));
       if (_suppressRuleChecking)
-        return AwaitRulesAsync(null, [], timeout);
+        return await AwaitRulesAsync(null, [], timeout);
 
       var stream = CheckRulesCore(RuleStreamKind.Property, property, awaited: true, out var affectedProperties);
-      return AwaitRulesAsync(stream, affectedProperties, timeout);
+      return await AwaitRulesAsync(stream, affectedProperties, timeout);
     }
 
     /// <summary>
@@ -732,13 +733,14 @@ namespace Csla.Rules
     /// The PropertyChanged event should be raised for each affected
     /// property. Does not return until all async rules are complete.
     /// </returns>
-    public Task<List<string>> CheckRulesAsync(TimeSpan timeout)
+    public async Task<List<string>> CheckRulesAsync(TimeSpan timeout)
     {
+      // async, so exceptions fault the returned task
       if (_suppressRuleChecking)
-        return AwaitRulesAsync(null, [], timeout);
+        return await AwaitRulesAsync(null, [], timeout);
 
       var stream = CheckRulesCore(RuleStreamKind.AllRules, null, awaited: true, out var affectedProperties);
-      return AwaitRulesAsync(stream, affectedProperties, timeout);
+      return await AwaitRulesAsync(stream, affectedProperties, timeout);
     }
 
     /// <summary>
@@ -927,6 +929,8 @@ namespace Csla.Rules
 
     IReadOnlyList<IBusinessRuleBase> IRuleRunnerHost.Rules => TypeRules.Rules;
 
+    bool IRuleRunnerHost.HasSequentialAsyncRules => TypeRules.HasSequentialAsyncRules;
+
     void IRuleRunnerHost.ClearBrokenRules(IPropertyInfo? property) => BrokenRules.ClearRules(property);
 
     void IRuleRunnerHost.ClearBrokenRules(IPropertyInfo? property, ICollection<string> keepRuleNames) => BrokenRules.ClearRules(property, keepRuleNames);
@@ -956,8 +960,8 @@ namespace Csla.Rules
           lock (_syncRoot)
           {
             // a newer run replaced the stream that owns this rule and reruns
-            // the rule: its results are stale
-            if (run != null && run.IsOwned && run.Stream.IsDiscarded)
+            // the rule: its results are stale (unless the newer run failed)
+            if (run != null && run.IsOwned && run.Stream.IsDiscarded && !run.Stream.KeepsResults)
             {
               run.Complete(r, RuleRunOutcome.Pending);
               CompleteAsyncRule(r.Rule, []);
@@ -1127,7 +1131,10 @@ namespace Csla.Rules
     private RuleStream StartStream(RuleStreamKind kind, IPropertyInfo? root, bool awaited, IRuleContext? completedContext = null, RuleStream? parent = null)
     {
       var runner = RuleRunner;
-      var stream = new RuleStream(this, kind, root, runner.CollectsAsyncResults, completedContext, parent) { HasAwaiter = awaited };
+      // only an awaited stream (or a cascade collecting for one) needs the
+      // affected properties of its async rules
+      var collects = runner.CollectsAsyncResults && (awaited || parent != null);
+      var stream = new RuleStream(this, kind, root, collects, completedContext, parent) { HasAwaiter = awaited };
       stream.Steps = runner.Run(this, stream).GetEnumerator();
       DriveStream(stream);
       return stream;
@@ -1222,7 +1229,7 @@ namespace Csla.Rules
         stream.IsFinished = true;
         stream.CurrentPause = null;
         _streams?.Remove(stream);
-        if (!stream.IsDiscarded)
+        if (!stream.IsDiscarded || stream.KeepsResults)
         {
           foreach (var run in stream.UnfoldedRuns)
           {
@@ -1295,6 +1302,9 @@ namespace Csla.Rules
       entries.AddRange(stream.WaitEntries);
       stream.WaitEntries = [];
       stream.CurrentPause = null;
+      // a running stream is not waiting: a nested run on this thread must
+      // not discard it (DriveStream adds it again if it pauses)
+      _streams?.Remove(stream);
       var start = stream.RunnerAffectedCount;
       System.Runtime.ExceptionServices.ExceptionDispatchInfo? error = null;
       try
@@ -1331,7 +1341,9 @@ namespace Csla.Rules
         return [];
       if (!run.IsOwned)
         return InvokeInStream(run.Stream, run.OnCompleted, context);
-      var cascade = StartStream(RuleStreamKind.Cascade, null, awaited: false, context, run.Stream);
+      // collect into the root stream, and only if it collects (CheckRulesAsync awaits it)
+      var collector = run.Stream.Parent ?? run.Stream;
+      var cascade = StartStream(RuleStreamKind.Cascade, null, awaited: false, context, collector.CollectsAsyncResults ? collector : null);
       return cascade.GetRunnerAffected().Distinct().ToList();
     }
 
@@ -1400,6 +1412,9 @@ namespace Csla.Rules
       {
         foreach (var stream in discarded)
         {
+          // nothing reruns the rules of a failed replacement: keep their results
+          if (!restart)
+            stream.KeepsResults = true;
           notify.AddRange(FinishStream(stream));
           var entries = stream.WaitEntries;
           stream.WaitEntries = [];

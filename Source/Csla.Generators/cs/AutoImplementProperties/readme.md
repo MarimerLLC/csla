@@ -63,7 +63,7 @@ namespace Csla.Generator.AutoImplementProperties.TestObjects
 
 ```
 
-The interface must be declared in the same project as the class. If the type argument isn't such an interface, nothing is generated and analyzer [CSLA0030](../../../../docs/analyzers/CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) reports it.
+The class (or struct) must be partial, and the interface must be declared in the same project, in any file. Otherwise nothing is generated and analyzer [CSLA0030](../../../../docs/analyzers/CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) reports it.
 
 ## Understanding [CslaImplementProperties]
 

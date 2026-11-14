@@ -381,4 +381,7 @@
   <data name="ImplementPropertiesInterfaceAnalyzer_NotInSource" xml:space="preserve">
     <value>the interface '{0}' is not declared in this project</value>
   </data>
+  <data name="ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct" xml:space="preserve">
+    <value>it is not a partial class or struct</value>
+  </data>
 </root>

@@ -96,6 +96,45 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    [DataRow("public class TestClass : Csla.BusinessBase<TestClass>")]
+    [DataRow("public partial record TestClass")]
+    [DataRow("public partial record struct TestClass")]
+    public async Task TargetIsNotPartialClassOrStruct(string declaration)
+    {
+      var code = $$"""
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        {{declaration}}
+        {
+        }
+
+        public interface ITestClass
+        {
+          string Name { get; set; }
+        }
+        """;
+
+      await AssertDiagnosticAsync(code, "Properties are not generated for 'TestClass' because it is not a partial class or struct");
+    }
+
+    [TestMethod]
+    public async Task PartialStructWithInterfaceDeclaredInSource()
+    {
+      var code = """
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        public partial struct TestStruct
+        {
+        }
+
+        public interface ITestClass
+        {
+          string Name { get; set; }
+        }
+        """;
+
+      await TestHelpers.RunAnalysisAsync<ImplementPropertiesInterfaceAnalyzer>(code, []);
+    }
+
+    [TestMethod]
     public async Task UnresolvedTypeArgument()
     {
       var code = """

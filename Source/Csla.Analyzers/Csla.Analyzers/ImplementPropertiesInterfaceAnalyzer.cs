@@ -1,5 +1,6 @@
 using Csla.Analyzers.Properties;
 using Microsoft.CodeAnalysis;
+using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using System.Collections.Immutable;
@@ -7,9 +8,9 @@ using System.Collections.Immutable;
 namespace Csla.Analyzers
 {
   /// <summary>
-  /// Reports a <c>[CslaImplementPropertiesInterface&lt;T&gt;]</c> attribute whose type
-  /// argument is not an interface declared in the same project, so the source
-  /// generator can't implement its properties (CSLA0030).
+  /// Reports a <c>[CslaImplementPropertiesInterface&lt;T&gt;]</c> attribute that the source
+  /// generator can't implement properties for, because it isn't on a partial class or
+  /// struct, or its type argument is not an interface declared in the same project (CSLA0030).
   /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class ImplementPropertiesInterfaceAnalyzer
@@ -60,22 +61,36 @@ namespace Csla.Analyzers
         if (typeArgument is null || typeArgument.TypeKind == TypeKind.Error)
           continue;
 
-        string? reason = null;
-        if (typeArgument.TypeKind != TypeKind.Interface)
-          reason = nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotInterface);
+        var attributeSyntax = attribute.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken);
+        var typeArgumentName = typeArgument.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
+        LocalizableResourceString? reason = null;
+        if (attributeSyntax?.Parent?.Parent is TypeDeclarationSyntax declaration && !IsGeneratedTarget(declaration))
+          reason = Reason(nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct));
+        else if (typeArgument.TypeKind != TypeKind.Interface)
+          reason = Reason(nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotInterface), typeArgumentName);
         else if (!IsDeclaredInCompilation(typeArgument, context.Compilation, context.CancellationToken))
-          reason = nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotInSource);
+          reason = Reason(nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotInSource), typeArgumentName);
 
         if (reason is null)
           continue;
 
-        var typeArgumentName = typeArgument.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
-        var location = attribute.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken).GetLocation() ?? type.Locations[0];
-        context.ReportDiagnostic(Diagnostic.Create(rule, location,
-          type.Name,
-          new LocalizableResourceString(reason, Resources.ResourceManager, typeof(Resources), typeArgumentName)));
+        var location = attributeSyntax?.GetLocation() ?? type.Locations[0];
+        context.ReportDiagnostic(Diagnostic.Create(rule, location, type.Name, reason));
       }
     }
+
+    private static LocalizableResourceString Reason(string name, params string[] arguments)
+      => new(name, Resources.ResourceManager, typeof(Resources), arguments);
+
+    // These rules mirror what IncrementalAutoImplementInterfacePartialsGenerator and
+    // TypeDefinitionExtractor.ExtractTypeDefinitionForInterfaces accept; keep them in step.
+
+    /// <summary>
+    /// The generator only implements properties on a partial class or struct.
+    /// </summary>
+    private static bool IsGeneratedTarget(TypeDeclarationSyntax declaration)
+      => declaration is ClassDeclarationSyntax or StructDeclarationSyntax
+        && declaration.Modifiers.Any(SyntaxKind.PartialKeyword);
 
     /// <summary>
     /// The generator reads the interface's properties from its declaration, so it

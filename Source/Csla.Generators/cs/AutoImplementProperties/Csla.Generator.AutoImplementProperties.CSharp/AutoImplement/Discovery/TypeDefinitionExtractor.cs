@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="TypeDefinitionExtractor.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -33,7 +33,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       }
 
       // The properties are read from the interface's source declaration, which must be
-      // in this compilation so the semantic model can bind it
+      // in this compilation so it can be bound. ImplementPropertiesInterfaceAnalyzer (CSLA0030)
+      // in Csla.Analyzers reports the cases this rejects; keep the two in step.
       var compilation = extractionContext.SemanticModel.Compilation;
       var interfaceDeclarationSyntax = namedTypeSymbol.DeclaringSyntaxReferences
           .Where(r => compilation.ContainsSyntaxTree(r.SyntaxTree))
@@ -47,7 +48,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       }
 
       var extractedTypeDefinition = ExtractTypeDefinition(extractionContext, typeDeclarationSyntax);
-      foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, interfaceDeclarationSyntax))
+
+      // The interface may be declared in another file, so bind it with its own tree's semantic model
+      var interfaceContext = new DefinitionExtractionContext(
+        compilation.GetSemanticModel(interfaceDeclarationSyntax.SyntaxTree), extractionContext.AddAttributes, extractionContext.FilterPartialProperties);
+      foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(interfaceContext, interfaceDeclarationSyntax))
       {
         if (!propertyDefinition.Modifiers.Any())
         {

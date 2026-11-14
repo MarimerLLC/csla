@@ -854,5 +854,14 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_NotInSource", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to it is not a partial class or struct.
+        /// </summary>
+        internal static string ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct {
+            get {
+                return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct", resourceCulture);
+            }
+        }
     }
 }

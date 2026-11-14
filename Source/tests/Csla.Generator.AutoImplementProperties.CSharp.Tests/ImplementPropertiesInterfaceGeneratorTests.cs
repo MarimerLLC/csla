@@ -117,6 +117,130 @@ namespace Csla.Generator.Tests
     }
 
     [TestMethod]
+    public void InterfaceDeclaredInAnotherFileGeneratesSameCode()
+    {
+      var classSource = """
+        namespace Test;
+
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        public partial class TestClass : Csla.BusinessBase<TestClass>
+        {
+        }
+        """;
+      var interfaceSource = $$"""
+        using System.ComponentModel;
+
+        namespace Test;
+
+        public partial class TestClass
+        {
+          private interface ITestClass
+          {
+        {{InterfaceMembers}}
+          }
+        }
+        """;
+
+      var expected = Generate(NestedInterfaceSource("CslaImplementPropertiesInterface<ITestClass>"));
+
+      Generate(classSource, interfaceSource).Should().Be(expected);
+    }
+
+    // Attribute arguments are copied to the generated property, which is in another file
+    // without the interface file's using directives, so the names in them must be qualified.
+    [TestMethod]
+    public async Task MemberAttributeArgumentsAreQualified()
+    {
+      var attributes = """
+        using System;
+
+        namespace Test.Attributes
+        {
+          [AttributeUsage(AttributeTargets.Property)]
+          public class InfoAttribute : Attribute
+          {
+            public InfoAttribute() { }
+            public InfoAttribute(string name, int order = 0) { }
+            public Type? ResourceType { get; set; }
+            public string? ResourceName { get; set; }
+            public int Limit { get; set; }
+            public Mode Mode { get; set; }
+          }
+
+          public enum Mode { Slow, Fast }
+
+          public static class Limits
+          {
+            public const int Max = 50;
+          }
+
+          public class Strings
+          {
+            public static string CustomerName => "";
+          }
+        }
+        """;
+      var source = """
+        using System.Collections.Generic;
+        using Test.Attributes;
+
+        namespace Test;
+
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        public partial class TestClass : Csla.BusinessBase<TestClass>
+        {
+          private interface ITestClass
+          {
+            const int MaxLength = 20;
+
+            [Info(ResourceType = typeof(Strings), ResourceName = nameof(Strings.CustomerName))]
+            string Name { get; set; }
+            [Info(Limit = Limits.Max, Mode = Mode.Fast)]
+            int Count { get; set; }
+            [Info(Limit = MaxLength, ResourceType = typeof(List<>))]
+            string Code { get; set; }
+            [Info(order: 2, name: nameof(Code))]
+            string Ordered { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source, [attributes]);
+    }
+
+    [TestMethod]
+    public void InterfaceDeclaredInReferencedCompilationGeneratesNothing()
+    {
+      // In the IDE a project reference is a compilation reference, whose symbols have
+      // syntax in the other compilation; the generator can't bind that syntax.
+      var library = TestCompilation.Create(["""
+        namespace Library;
+
+        public interface ICustomer
+        {
+          string Name { get; set; }
+        }
+        """]).WithAssemblyName("Library");
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementPropertiesInterface<Library.ICustomer>]
+        public partial class TestClass : Csla.BusinessBase<TestClass>
+        {
+        }
+        """;
+      var compilation = TestCompilation.Create([source]).AddReferences(library.ToMetadataReference());
+
+      var result = CSharpGeneratorDriver.Create(new IncrementalAutoImplementInterfacePartialsGenerator().AsSourceGenerator())
+        .RunGenerators(compilation)
+        .GetRunResult();
+
+      result.Results.Should().ContainSingle().Which.Exception.Should().BeNull();
+      result.Diagnostics.Should().BeEmpty();
+      result.GeneratedTrees.Should().BeEmpty();
+    }
+
+    [TestMethod]
     [DataRow("NotAnInterface", "public class NotAnInterface { }")]
     [DataRow("System.IServiceProvider", "")]
     public void TypeArgumentWithoutSourceInterfaceGeneratesNothing(string typeArgument, string declaration)
@@ -144,15 +268,15 @@ namespace Csla.Generator.Tests
     /// Runs the generator and returns the text of the one file it generates,
     /// checking that the result compiles.
     /// </summary>
-    private static string Generate(string source)
+    private static string Generate(params string[] sources)
     {
-      var compilation = TestCompilation.Create([source]);
+      var compilation = TestCompilation.Create(sources);
       CSharpGeneratorDriver.Create(new IncrementalAutoImplementInterfacePartialsGenerator().AsSourceGenerator())
         .RunGeneratorsAndUpdateCompilation(compilation, out var outputCompilation, out var diagnostics);
 
       diagnostics.Should().BeEmpty();
       outputCompilation.GetDiagnostics().Should().BeEmpty();
-      outputCompilation.SyntaxTrees.Should().HaveCount(2, "the generator should add one file");
+      outputCompilation.SyntaxTrees.Should().HaveCount(sources.Length + 1, "the generator should add one file");
       return outputCompilation.SyntaxTrees.Last().ToString();
     }
 

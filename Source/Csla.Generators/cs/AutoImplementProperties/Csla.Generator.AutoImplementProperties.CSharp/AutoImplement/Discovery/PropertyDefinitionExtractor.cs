@@ -116,32 +116,29 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       {
         return attributes;
       }
+      // The attribute is copied into a generated file that doesn't have the using directives
+      // of the interface's file, so its type and the names in its arguments are fully qualified
+      var qualifier = new AttributeArgumentQualifier(extractionContext.SemanticModel);
       foreach (var attributeList in propertyDeclaration.AttributeLists)
       {
         foreach (var attribute in attributeList.Attributes)
         {
           ExtractedAttributeDefinition attributeDefinition = new ExtractedAttributeDefinition
           {
-            AttributeName = attribute.Name.ToString()
+            AttributeName = GetAttributeTypeName(attribute, extractionContext.SemanticModel)
           };
-          var namespaceSymbol = extractionContext.SemanticModel.GetSymbolInfo(attribute.Name).Symbol?.ContainingNamespace;
-          if (namespaceSymbol != null)
-          {
-            var namespaceName = namespaceSymbol.ToDisplayString();
-            attributeDefinition.AttributeName = $"{namespaceName}.{attributeDefinition.AttributeName}";
-
-            attributeDefinition.AttributeNamespace = namespaceName;
-          }
           // Add named properties
           foreach (var argument in attribute.ArgumentList?.Arguments ?? [])
           {
+            var expression = qualifier.Qualify(argument.Expression);
             if (argument.NameEquals != null)
             {
-              attributeDefinition.NamedProperties.Add(argument.NameEquals.Name.ToString(), argument.Expression.ToString());
+              attributeDefinition.NamedProperties.Add(argument.NameEquals.Name.ToString(), expression);
             }
             else
             {
-              attributeDefinition.ConstructorArguments.Add(argument.Expression.ToString());
+              // Keep a named constructor argument's name, since it can be out of order
+              attributeDefinition.ConstructorArguments.Add(argument.NameColon is null ? expression : $"{argument.NameColon.Name}: {expression}");
             }
           }
 
@@ -151,6 +148,20 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
       return attributes;
     }
+
+    /// <summary>
+    /// Get the fully qualified name of an attribute's type, however its name is written
+    /// (short, namespace-qualified, aliased or nested)
+    /// </summary>
+    private static string GetAttributeTypeName(AttributeSyntax attribute, SemanticModel semanticModel)
+    {
+      var symbolInfo = semanticModel.GetSymbolInfo(attribute);
+      // When the arguments don't match a constructor there is no symbol, but the
+      // candidates still identify the attribute type
+      var constructor = symbolInfo.Symbol ?? symbolInfo.CandidateSymbols.FirstOrDefault();
+      return constructor?.ContainingType?.ToDisplayString(SymbolDisplayFormat.FullyQualifiedFormat) ?? attribute.Name.ToString();
+    }
+
     /// <summary>
     /// Determines whether the property is partial.
     /// </summary>

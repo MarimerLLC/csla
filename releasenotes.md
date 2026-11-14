@@ -123,6 +123,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 * [#4891](https://github.com/MarimerLLC/csla/issues/4891) Remove the unusable parameterless constructor of `LazySingleton<T>` ([#4944](https://github.com/MarimerLLC/csla/pull/4944))
 * [#4996](https://github.com/MarimerLLC/csla/issues/4996) A create or fetch with a single `null` criteria value works with a remote data portal; the `NullCriteria` constructor is now public so the server can deserialize it ([#4997](https://github.com/MarimerLLC/csla/pull/4997))
+* [#5024](https://github.com/MarimerLLC/csla/issues/5024) `[CslaImplementPropertiesInterface<T>]` generates properties when the attribute name is namespace-qualified (`Csla.`, `global::Csla.`) or aliased; before, it generated an empty class. The interface can be declared in a different file from the class; before, that made the generator fail. When the attribute isn't on a partial class or struct, or `T` isn't an interface declared in the same project, nothing is generated and the new analyzer CSLA0030 reports it. Attributes on the interface's properties are copied with their type and the names in their arguments fully qualified, so namespace-qualified, aliased, nested and generic attribute types and arguments such as `typeof(Strings)` that rely on the interface file's `using` directives work; before, a namespace-qualified attribute was emitted with its namespace twice ([#5026](https://github.com/MarimerLLC/csla/pull/5026))
 
 **Security**
 

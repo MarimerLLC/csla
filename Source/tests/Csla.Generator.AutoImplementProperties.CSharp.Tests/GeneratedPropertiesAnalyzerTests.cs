@@ -62,12 +62,9 @@ namespace Csla.Generator.Tests
     public async Task GeneratedInterfacePropertiesHaveNoCsla0007(string baseClass, string additionalSource)
     {
       var source = $$"""
-        using Csla;
-
         namespace Test;
 
-        // The generator only recognizes the unqualified attribute name.
-        [CslaImplementPropertiesInterface<ITestClass>]
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
         public partial class TestClass : {{baseClass}}
         {
           private interface ITestClass

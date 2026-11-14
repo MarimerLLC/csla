@@ -217,7 +217,9 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(IgnoredPropertySource(baseType));
     }
 
-    // The property methods come from the CSLA base class inherited through intermediate base classes
+    // The property methods come from the CSLA base class inherited through intermediate base classes.
+    // BusinessDocumentBase inherits BusinessBase and uses its property methods, so that row only
+    // checks that its subclasses get properties, not which of the two the walk stopped at.
     [TestMethod]
     [DataRow("ReadOnlyBase")]
     [DataRow("BusinessDocumentBase")]
@@ -300,7 +302,7 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
 
-    [TestMethod("A class whose base class only has a CSLA base class's name gets no properties generated.")]
+    [TestMethod("A class whose base class only has a CSLA base class's name gets no file generated.")]
     public void BaseClassOutsideCslaGeneratesNoProperties()
     {
       var source = """
@@ -325,8 +327,9 @@ namespace Csla.Generator.Tests
         .RunGenerators(TestCompilation.Create([source]))
         .GetRunResult();
 
+      result.Results.Should().ContainSingle().Which.Exception.Should().BeNull();
       result.Diagnostics.Should().BeEmpty();
-      result.GeneratedTrees.Select(tree => tree.ToString()).Should().NotContain(text => text.Contains("RegisterProperty"));
+      result.GeneratedTrees.Should().BeEmpty();
     }
 
     [TestMethod("Pipeline stages are cacheable")]

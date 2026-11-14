@@ -8,15 +8,23 @@ using System.Collections.Immutable;
 namespace Csla.Analyzers
 {
   /// <summary>
-  /// Reports a <c>[CslaImplementPropertiesInterface&lt;T&gt;]</c> attribute that the source
-  /// generator can't implement properties for, because it isn't on a partial class or
-  /// struct, or its type argument is not an interface declared in the same project (CSLA0030).
+  /// Reports a <c>[CslaImplementProperties]</c> or <c>[CslaImplementPropertiesInterface&lt;T&gt;]</c>
+  /// attribute that the source generator can't implement properties for, because it isn't on
+  /// a partial class or struct, the type doesn't inherit a supported CSLA base class, or the
+  /// interface attribute's type argument is not an interface declared in the same project (CSLA0030).
   /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class ImplementPropertiesInterfaceAnalyzer
     : DiagnosticAnalyzer
   {
     private const string AttributeMetadataName = "Csla.CslaImplementPropertiesInterfaceAttribute`1";
+    private const string PropertiesAttributeMetadataName = "Csla.CslaImplementPropertiesAttribute";
+
+    // The base classes in the Csla namespace whose properties the generator implements
+    // (BusinessDocumentBase inherits BusinessBase); keep in step with CslaBaseClasses in
+    // Csla.Generator.AutoImplementProperties.CSharp
+    private static readonly ImmutableHashSet<string> SupportedBaseClassNames =
+      ImmutableHashSet.Create("BusinessBase", "ReadOnlyBase", "CommandBase");
 
     private static readonly DiagnosticDescriptor rule =
       new(
@@ -41,35 +49,42 @@ namespace Csla.Analyzers
       context.RegisterCompilationStartAction(startContext =>
       {
         var attributeType = startContext.Compilation.GetTypeByMetadataName(AttributeMetadataName);
-        if (attributeType is null)
+        var propertiesAttributeType = startContext.Compilation.GetTypeByMetadataName(PropertiesAttributeMetadataName);
+        if (attributeType is null && propertiesAttributeType is null)
           return;
 
-        startContext.RegisterSymbolAction(c => AnalyzeType(c, attributeType), SymbolKind.NamedType);
+        startContext.RegisterSymbolAction(c => AnalyzeType(c, attributeType, propertiesAttributeType), SymbolKind.NamedType);
       });
     }
 
-    private static void AnalyzeType(SymbolAnalysisContext context, INamedTypeSymbol attributeType)
+    private static void AnalyzeType(SymbolAnalysisContext context, INamedTypeSymbol? attributeType, INamedTypeSymbol? propertiesAttributeType)
     {
       var type = (INamedTypeSymbol)context.Symbol;
       foreach (var attribute in type.GetAttributes())
       {
-        if (!SymbolEqualityComparer.Default.Equals(attribute.AttributeClass?.OriginalDefinition, attributeType))
+        var isInterfaceAttribute = attributeType is not null
+          && SymbolEqualityComparer.Default.Equals(attribute.AttributeClass?.OriginalDefinition, attributeType);
+        var isPropertiesAttribute = propertiesAttributeType is not null
+          && SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, propertiesAttributeType);
+        if (!isInterfaceAttribute && !isPropertiesAttribute)
           continue;
 
         var typeArgument = attribute.AttributeClass!.TypeArguments.FirstOrDefault();
         // An unresolved type argument already has a compiler error
-        if (typeArgument is null || typeArgument.TypeKind == TypeKind.Error)
+        if (isInterfaceAttribute && (typeArgument is null || typeArgument.TypeKind == TypeKind.Error))
           continue;
 
         var attributeSyntax = attribute.ApplicationSyntaxReference?.GetSyntax(context.CancellationToken);
-        var typeArgumentName = typeArgument.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat);
+        var typeArgumentName = typeArgument?.ToDisplayString(SymbolDisplayFormat.CSharpErrorMessageFormat) ?? string.Empty;
         LocalizableResourceString? reason = null;
         if (attributeSyntax?.Parent?.Parent is TypeDeclarationSyntax declaration && !IsGeneratedTarget(declaration))
           reason = Reason(nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct));
-        else if (typeArgument.TypeKind != TypeKind.Interface)
+        else if (isInterfaceAttribute && typeArgument!.TypeKind != TypeKind.Interface)
           reason = Reason(nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotInterface), typeArgumentName);
-        else if (!IsDeclaredInCompilation(typeArgument, context.Compilation, context.CancellationToken))
+        else if (isInterfaceAttribute && !IsDeclaredInCompilation(typeArgument!, context.Compilation, context.CancellationToken))
           reason = Reason(nameof(Resources.ImplementPropertiesInterfaceAnalyzer_NotInSource), typeArgumentName);
+        else if (!InheritsSupportedBaseClass(type))
+          reason = Reason(nameof(Resources.ImplementPropertiesInterfaceAnalyzer_UnsupportedBaseClass));
 
         if (reason is null)
           continue;
@@ -82,8 +97,27 @@ namespace Csla.Analyzers
     private static LocalizableResourceString Reason(string name, params string[] arguments)
       => new(name, Resources.ResourceManager, typeof(Resources), arguments);
 
-    // These rules mirror what IncrementalAutoImplementInterfacePartialsGenerator and
-    // TypeDefinitionExtractor.ExtractTypeDefinitionForInterfaces accept; keep them in step.
+    // These rules mirror what the IncrementalAutoImplement*PartialsGenerator generators and
+    // TypeDefinitionExtractor accept; keep them in step.
+
+    /// <summary>
+    /// The generator implements properties only for a type that inherits a supported base
+    /// class in the Csla namespace, directly or through intermediate base classes. A base
+    /// class that can't be resolved already has a compiler error, so it isn't reported.
+    /// </summary>
+    private static bool InheritsSupportedBaseClass(INamedTypeSymbol type)
+    {
+      for (var baseType = type.BaseType; baseType is not null; baseType = baseType.BaseType)
+      {
+        if (baseType.TypeKind == TypeKind.Error)
+          return true;
+        if (baseType.ContainingNamespace is { Name: "Csla" } containingNamespace
+          && containingNamespace.ContainingNamespace?.IsGlobalNamespace == true
+          && SupportedBaseClassNames.Contains(baseType.Name))
+          return true;
+      }
+      return false;
+    }
 
     /// <summary>
     /// The generator only implements properties on a partial class or struct.

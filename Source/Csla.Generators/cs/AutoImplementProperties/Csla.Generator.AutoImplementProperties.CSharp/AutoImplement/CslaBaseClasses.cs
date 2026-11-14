@@ -15,13 +15,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
   internal static class CslaBaseClasses
   {
     /// <summary>
-    /// The property methods, by the name of the base class in the Csla namespace
+    /// The property methods, by the name of the base class in the Csla namespace.
+    /// BusinessDocumentBase inherits BusinessBase, so its subclasses use BusinessBase's entry.
     /// </summary>
     public static IReadOnlyDictionary<string, (string Getter, string Setter)> PropertyMethods { get; } =
       new Dictionary<string, (string Getter, string Setter)>
       {
         ["BusinessBase"] = ("GetProperty", "SetProperty"),
-        ["BusinessDocumentBase"] = ("GetProperty", "SetProperty"),
         ["ReadOnlyBase"] = ("GetProperty", "LoadProperty"),
         ["CommandBase"] = ("ReadProperty", "LoadProperty")
       };

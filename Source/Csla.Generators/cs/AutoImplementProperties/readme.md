@@ -74,7 +74,7 @@ The generated properties use the property methods of the CSLA base class the typ
 | `ReadOnlyBase` | `GetProperty` | `LoadProperty` |
 | `CommandBase` | `ReadProperty` | `LoadProperty` |
 
-A class that doesn't inherit one of these base classes gets no properties generated.
+A class that doesn't inherit one of these base classes gets no properties generated, and analyzer CSLA0030 reports it.
 
 An interface member without a `set` accessor gets a `private` setter, and a member with a `set` accessor gets a public one. On a `ReadOnlyBase` class, declare a member get-only when only the object's own code, such as its data portal operations, loads its value. Keep the `set` accessor when code outside the class sets it, such as an object factory that doesn't call `LoadProperty`.
 

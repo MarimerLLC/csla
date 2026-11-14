@@ -27,7 +27,7 @@ The `Csla.Generator.AutoImplementProperties.CSharp` package is retired. Referenc
 
 The `[CslaImplementProperties]`, `[CslaImplementPropertiesInterface<T>]` and `[CslaIgnoreProperty]` attributes are now part of `Csla.dll`, in the same `Csla` namespace, so code that uses them doesn't change.
 
-On a `ReadOnlyBase` class, the properties that `[CslaImplementPropertiesInterface<T>]` implements now have a `private` setter even when the interface member has a `set` accessor. Code outside the class that set those properties no longer compiles; load the values in the object's data portal operations instead.
+On a `ReadOnlyBase` class that doesn't implement the interface, the properties that `[CslaImplementPropertiesInterface<T>]` implements now have a `private` setter even when the interface member has a `set` accessor. Code outside the class that set those properties no longer compiles; load the values in the object's data portal operations instead. A class that implements the interface keeps public setters for the members with a `set` accessor, because the interface requires them.
 
 ### Make business classes `partial`
 

@@ -73,7 +73,7 @@ The generated properties use the property methods of the base class:
 | `ReadOnlyBase` | `GetProperty` | `LoadProperty` |
 | `CommandBase` | `ReadProperty` | `LoadProperty` |
 
-An interface member without a `set` accessor gets a `private` setter. On a `ReadOnlyBase` class every property implemented from an interface gets a `private` setter, so only the object's own code, such as its data portal operations, can load the values.
+An interface member without a `set` accessor gets a `private` setter. On a `ReadOnlyBase` class every property implemented from an interface gets a `private` setter, so only the object's own code, such as its data portal operations, can load the values. The exception is a class that also implements the interface: a member with a `set` accessor then keeps a public setter, which the interface requires. Declare those members get-only if callers shouldn't set them.
 
 ## Understanding [CslaImplementProperties]
 

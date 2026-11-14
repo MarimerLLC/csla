@@ -39,6 +39,29 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(NestedInterfaceSource("CslaImplementPropertiesInterface<ITestClass>", baseType));
     }
 
+    // A ReadOnlyBase class that implements the interface keeps the public setters
+    // the interface's set accessors require; otherwise it doesn't compile
+    [TestMethod]
+    public async Task ReadOnlyBaseImplementingInterface()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        public partial class TestClass : Csla.ReadOnlyBase<TestClass>, ITestClass
+        {
+        }
+
+        public interface ITestClass
+        {
+          int Id { get; }
+          string Name { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
+    }
+
     // Uses the member attributes with typeof, nameof, enum and constant arguments,
     // which are the values most likely to hold Roslyn objects that can't be cached
     [TestMethod("Pipeline stages are cacheable")]

@@ -186,3 +186,6 @@ Samples/ProjectTracker/ProjectTracker.Blazor/ProjectTracker.Blazor/PTracker.db-s
 Samples/ProjectTracker/ProjectTracker.Blazor/ProjectTracker.Blazor/PTracker.db-wal
 .claude/settings.local.json
 .claude/plans/
+
+# Verify snapshot test output that doesn't match the .verified files
+*.received.*

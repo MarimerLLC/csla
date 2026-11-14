@@ -820,7 +820,7 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
-        ///   Looks up a localized string similar to Interface properties cannot be generated.
+        ///   Looks up a localized string similar to Properties cannot be generated.
         /// </summary>
         internal static string ImplementPropertiesInterfaceAnalyzer_Title {
             get {
@@ -861,6 +861,15 @@ namespace Csla.Analyzers.Properties {
         internal static string ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct {
             get {
                 return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to it doesn&apos;t inherit BusinessBase, BusinessDocumentBase, ReadOnlyBase or CommandBase.
+        /// </summary>
+        internal static string ImplementPropertiesInterfaceAnalyzer_UnsupportedBaseClass {
+            get {
+                return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_UnsupportedBaseClass", resourceCulture);
             }
         }
     }

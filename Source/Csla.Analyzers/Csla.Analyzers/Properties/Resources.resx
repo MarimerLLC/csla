@@ -370,7 +370,7 @@
     <value>CSLA configuration methods return their target only to allow chaining, so the return value does not need to be used</value>
   </data>
   <data name="ImplementPropertiesInterfaceAnalyzer_Title" xml:space="preserve">
-    <value>Interface properties cannot be generated</value>
+    <value>Properties cannot be generated</value>
   </data>
   <data name="ImplementPropertiesInterfaceAnalyzer_Message" xml:space="preserve">
     <value>Properties are not generated for '{0}' because {1}</value>
@@ -383,5 +383,8 @@
   </data>
   <data name="ImplementPropertiesInterfaceAnalyzer_NotPartialClassOrStruct" xml:space="preserve">
     <value>it is not a partial class or struct</value>
+  </data>
+  <data name="ImplementPropertiesInterfaceAnalyzer_UnsupportedBaseClass" xml:space="preserve">
+    <value>it doesn't inherit BusinessBase, BusinessDocumentBase, ReadOnlyBase or CommandBase</value>
   </data>
 </root>

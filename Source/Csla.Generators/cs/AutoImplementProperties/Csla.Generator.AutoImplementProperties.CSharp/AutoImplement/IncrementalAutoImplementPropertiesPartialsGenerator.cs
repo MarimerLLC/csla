@@ -41,7 +41,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
               })
           .Where(static m => m is not null).WithTrackingName(TrackingNames.ExtractClasses);
 
-      var compilation = context.CompilationProvider.Select((c, _) => new { ((CSharpCompilation)c).LanguageVersion, Nullable = c.Options.NullableContextOptions.AnnotationsEnabled() }).WithTrackingName(TrackingNames.SelectCompilation);
+      var compilation = context.CompilationProvider.Select((c, _) => c.Options.NullableContextOptions.AnnotationsEnabled()).WithTrackingName(TrackingNames.SelectCompilation);
       // Combine the collected syntax nodes with the semantic model
       var compilationAndClasses = compilation.Combine(classDeclarations.Collect()).WithTrackingName(TrackingNames.Combine);
 
@@ -49,11 +49,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
         var (nullable, classes) = source;
-        SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable.Nullable);
+        SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable);
         foreach (var typeDefinition in classes)
         {
           // Build the text for the generated type using the builder
           var generationResults = builder.BuildPartialTypeDefinition(typeDefinition);
+          if (generationResults is null)
+            continue;
 
           // Add the generated source to the output
           spc.AddSource($"{generationResults.FullyQualifiedName}.g.cs",

@@ -124,8 +124,9 @@
       /// </summary>
       public const string ConflictingCustomSerializers = "CSLA0029";
       /// <summary>
-      /// The type argument of <c>[CslaImplementPropertiesInterface&lt;T&gt;]</c> is not
-      /// an interface declared in the same project.
+      /// The source generator can't implement the properties for <c>[CslaImplementProperties]</c>
+      /// or <c>[CslaImplementPropertiesInterface&lt;T&gt;]</c>, for example because the type argument
+      /// is not an interface declared in the same project or the type doesn't inherit a supported base class.
       /// </summary>
       public const string InvalidImplementPropertiesInterface = "CSLA0030";
 

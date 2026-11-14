@@ -1,4 +1,5 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
+using Csla.Generator.AutoImplementProperties.CSharp.Tests;
 using FluentAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
@@ -16,6 +17,7 @@ namespace Csla.Generator.Tests
             [Description("The name")]
             string Name { get; set; }
             string? Description { get; set; }
+            string? Code { get; }
 
             [Csla.CslaIgnoreProperty]
             string IgnoredProperty { get; set; }
@@ -25,6 +27,73 @@ namespace Csla.Generator.Tests
     public async Task ShortAttributeName()
     {
       await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(NestedInterfaceSource("CslaImplementPropertiesInterface<ITestClass>"));
+    }
+
+    // Each base type has its own property methods (SetProperty, LoadProperty, ...);
+    // the ShortAttributeName snapshot verifies BusinessBase
+    [TestMethod]
+    [DataRow("ReadOnlyBase")]
+    [DataRow("CommandBase")]
+    public async Task BaseTypes(string baseType)
+    {
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(NestedInterfaceSource("CslaImplementPropertiesInterface<ITestClass>", baseType));
+    }
+
+    // A class can also implement the interface: the generated properties must then
+    // have the public setters the interface's set accessors require
+    [TestMethod]
+    public async Task ClassImplementingInterfaceCompiles()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        public partial class TestClass : Csla.ReadOnlyBase<TestClass>, ITestClass
+        {
+        }
+
+        public interface ITestClass
+        {
+          int Id { get; }
+          string Name { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
+    }
+
+    // The property methods come from the CSLA base class inherited through an intermediate base class
+    [TestMethod]
+    public async Task IntermediateBaseClass()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class AppBase<T> : Csla.ReadOnlyBase<T>
+          where T : AppBase<T>
+        {
+        }
+
+        [Csla.CslaImplementPropertiesInterface<ITestClass>]
+        public partial class TestClass : AppBase<TestClass>
+        {
+          private interface ITestClass
+          {
+            int Id { get; }
+            string Name { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
+    }
+
+    // Uses the member attributes with typeof, nameof, enum and constant arguments,
+    // which are the values most likely to hold Roslyn objects that can't be cached
+    [TestMethod("Pipeline stages are cacheable")]
+    public void StageCaching()
+    {
+      StageCachingTester.VerifyStageCaching<IncrementalAutoImplementInterfacePartialsGenerator>(QualifiedArgumentsSource, typeof(TrackingNames), [QualifiedArgumentsAttributes]);
     }
 
     // The other forms of the attribute name must generate the same code as the
@@ -151,74 +220,75 @@ namespace Csla.Generator.Tests
     [TestMethod]
     public async Task MemberAttributeArgumentsAreQualified()
     {
-      var attributes = """
-        using System;
-
-        namespace Test.Attributes
-        {
-          [AttributeUsage(AttributeTargets.Property)]
-          public class InfoAttribute : Attribute
-          {
-            public InfoAttribute() { }
-            public InfoAttribute(string name, int order = 0) { }
-            public Type? ResourceType { get; set; }
-            public string? ResourceName { get; set; }
-            public int Limit { get; set; }
-            public Mode Mode { get; set; }
-          }
-
-          public enum Mode { Slow, Fast }
-
-          public static class Limits
-          {
-            public const int Max = 50;
-          }
-
-          public class Strings
-          {
-            public static string CustomerName => "";
-          }
-
-          public class Outer<T>
-          {
-            public class Inner<U> { }
-            public class Plain { }
-          }
-        }
-        """;
-      var source = """
-        using System.Collections.Generic;
-        using Test.Attributes;
-        using Label = Test.Attributes.Strings;
-
-        namespace Test;
-
-        [Csla.CslaImplementPropertiesInterface<ITestClass>]
-        public partial class TestClass : Csla.BusinessBase<TestClass>
-        {
-          private interface ITestClass
-          {
-            const int MaxLength = 20;
-
-            [Info(ResourceType = typeof(Strings), ResourceName = nameof(Strings.CustomerName))]
-            string Name { get; set; }
-            [Info(Limit = Limits.Max, Mode = Mode.Fast)]
-            int Count { get; set; }
-            [Info(Limit = MaxLength, ResourceType = typeof(List<>))]
-            string Code { get; set; }
-            [Info(order: 2, name: nameof(Code))]
-            string Ordered { get; set; }
-            // nameof an alias is the alias name, not the name of the type it stands for
-            [Info(ResourceType = typeof(Outer<>.Inner<>), ResourceName = nameof(Label))]
-            string Nested { get; set; }
-            [Info(ResourceType = typeof(Outer<>.Plain))]
-            string Plain { get; set; }
-          }
-        }
-        """;
-
-      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source, [attributes]);
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(QualifiedArgumentsSource, [QualifiedArgumentsAttributes]);
     }
+
+    private const string QualifiedArgumentsAttributes = """
+      using System;
+
+      namespace Test.Attributes
+      {
+        [AttributeUsage(AttributeTargets.Property)]
+        public class InfoAttribute : Attribute
+        {
+          public InfoAttribute() { }
+          public InfoAttribute(string name, int order = 0) { }
+          public Type? ResourceType { get; set; }
+          public string? ResourceName { get; set; }
+          public int Limit { get; set; }
+          public Mode Mode { get; set; }
+        }
+
+        public enum Mode { Slow, Fast }
+
+        public static class Limits
+        {
+          public const int Max = 50;
+        }
+
+        public class Strings
+        {
+          public static string CustomerName => "";
+        }
+
+        public class Outer<T>
+        {
+          public class Inner<U> { }
+          public class Plain { }
+        }
+      }
+      """;
+
+    private const string QualifiedArgumentsSource = """
+      using System.Collections.Generic;
+      using Test.Attributes;
+      using Label = Test.Attributes.Strings;
+
+      namespace Test;
+
+      [Csla.CslaImplementPropertiesInterface<ITestClass>]
+      public partial class TestClass : Csla.BusinessBase<TestClass>
+      {
+        private interface ITestClass
+        {
+          const int MaxLength = 20;
+
+          [Info(ResourceType = typeof(Strings), ResourceName = nameof(Strings.CustomerName))]
+          string Name { get; set; }
+          [Info(Limit = Limits.Max, Mode = Mode.Fast)]
+          int Count { get; set; }
+          [Info(Limit = MaxLength, ResourceType = typeof(List<>))]
+          string Code { get; set; }
+          [Info(order: 2, name: nameof(Code))]
+          string Ordered { get; set; }
+          // nameof an alias is the alias name, not the name of the type it stands for
+          [Info(ResourceType = typeof(Outer<>.Inner<>), ResourceName = nameof(Label))]
+          string Nested { get; set; }
+          [Info(ResourceType = typeof(Outer<>.Plain))]
+          string Plain { get; set; }
+        }
+      }
+      """;
 
     [TestMethod]
     public void InterfaceDeclaredInReferencedCompilationGeneratesNothing()
@@ -308,14 +378,14 @@ namespace Csla.Generator.Tests
       }
       """;
 
-    private static string NestedInterfaceSource(string attribute) => $$"""
+    private static string NestedInterfaceSource(string attribute, string baseType = "BusinessBase") => $$"""
       using System.ComponentModel;
       using Csla;
 
       namespace Test;
 
       [{{attribute}}]
-      public partial class TestClass : Csla.BusinessBase<TestClass>
+      public partial class TestClass : Csla.{{baseType}}<TestClass>
       {
         private interface ITestClass
         {

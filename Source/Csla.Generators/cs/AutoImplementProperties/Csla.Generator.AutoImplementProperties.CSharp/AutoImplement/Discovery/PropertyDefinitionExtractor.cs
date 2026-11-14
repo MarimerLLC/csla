@@ -39,6 +39,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         TypeDefinition = new ExtractedMemberTypeDefinition
         {
           Nullable = GetFieldTypeNullable(propertyDeclaration),
+          IsValueType = extractionContext.IsValueType(propertyDeclaration.Type),
           FullyQualifiedType = extractionContext.GetFullyQualifiedType(propertyDeclaration.Type)
         }
       };

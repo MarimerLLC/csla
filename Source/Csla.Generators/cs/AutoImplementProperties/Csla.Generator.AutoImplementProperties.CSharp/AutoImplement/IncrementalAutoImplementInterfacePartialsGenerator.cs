@@ -57,6 +57,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
         {
           // Build the text for the generated type using the builder
           var generationResults = builder.BuildPartialTypeDefinition(typeDefinition);
+          if (generationResults is null)
+            continue;
 
           // Add the generated source to the output
           spc.AddSource($"{generationResults.FullyQualifiedName}.g.cs",

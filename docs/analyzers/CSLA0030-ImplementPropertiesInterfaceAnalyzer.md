@@ -1,11 +1,12 @@
-# Interface properties cannot be generated.
+# Properties cannot be generated.
 
 ## Issue
 
-This analyzer is tripped when the source generator can't implement the properties for a `[CslaImplementPropertiesInterface<T>]` attribute, so it generates nothing for the type, and code that uses those properties fails to compile. That happens when:
+This analyzer is tripped when the source generator can't implement the properties for a `[CslaImplementProperties]` or `[CslaImplementPropertiesInterface<T>]` attribute, so it generates nothing for the type, and code that uses those properties fails to compile. That happens when:
 
-* the attribute is not on a `partial class` or `partial struct` (records and non-partial types are not supported), or
-* `T` is not an interface declared in the same project. The generator reads the properties to implement from the interface's declaration.
+* the attribute is not on a `partial class` or `partial struct` (records and non-partial types are not supported),
+* the type doesn't inherit `BusinessBase`, `BusinessDocumentBase`, `ReadOnlyBase` or `CommandBase` from the `Csla` namespace, directly or through intermediate base classes (a struct never does), or
+* for `[CslaImplementPropertiesInterface<T>]`, `T` is not an interface declared in the same project. The generator reads the properties to implement from the interface's declaration.
 
 For example:
 
@@ -23,9 +24,13 @@ public partial class CustomerInfo : ReadOnlyBase<CustomerInfo> { }
 // 'IServiceProvider' is declared in another assembly
 [CslaImplementPropertiesInterface<System.IServiceProvider>]
 public partial class OrderEdit : BusinessBase<OrderEdit> { }
+
+// BusinessListBase isn't a supported base class
+[CslaImplementProperties]
+public partial class OrderList : BusinessListBase<OrderList, OrderLine> { }
 ```
 
-Make the type partial, and declare the interface in the same project as the business class. A private interface nested in the business class works well:
+Make the type partial, derive it from a supported base class, and declare the interface in the same project as the business class. A private interface nested in the business class works well:
 
 ```csharp
 using Csla;

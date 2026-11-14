@@ -15,7 +15,7 @@ namespace Csla.Analyzers.Tests
 
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.InvalidImplementPropertiesInterface, diagnostic.Id);
-      Assert.AreEqual("Interface properties cannot be generated", diagnostic.Title.ToString());
+      Assert.AreEqual("Properties cannot be generated", diagnostic.Title.ToString());
       Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category);
       Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity);
       Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.InvalidImplementPropertiesInterface, nameof(ImplementPropertiesInterfaceAnalyzer)),
@@ -116,6 +116,7 @@ namespace Csla.Analyzers.Tests
       await AssertDiagnosticAsync(code, "Properties are not generated for 'TestClass' because it is not a partial class or struct");
     }
 
+    // A struct can't inherit a CSLA base class, so the generator implements nothing for it
     [TestMethod]
     public async Task PartialStructWithInterfaceDeclaredInSource()
     {
@@ -131,7 +132,72 @@ namespace Csla.Analyzers.Tests
         }
         """;
 
+      await AssertDiagnosticAsync(code, "Properties are not generated for 'TestStruct' because it doesn't inherit BusinessBase, BusinessDocumentBase, ReadOnlyBase or CommandBase");
+    }
+
+    [TestMethod]
+    [DataRow("[Csla.CslaImplementPropertiesInterface<ITestClass>]")]
+    [DataRow("[Csla.CslaImplementProperties]")]
+    public async Task BaseClassOutsideCsla(string attribute)
+    {
+      var code = $$"""
+        namespace MyCompany
+        {
+          public class BusinessBase<T>
+          {
+          }
+        }
+
+        namespace Test
+        {
+          {{attribute}}
+          public partial class TestClass : MyCompany.BusinessBase<TestClass>
+          {
+          }
+
+          public interface ITestClass
+          {
+            string Name { get; set; }
+          }
+        }
+        """;
+
+      await AssertDiagnosticAsync(code, "Properties are not generated for 'TestClass' because it doesn't inherit BusinessBase, BusinessDocumentBase, ReadOnlyBase or CommandBase",
+        attribute.TrimStart('[').Split('<', ']')[0]);
+    }
+
+    [TestMethod]
+    [DataRow("public partial class TestClass : Csla.BusinessBase<TestClass>")]
+    [DataRow("public partial class TestClass : AppBase<TestClass>")]
+    public async Task ImplementPropertiesOnSupportedBaseClass(string declaration)
+    {
+      var code = $$"""
+        public abstract class AppBase<T> : Csla.ReadOnlyBase<T>
+          where T : AppBase<T>
+        {
+        }
+
+        [Csla.CslaImplementProperties]
+        {{declaration}}
+        {
+        }
+        """;
+
       await TestHelpers.RunAnalysisAsync<ImplementPropertiesInterfaceAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task ImplementPropertiesNotOnPartialClass()
+    {
+      var code = """
+        [Csla.CslaImplementProperties]
+        public class TestClass : Csla.BusinessBase<TestClass>
+        {
+        }
+        """;
+
+      await AssertDiagnosticAsync(code, "Properties are not generated for 'TestClass' because it is not a partial class or struct",
+        "Csla.CslaImplementProperties");
     }
 
     [TestMethod]
@@ -147,14 +213,14 @@ namespace Csla.Analyzers.Tests
       await TestHelpers.RunAnalysisAsync<ImplementPropertiesInterfaceAnalyzer>(code, []);
     }
 
-    private static async Task AssertDiagnosticAsync(string code, string message)
+    private static async Task AssertDiagnosticAsync(string code, string message, string attribute = "Csla.CslaImplementPropertiesInterface<")
     {
       var diagnostics = await TestHelpers.GetDiagnosticsAsync(code, new ImplementPropertiesInterfaceAnalyzer());
       Assert.AreEqual(1, diagnostics.Count);
       var diagnostic = diagnostics[0];
       Assert.AreEqual(Constants.AnalyzerIdentifiers.InvalidImplementPropertiesInterface, diagnostic.Id);
       Assert.AreEqual(message, diagnostic.GetMessage());
-      Assert.IsTrue(diagnostic.Location.SourceTree!.GetText().ToString(diagnostic.Location.SourceSpan).StartsWith("Csla.CslaImplementPropertiesInterface<"),
+      Assert.IsTrue(diagnostic.Location.SourceTree!.GetText().ToString(diagnostic.Location.SourceSpan).StartsWith(attribute),
         "the diagnostic should be reported on the attribute");
     }
   }

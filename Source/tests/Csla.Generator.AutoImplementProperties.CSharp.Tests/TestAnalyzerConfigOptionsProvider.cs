@@ -8,7 +8,7 @@ using System.Diagnostics.CodeAnalysis;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.Diagnostics;
 
-namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations
+namespace Csla.Generator.AutoImplementProperties.CSharp.Tests
 {
   /// <summary>
   /// Supplies global build properties, such as <c>build_property.*</c> values,

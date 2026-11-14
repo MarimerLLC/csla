@@ -21,23 +21,27 @@ namespace Csla.Rules
   internal interface IRuleRunner
   {
     /// <summary>
-    /// Runs all rules for the business object (BusinessRules.CheckRules()).
+    /// Gets a value indicating whether a stream collects the affected
+    /// properties of the async rules it starts, so CheckRulesAsync
+    /// returns them.
     /// </summary>
-    /// <returns>Names of the affected properties. May contain duplicates.</returns>
-    List<string> CheckRules(IRuleRunnerHost host);
+    bool CollectsAsyncResults { get; }
 
     /// <summary>
-    /// Runs the rules for a property after its value changed
-    /// (BusinessRules.CheckRules(property)).
+    /// Gets the run of a rule stream: CheckRules(), CheckRules(property)
+    /// or CheckObjectRules(), as given by <see cref="RuleStream.Kind"/>
+    /// and <see cref="RuleStream.Root"/>.
     /// </summary>
-    /// <returns>Names of the affected properties. May contain duplicates.</returns>
-    List<string> CheckRules(IRuleRunnerHost host, IPropertyInfo property);
-
-    /// <summary>
-    /// Runs the object-level rules (BusinessRules.CheckObjectRules()).
-    /// </summary>
-    /// <returns>Names of the affected properties. May contain duplicates.</returns>
-    List<string> CheckObjectRules(IRuleRunnerHost host);
+    /// <param name="host">The rule runner host.</param>
+    /// <param name="stream">
+    /// The stream. The run adds the names of the affected properties
+    /// with <see cref="RuleStream.AddAffected(IEnumerable{string})"/>.
+    /// </param>
+    /// <returns>
+    /// The run as an iterator. It yields where the stream must wait for
+    /// async rules to complete; the host resumes it once they are.
+    /// </returns>
+    IEnumerable<RuleStreamPause> Run(IRuleRunnerHost host, RuleStream stream);
   }
 
   /// <summary>

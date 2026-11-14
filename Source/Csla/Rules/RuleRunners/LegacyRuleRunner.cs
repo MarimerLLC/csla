@@ -18,7 +18,26 @@ namespace Csla.Rules
   internal class LegacyRuleRunner : IRuleRunner
   {
     /// <inheritdoc />
-    public virtual List<string> CheckRules(IRuleRunnerHost host)
+    public virtual bool CollectsAsyncResults => false;
+
+    /// <inheritdoc />
+    /// <remarks>The legacy run never waits: it ignores IsSequential.</remarks>
+    public virtual IEnumerable<RuleStreamPause> Run(IRuleRunnerHost host, RuleStream stream)
+    {
+      stream.AddAffected(stream.Kind switch
+      {
+        RuleStreamKind.AllRules => CheckRules(host),
+        RuleStreamKind.Property => CheckRules(host, stream.Root!),
+        _ => CheckObjectRules(host)
+      });
+      yield break;
+    }
+
+    /// <summary>
+    /// Runs all rules for the business object (BusinessRules.CheckRules()).
+    /// </summary>
+    /// <returns>Names of the affected properties. May contain duplicates.</returns>
+    public List<string> CheckRules(IRuleRunnerHost host)
     {
       var affectedProperties = RunObjectRules(host, RuleContextModes.CheckRules, false).AffectedProperties;
       var properties = host.Rules.Where(p => p.PrimaryProperty != null)
@@ -29,13 +48,20 @@ namespace Csla.Rules
       return affectedProperties;
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Runs the rules for a property after its value changed
+    /// (BusinessRules.CheckRules(property)).
+    /// </summary>
+    /// <returns>Names of the affected properties. May contain duplicates.</returns>
     public List<string> CheckRules(IRuleRunnerHost host, IPropertyInfo property)
     {
       return CheckRulesForProperty(host, property, true, RuleContextModes.PropertyChanged);
     }
 
-    /// <inheritdoc />
+    /// <summary>
+    /// Runs the object-level rules (BusinessRules.CheckObjectRules()).
+    /// </summary>
+    /// <returns>Names of the affected properties. May contain duplicates.</returns>
     public List<string> CheckObjectRules(IRuleRunnerHost host)
     {
       return RunObjectRules(host, RuleContextModes.CheckObjectRules, true).AffectedProperties;

@@ -152,6 +152,7 @@
       this.sumTextBox.DataBindings.Add(new System.Windows.Forms.Binding("Text", this.rootBindingSource, "Sum", true));
       this.sumTextBox.Location = new System.Drawing.Point(72, 138);
       this.sumTextBox.Name = "sumTextBox";
+      this.sumTextBox.ReadOnly = true;
       this.sumTextBox.Size = new System.Drawing.Size(104, 20);
       this.sumTextBox.TabIndex = 10;
       // 

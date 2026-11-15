@@ -43,6 +43,7 @@ namespace AddonPropertyRules
       root.String1 = "Rocky";
       Console.WriteLine("Before set String2");
       root.String2 = "Lhotka";
+      Console.WriteLine("ConcatString is \"{0}\"", root.ConcatString);
       
       Console.ReadLine();
     }

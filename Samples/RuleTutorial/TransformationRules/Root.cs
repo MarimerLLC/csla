@@ -72,12 +72,16 @@ namespace TransformationRules
     public static readonly PropertyInfo<int> SumProperty = RegisterProperty<int>(c => c.Sum);
 
     /// <summary>
-    /// Gets or sets Sum.
+    /// Gets Sum, calculated by the CalcSum rule.
     /// </summary>
+    /// <remarks>
+    /// A calculated property isn't serialized and doesn't make the object dirty.
+    /// CSLA runs CalcSum again after the object is deserialized.
+    /// </remarks>
+    [CalculatedProperty]
     public int Sum
     {
       get { return GetProperty(SumProperty); }
-      set { SetProperty(SumProperty, value); }
     }
 
     #endregion

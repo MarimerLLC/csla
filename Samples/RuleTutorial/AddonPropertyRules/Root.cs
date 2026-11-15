@@ -121,11 +121,20 @@ namespace AddonPropertyRules
       set { SetProperty(String2Property, value); }
     }
 
+    /// <summary>
+    /// The concat string property.
+    /// </summary>
     public static readonly PropertyInfo<string> ConcatStringProperty = RegisterProperty<string>(c => c.ConcatString);
-    public string ConcatString
-    {
-      get { return string.Format("{0} {1}", ReadProperty(String1Property), ReadProperty(String2Property)); }
-    }
+
+    /// <summary>
+    /// Gets ConcatString, calculated from String1 and String2 by the ConcatStrings rule.
+    /// </summary>
+    /// <remarks>
+    /// A calculated property isn't serialized and doesn't make the object dirty.
+    /// CSLA runs ConcatStrings again after the object is deserialized.
+    /// </remarks>
+    [CalculatedProperty]
+    public string ConcatString => GetProperty(ConcatStringProperty)!;
 
     #endregion
 
@@ -143,6 +152,7 @@ namespace AddonPropertyRules
       BusinessRules.AddRule(new DependencyFrom(SumProperty, Num1Property, Num2Property, Num3Property));
       BusinessRules.AddRule(new Range(Num1Property, 1, 10, "Num1 must be between 1 and 10 to be valid."));
       BusinessRules.AddRule(new DependencyFrom(ConcatStringProperty, String1Property, String2Property));
+      BusinessRules.AddRule(new ConcatStrings(ConcatStringProperty, String1Property, String2Property));
     }
 
     #endregion

@@ -12,6 +12,9 @@ namespace BusinessLibrary
     [Required]
     public partial string? Name { get; set; }
 
+    // calculated by the LetterCount rule; not serialized, never makes the
+    // object dirty, and recalculated after deserialization
+    [CalculatedProperty]
     public partial int NameLength { get; private set; }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -32,7 +35,8 @@ namespace BusinessLibrary
       BusinessRules.AddRule(new InfoText(NameProperty, "Person name (required)"));
       BusinessRules.AddRule(new CheckCase(NameProperty));
       BusinessRules.AddRule(new NoZAllowed(NameProperty));
-      BusinessRules.AddRule(new LetterCount(NameProperty, NameLengthProperty));
+      BusinessRules.AddRule(new LetterCount(NameLengthProperty, NameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Dependency(NameProperty, NameLengthProperty));
     }
 
     [Create]
@@ -45,7 +49,10 @@ namespace BusinessLibrary
     private void Fetch(int id, [Inject] DataAccess.IPersonDal dal)
     {
       var data = dal.Get(id);
-      Csla.Data.DataMapper.Map(data, this);
+      // LoadProperty doesn't mark the object dirty; the data portal
+      // marks the object old and clean before calling Fetch
+      LoadProperty(IdProperty, data.Id);
+      LoadProperty(NameProperty, data.Name);
       BusinessRules.CheckRules();
     }
 

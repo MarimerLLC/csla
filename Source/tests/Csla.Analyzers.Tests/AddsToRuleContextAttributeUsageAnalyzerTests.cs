@@ -529,6 +529,55 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenMethodInheritedFromReferencedAssemblyImplementsAttributedInterfaceMethod()
+    {
+      // object.ToString() comes from a referenced assembly, so its body can't be checked
+      var code =
+        """
+        using Csla.Rules;
+
+        public interface IHelper
+        {
+          [AddsToRuleContext]
+          string ToString();
+        }
+
+        public class Helper : IHelper { }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.AddsToRuleContextUsage],
+        diagnostics => StringAssert.StartsWith(diagnostics[0].GetMessage(), "'Helper' implements the [AddsToRuleContext] method 'IHelper.ToString()'"));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenOverrideOfInterfaceImplementationDoesNotCallAddMethod()
+    {
+      var code =
+        """
+        using Csla.Rules;
+
+        public interface IHelper
+        {
+          [AddsToRuleContext]
+          void Fail(IRuleContext context);
+        }
+
+        public class Base : IHelper
+        {
+          public virtual void Fail(IRuleContext context) => context.AddErrorResult("failed");
+        }
+
+        public class Derived : Base
+        {
+          public override void Fail(IRuleContext context) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.AddsToRuleContextUsage],
+        diagnostics => Assert.AreEqual(15, diagnostics[0].Location.GetLineSpan().StartLinePosition.Line));
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenAddMethodIsCalledThroughCastToUnrelatedType()
     {
       var code =

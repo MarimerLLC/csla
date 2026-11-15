@@ -90,6 +90,8 @@ public class Base
 public class Derived : Base, IHelper { }
 ```
 
+This also applies when the base class is in a referenced assembly. Its body can't be checked at all, so implement the interface method in the derived class instead, with `[AddsToRuleContext]` and a call to an `Add...()` method.
+
 ## Limitations
 * The analyzer only checks that the body contains an `Add...()` call. It doesn't check that the call runs on every path through the method.
 * A call to the method itself doesn't count, but methods that only call each other (`A` calls `B`, `B` calls `A`) are not reported.

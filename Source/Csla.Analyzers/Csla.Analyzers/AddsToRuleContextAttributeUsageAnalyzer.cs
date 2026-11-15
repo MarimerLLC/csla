@@ -107,7 +107,8 @@ namespace Csla.Analyzers
           if (!RuleContextAddCallDetector.HasAttribute(interfaceMethod, attributeType)
             || type.FindImplementationForInterfaceMember(interfaceMethod) is not IMethodSymbol implementation
             || SymbolEqualityComparer.Default.Equals(implementation.ContainingType, type)
-            || !implementation.Locations.Any(l => l.IsInSource)
+            // An inherited method from a referenced assembly is reported too: its body can't be
+            // checked here, so the class should implement the method itself with the attribute
             || IsMarked(implementation, attributeType))
             continue;
 
@@ -147,11 +148,9 @@ namespace Csla.Analyzers
       if (RuleContextAddCallDetector.HasAttribute(method, attributeType))
         return true;
 
-      for (var overridden = method.OverriddenMethod; overridden is not null; overridden = overridden.OverriddenMethod)
-      {
-        if (RuleContextAddCallDetector.HasAttribute(overridden, attributeType))
-          return true;
-      }
+      // The overridden method may be marked by an interface it implements, not only by the attribute
+      if (method.OverriddenMethod is { } overridden && IsMarked(overridden, attributeType))
+        return true;
 
       if (method.ExplicitInterfaceImplementations.Any(m => RuleContextAddCallDetector.HasAttribute(m, attributeType)))
         return true;

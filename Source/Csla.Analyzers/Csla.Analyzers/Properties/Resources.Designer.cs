@@ -59,7 +59,43 @@ namespace Csla.Analyzers.Properties {
                 resourceCulture = value;
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to Method &apos;{0}&apos; has [AddsToRuleContext] but {1}.
+        /// </summary>
+        internal static string AddsToRuleContextAttributeUsageAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("AddsToRuleContextAttributeUsageAnalyzer_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to it doesn&apos;t call an Add method on its rule context, or another [AddsToRuleContext] method that it passes the rule context to.
+        /// </summary>
+        internal static string AddsToRuleContextAttributeUsageAnalyzer_NoAddCall {
+            get {
+                return ResourceManager.GetString("AddsToRuleContextAttributeUsageAnalyzer_NoAddCall", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to it has no IRuleContext parameter.
+        /// </summary>
+        internal static string AddsToRuleContextAttributeUsageAnalyzer_NoRuleContextParameter {
+            get {
+                return ResourceManager.GetString("AddsToRuleContextAttributeUsageAnalyzer_NoRuleContextParameter", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Methods with [AddsToRuleContext] should add to the rule context.
+        /// </summary>
+        internal static string AddsToRuleContextAttributeUsageAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("AddsToRuleContextAttributeUsageAnalyzer_Title", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Asynchronous business rules should derive from BusinessRuleAsync.
         /// </summary>

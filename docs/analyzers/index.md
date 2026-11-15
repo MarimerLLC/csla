@@ -52,6 +52,7 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 * [CSLA0028](CSLA0028-MobileSerializerAttributeUsageAnalyzer.md) - Custom serializer declaration is not valid
 * [CSLA0029](CSLA0029-MobileSerializerAttributeUsageAnalyzer.md) - Type has more than one custom serializer
 * [CSLA0030](CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) - Properties cannot be generated
+* [CSLA0031](CSLA0031-AddsToRuleContextAttributeUsageAnalyzer.md) - Methods with `[AddsToRuleContext]` should add to the rule context
 
 ## Suppressors
 Some .NET code style and code quality rules report false positives on CSLA code, because CSLA calls data portal operations and other methods through reflection. The `Csla` package includes diagnostic suppressors that hide these diagnostics only where they don't apply. The diagnostics still appear everywhere else.

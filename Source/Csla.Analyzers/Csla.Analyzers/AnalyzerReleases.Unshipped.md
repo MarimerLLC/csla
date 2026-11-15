@@ -33,3 +33,4 @@ CSLA0027 | Usage | Warning | CalculatedPropertyAnalyzer
 CSLA0028 | Usage | Error | MobileSerializerAttributeUsageAnalyzer
 CSLA0029 | Usage | Warning | MobileSerializerAttributeUsageAnalyzer
 CSLA0030 | Usage | Warning | ImplementPropertiesInterfaceAnalyzer
+CSLA0031 | Usage | Warning | AddsToRuleContextAttributeUsageAnalyzer

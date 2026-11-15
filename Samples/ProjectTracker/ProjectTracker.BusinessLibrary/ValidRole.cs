@@ -38,7 +38,7 @@ namespace ProjectTracker.Library
       }
 
       var portal = context.ApplicationContext.GetRequiredService<IDataPortal<RoleList>>();
-      var roles = await portal.FetchAsync();
+      var roles = await portal.PortalFetchAsync();
       if (!roles.ContainsKey(role))
         context.AddErrorResult("Role must be in RoleList");
     }

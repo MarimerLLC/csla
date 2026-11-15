@@ -49,7 +49,7 @@ namespace ProjectTracker.Library
         Assigned = DateTime.Today;
         var project = dal.Fetch(projectId) ?? throw new DataNotFoundException("Project");
         ProjectName = project.Name ?? string.Empty;
-        var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        var roles = rolePortal.PortalFetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         Role = roles.DefaultRole;
       }
       // wait for the async ValidRole rule, so its result travels with the object

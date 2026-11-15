@@ -58,6 +58,6 @@ else
     {
         // Every page _must_ initialize the state manager
         await StateManager.InitializeAsync();
-        await vm.RefreshAsync(() => roleEditListPortal.FetchAsync()!);
+        await vm.RefreshAsync(() => roleEditListPortal.PortalFetchAsync()!);
     }
 }

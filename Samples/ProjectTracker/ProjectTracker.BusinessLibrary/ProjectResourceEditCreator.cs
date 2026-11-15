@@ -13,13 +13,7 @@ namespace ProjectTracker.Library
     [Execute]
     private async Task Execute(int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
     {
-      ProjectResource = await portal.CreateChildAsync(resourceId);
-    }
-
-    [Execute]
-    private void Execute(int projectId, int resourceId, [Inject] IChildDataPortal<ProjectResourceEdit> portal)
-    {
-      ProjectResource = portal.FetchChild(projectId, resourceId);
+      ProjectResource = await portal.PortalCreateAsync(resourceId);
     }
   }
 }

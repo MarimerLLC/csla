@@ -10,7 +10,7 @@ namespace BusinessLibrary
     {
       using (LoadListMode)
       {
-        var data = dal.Get().Select(d => personInfoPortal.FetchChild(d));
+        var data = dal.Get().Select(d => personInfoPortal.PortalFetch(d));
         AddRange(data);
       }
     }

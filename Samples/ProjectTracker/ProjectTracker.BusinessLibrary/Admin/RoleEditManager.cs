@@ -37,13 +37,13 @@ namespace ProjectTracker.Library.Admin
     {
       var portal = ApplicationContext.GetRequiredService<IChildDataPortal<RoleEdit>>();
       var item = dal.Fetch(Id) ?? throw new DataNotFoundException("Role");
-      RoleEdit = portal.FetchChild(item);
+      RoleEdit = portal.PortalFetch(item);
     }
 
     private void SaveRoleEdit()
     {
       var portal = ApplicationContext.GetRequiredService<IDataPortal<RoleEditList>>();
-      var list = portal.Fetch();
+      var list = portal.PortalFetch();
       var item = list.GetRoleById(RoleEdit.Id);
       if (item == null)
         list.Add(RoleEdit);

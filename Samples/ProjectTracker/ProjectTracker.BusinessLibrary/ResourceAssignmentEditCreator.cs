@@ -10,7 +10,7 @@ namespace ProjectTracker.Library
     [Fetch]
     private async Task Fetch(int projectId, [Inject] IChildDataPortal<ResourceAssignmentEdit> portal)
     {
-      Result = await portal.CreateChildAsync(projectId);
+      Result = await portal.PortalCreateAsync(projectId);
     }
   }
 }

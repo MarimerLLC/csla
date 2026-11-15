@@ -12,9 +12,9 @@ namespace ProjectTracker.Library
     private async Task Fetch(int projectId, [Inject] IDataPortal<ProjectEdit> portal)
     {
       if (projectId == -1)
-        Project = await portal.CreateAsync();
+        Project = await portal.PortalCreateAsync();
       else
-        Project = await portal.FetchAsync(projectId);
+        Project = await portal.PortalFetchAsync(projectId);
     }
   }
 }

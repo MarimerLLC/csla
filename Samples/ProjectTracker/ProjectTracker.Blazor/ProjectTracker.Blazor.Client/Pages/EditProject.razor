@@ -182,11 +182,11 @@ else
             vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
 
             if (Id.HasValue)
-                await vm.RefreshAsync(() => projectEditPortal.FetchAsync(Id));
+                await vm.RefreshAsync(() => projectEditPortal.PortalFetchAsync(Id.Value));
             else
-                await vm.RefreshAsync(() => projectEditPortal.CreateAsync());
+                await vm.RefreshAsync(() => projectEditPortal.PortalCreateAsync());
 
-            RoleList = await roleListPortal.FetchAsync();
+            RoleList = await roleListPortal.PortalFetchAsync();
         }
     }
 
@@ -194,7 +194,7 @@ else
     {
         viewMode = SubViewModes.Select;
         var portal = ApplicationContext.GetRequiredService<IDataPortal<ResourceList>>();
-        _resourceList = (await portal.FetchAsync())
+        _resourceList = (await portal.PortalFetchAsync())
                           .Where(r => !vm.Model.Contains(r.Id)).ToList();
         StateHasChanged();
     }
@@ -209,7 +209,7 @@ else
     private async Task AssignRole(int resourceId)
     {
         var portal = ApplicationContext.GetRequiredService<IDataPortal<ProjectResourceEditCreator>>();
-        var creator = await portal.FetchAsync(resourceId);
+        var creator = await portal.PortalExecuteAsync(resourceId);
         selectedResource = creator.ProjectResource;
         selectedResource.BeginEdit();
         viewMode = SubViewModes.Details;

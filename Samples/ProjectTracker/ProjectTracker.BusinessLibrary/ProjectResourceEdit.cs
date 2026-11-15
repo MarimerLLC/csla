@@ -67,7 +67,7 @@ namespace ProjectTracker.Library
         var person = dal.Fetch(resourceId) ?? throw new DataNotFoundException("Resource");
         FirstName = person.FirstName ?? string.Empty;
         LastName = person.LastName ?? string.Empty;
-        var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        var roles = rolePortal.PortalFetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         RoleList = roles;
         Role = roles.DefaultRole;
       }
@@ -88,7 +88,7 @@ namespace ProjectTracker.Library
         var person = dal.Fetch(data.ResourceId) ?? throw new DataNotFoundException("Resource");
         FirstName = person.FirstName ?? string.Empty;
         LastName = person.LastName ?? string.Empty;
-        var roles = rolePortal.Fetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
+        var roles = rolePortal.PortalFetch() ?? throw new InvalidOperationException("Unable to fetch roles.");
         RoleList = roles;
       }
     }

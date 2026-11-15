@@ -39,7 +39,7 @@ namespace ProjectTracker.Library
       if (!Contains(projectId))
       {
         var creator = ApplicationContext.GetRequiredService<IDataPortal<ResourceAssignmentEditCreator>>();
-        var project = await creator.FetchAsync(projectId);
+        var project = await creator.PortalFetchAsync(projectId);
         this.Add(project.Result);
         return project.Result;
       }
@@ -104,7 +104,7 @@ namespace ProjectTracker.Library
       {
         var assignments = assignmentDal.FetchForResource(id);
         foreach (var item in assignments)
-          Add(childPortal.FetchChild(item));
+          Add(childPortal.PortalFetch(item));
       }
     }
 

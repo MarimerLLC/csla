@@ -12,6 +12,9 @@ namespace BusinessLibrary
     [Required]
     public partial string? Name { get; set; }
 
+    // calculated by the LetterCount rule; not serialized, never makes the
+    // object dirty, and recalculated after deserialization
+    [CalculatedProperty]
     public partial int NameLength { get; private set; }
 
     [System.ComponentModel.EditorBrowsable(System.ComponentModel.EditorBrowsableState.Never)]
@@ -32,7 +35,8 @@ namespace BusinessLibrary
       BusinessRules.AddRule(new InfoText(NameProperty, "Person name (required)"));
       BusinessRules.AddRule(new CheckCase(NameProperty));
       BusinessRules.AddRule(new NoZAllowed(NameProperty));
-      BusinessRules.AddRule(new LetterCount(NameProperty, NameLengthProperty));
+      BusinessRules.AddRule(new LetterCount(NameLengthProperty, NameProperty));
+      BusinessRules.AddRule(new Csla.Rules.CommonRules.Dependency(NameProperty, NameLengthProperty));
     }
 
     [Create]

@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>NewChild()</c> CreateChild operation of <see cref="global::TestApp.LineItem"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("CreateChildAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.LineItem> NewChildAsync(this global::Csla.IChildDataPortal<global::TestApp.LineItem> portal)
     {
       if (portal is global::Csla.IChildDataPortalOperationInvoker<global::TestApp.LineItem> __invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>NewChild()</c> CreateChild operation of <see cref="global::TestApp.LineItem"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("CreateChild")]
     public static global::TestApp.LineItem NewChild(this global::Csla.IChildDataPortal<global::TestApp.LineItem> portal)
     {
       if (portal is global::Csla.IChildDataPortalOperationInvoker<global::TestApp.LineItem> __invoker)
@@ -32,6 +34,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>LoadChild(int, string)</c> FetchChild operation of <see cref="global::TestApp.LineItem"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchChildAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.LineItem> LoadChildAsync(this global::Csla.IChildDataPortal<global::TestApp.LineItem> portal, int id, string name)
     {
       if (portal is global::Csla.IChildDataPortalOperationInvoker<global::TestApp.LineItem> __invoker)
@@ -42,6 +45,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>LoadChild(int, string)</c> FetchChild operation of <see cref="global::TestApp.LineItem"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchChild")]
     public static global::TestApp.LineItem LoadChild(this global::Csla.IChildDataPortal<global::TestApp.LineItem> portal, int id, string name)
     {
       if (portal is global::Csla.IChildDataPortalOperationInvoker<global::TestApp.LineItem> __invoker)

@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>class(int, int, int)</c> Fetch operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.PersonEdit> classAsync(this global::Csla.IDataPortal<global::TestApp.PersonEdit> ____portal, int portal, int __portal, int __invoker)
     {
       if (____portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> ____invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>class(int, int, int)</c> Fetch operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("Fetch")]
     public static global::TestApp.PersonEdit @class(this global::Csla.IDataPortal<global::TestApp.PersonEdit> ____portal, int portal, int __portal, int __invoker)
     {
       if (____portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> ____invoker)

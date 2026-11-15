@@ -239,6 +239,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       writer.WriteLine("/// <summary>");
       writer.WriteLine($"/// Invokes the <c>{Escape(method.MethodDisplay)}</c> {method.Kind} operation of <see cref=\"{type.FullyQualifiedName}\"/>.");
       writer.WriteLine("/// </summary>");
+      writer.WriteLine($"[global::Csla.GeneratedDataPortalExtension(\"{portalMethod}\")]");
       writer.WriteLine($"{visibility} static {returnType} {OperationDiscovery.EscapeIdentifier(extension.Name)}({string.Join(", ", parameters)})");
       OpenBlock(writer);
       writer.WriteLine($"if ({receiver} is {invokerType} {invoker})");

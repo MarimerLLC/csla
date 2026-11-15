@@ -73,7 +73,8 @@ namespace Csla.Analyzers
           compilation.GetTypeByMetadataName("Csla.DataPortal`1"),
           compilation.GetTypeByMetadataName("Csla.NoDataPortalExtensionAttribute"),
           compilation.GetTypeByMetadataName("Csla.InjectAttribute"),
-          compilation.GetTypeByMetadataName("Csla.Core.ICslaObject"));
+          compilation.GetTypeByMetadataName("Csla.Core.ICslaObject"),
+          compilation.GetTypeByMetadataName("Csla.GeneratedDataPortalExtensionAttribute"));
 
         compilationContext.RegisterOperationAction(
           operationContext => AnalyzeInvocation(operationContext, symbols), OperationKind.Invocation);
@@ -118,7 +119,12 @@ namespace Csla.Analyzers
         return;
       }
 
-      var extensionNames = GetGeneratedExtensionNames(businessType, prefix, method.Name, GetCriteriaArguments(invocation), context.Compilation, symbols);
+      // A business type from a referenced assembly has no visible private
+      // operation methods, so use the extension methods generated in that assembly.
+      var criteriaArguments = GetCriteriaArguments(invocation);
+      var extensionNames = SymbolEqualityComparer.Default.Equals(businessType.ContainingAssembly, context.Compilation.Assembly)
+        ? GetGeneratedExtensionNames(businessType, prefix, method.Name, criteriaArguments, context.Compilation, symbols)
+        : GetReferencedExtensionNames(businessType, method.Name, criteriaArguments, context.Compilation, symbols);
       if (extensionNames.Count == 0)
       {
         return;
@@ -331,6 +337,76 @@ namespace Csla.Analyzers
       return names;
     }
 
+    /// <summary>
+    /// Returns the names of the extension methods generated in the business
+    /// type's own (referenced) assembly that replace the data portal method
+    /// called and accept the criteria values passed. The generator marks each
+    /// with [GeneratedDataPortalExtension] naming the data portal method.
+    /// </summary>
+    private static List<string> GetReferencedExtensionNames(INamedTypeSymbol businessType, string portalMethodName,
+      ImmutableArray<IOperation>? criteriaArguments, Compilation compilation, KnownSymbols symbols)
+    {
+      var names = new List<string>();
+      if (symbols.GeneratedExtensionAttribute is null || businessType.ContainingNamespace is not { } @namespace)
+      {
+        return names;
+      }
+
+      // Mirrors the generator's class name: containing type names joined by underscores.
+      var className = businessType.Name + "DataPortalExtensions";
+      for (var container = businessType.ContainingType; container is not null; container = container.ContainingType)
+      {
+        className = container.Name + "_" + className;
+      }
+
+      foreach (var extensionClass in @namespace.GetTypeMembers(className))
+      {
+        if (!SymbolEqualityComparer.Default.Equals(extensionClass.ContainingAssembly, businessType.ContainingAssembly))
+        {
+          continue;
+        }
+
+        foreach (var extension in extensionClass.GetMembers().OfType<IMethodSymbol>())
+        {
+          if (!extension.IsExtensionMethod ||
+            extension.Parameters[0].Type is not INamedTypeSymbol { TypeArguments.Length: 1 } receiver ||
+            !SymbolEqualityComparer.Default.Equals(receiver.TypeArguments[0], businessType) ||
+            !compilation.IsSymbolAccessibleWithin(extension, compilation.Assembly) ||
+            !ReplacesPortalMethod(extension, portalMethodName, symbols.GeneratedExtensionAttribute))
+          {
+            continue;
+          }
+
+          if (criteriaArguments is { } arguments && !AcceptsArguments(extension.Parameters.Skip(1).ToList(), arguments, compilation))
+          {
+            continue;
+          }
+
+          if (!names.Contains(extension.Name))
+          {
+            names.Add(extension.Name);
+          }
+        }
+      }
+
+      return names;
+    }
+
+    private static bool ReplacesPortalMethod(IMethodSymbol extension, string portalMethodName, INamedTypeSymbol attributeType)
+    {
+      foreach (var attribute in extension.GetAttributes())
+      {
+        if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, attributeType) &&
+          attribute.ConstructorArguments is [{ Value: string name }] &&
+          name == portalMethodName)
+        {
+          return true;
+        }
+      }
+
+      return false;
+    }
+
     private static bool IsPreferredAmongSameCriteria(IMethodSymbol operation, List<IParameterSymbol> criteria,
       List<(IMethodSymbol Method, List<IParameterSymbol> Criteria)> operations)
     {
@@ -536,7 +612,8 @@ namespace Csla.Analyzers
       INamedTypeSymbol? dataPortal,
       INamedTypeSymbol? noDataPortalExtensionAttribute,
       INamedTypeSymbol? injectAttribute,
-      INamedTypeSymbol? iCslaObject)
+      INamedTypeSymbol? iCslaObject,
+      INamedTypeSymbol? generatedExtensionAttribute)
     {
       public string AsyncSuffix { get; } = asyncSuffix;
       public bool GenerateSync { get; } = generateSync;
@@ -547,6 +624,7 @@ namespace Csla.Analyzers
       public INamedTypeSymbol? NoDataPortalExtensionAttribute { get; } = noDataPortalExtensionAttribute;
       public INamedTypeSymbol? InjectAttribute { get; } = injectAttribute;
       public INamedTypeSymbol? ICslaObject { get; } = iCslaObject;
+      public INamedTypeSymbol? GeneratedExtensionAttribute { get; } = generatedExtensionAttribute;
     }
   }
 }

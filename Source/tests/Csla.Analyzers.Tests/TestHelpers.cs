@@ -23,10 +23,11 @@ namespace Csla.Analyzers.Tests
     }
 
     internal static async Task RunAnalysisAsync<T>(string code, string[] diagnosticIds,
-      Action<List<Diagnostic>> diagnosticInspector = null, Dictionary<string, string> globalOptions = null)
+      Action<List<Diagnostic>> diagnosticInspector = null, Dictionary<string, string> globalOptions = null,
+      MetadataReference[] additionalReferences = null)
       where T : DiagnosticAnalyzer, new()
     {
-      var diagnostics = await GetDiagnosticsAsync(code, new T(), globalOptions);
+      var diagnostics = await GetDiagnosticsAsync(code, new T(), globalOptions, additionalReferences);
       Assert.AreEqual(diagnosticIds.Length, diagnostics.Count, nameof(diagnostics.Count));
 
       foreach (var diagnosticId in diagnosticIds)
@@ -38,9 +39,9 @@ namespace Csla.Analyzers.Tests
     }
 
     internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer,
-      Dictionary<string, string> globalOptions = null)
+      Dictionary<string, string> globalOptions = null, MetadataReference[] additionalReferences = null)
     {
-      var document = Create(code);
+      var document = Create(code, additionalReferences: additionalReferences);
       var options = new AnalyzerOptions([], new GlobalOptionsProvider(globalOptions ?? []));
       var compilation = (await document.Project.GetCompilationAsync())
         .WithAnalyzers([analyzer], options);
@@ -93,7 +94,21 @@ namespace Csla.Analyzers.Tests
       }
     }
 
-    internal static Document Create(string code, string assemblyName = "Test")
+    /// <summary>
+    /// Compiles <paramref name="code"/> into an assembly and returns a reference to
+    /// its image. Unlike a compilation reference, the image exposes only the
+    /// members a referenced assembly does: private members are not imported.
+    /// </summary>
+    internal static async Task<MetadataReference> CreateLibraryReferenceAsync(string code, string assemblyName)
+    {
+      var compilation = await Create(code, assemblyName).Project.GetCompilationAsync();
+      using var stream = new MemoryStream();
+      var result = compilation.Emit(stream);
+      Assert.IsTrue(result.Success, string.Join(Environment.NewLine, result.Diagnostics));
+      return MetadataReference.CreateFromImage(stream.ToArray());
+    }
+
+    internal static Document Create(string code, string assemblyName = "Test", MetadataReference[] additionalReferences = null)
     {
       var projectName = assemblyName;
       var projectId = ProjectId.CreateNewId(projectName);
@@ -111,7 +126,8 @@ namespace Csla.Analyzers.Tests
           typeof(Attribute).Assembly,
           typeof(Task<>).Assembly,
           typeof(BusinessBase<>).Assembly
-        }));
+        }))
+        .AddMetadataReferences(projectId, additionalReferences ?? []);
 
       var documentId = DocumentId.CreateNewId(projectId);
       solution = solution.AddDocument(documentId, "Test.cs", SourceText.From(code));

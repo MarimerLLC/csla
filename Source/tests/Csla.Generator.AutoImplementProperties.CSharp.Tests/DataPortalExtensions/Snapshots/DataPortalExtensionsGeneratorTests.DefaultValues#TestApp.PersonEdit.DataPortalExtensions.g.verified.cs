@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>GetById(int, string, Color, decimal, double?, float, long, bool, char)</c> Fetch operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.PersonEdit> GetByIdAsync(this global::Csla.IDataPortal<global::TestApp.PersonEdit> portal, int id = 5, string? name = "x\"y", global::TestApp.Color color = global::TestApp.Color.Green, decimal amount = 1.5M, double? ratio = null, float scale = 2.25F, long big = -3L, bool active = true, char marker = 'a')
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>GetById(int, string, Color, decimal, double?, float, long, bool, char)</c> Fetch operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("Fetch")]
     public static global::TestApp.PersonEdit GetById(this global::Csla.IDataPortal<global::TestApp.PersonEdit> portal, int id = 5, string? name = "x\"y", global::TestApp.Color color = global::TestApp.Color.Green, decimal amount = 1.5M, double? ratio = null, float scale = 2.25F, long big = -3L, bool active = true, char marker = 'a')
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)

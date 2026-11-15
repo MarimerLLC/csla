@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>Create()</c> Create operation of <see cref="global::TestApp.OrderEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("CreateAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.OrderEdit> MyCreateAsync(this global::Csla.IDataPortal<global::TestApp.OrderEdit> portal)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.OrderEdit> __invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>Create()</c> Create operation of <see cref="global::TestApp.OrderEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("Create")]
     public static global::TestApp.OrderEdit MyCreate(this global::Csla.IDataPortal<global::TestApp.OrderEdit> portal)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.OrderEdit> __invoker)

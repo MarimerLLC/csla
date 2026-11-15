@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>GetById(int)</c> Fetch operation of <see cref="global::TestApp.Outer.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.Outer.PersonEdit> GetByIdAsync(this global::Csla.IDataPortal<global::TestApp.Outer.PersonEdit> portal, int id)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.Outer.PersonEdit> __invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>GetById(int)</c> Fetch operation of <see cref="global::TestApp.Outer.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("Fetch")]
     public static global::TestApp.Outer.PersonEdit GetById(this global::Csla.IDataPortal<global::TestApp.Outer.PersonEdit> portal, int id)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.Outer.PersonEdit> __invoker)

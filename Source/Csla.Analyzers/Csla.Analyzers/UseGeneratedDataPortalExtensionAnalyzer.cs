@@ -48,9 +48,11 @@ namespace Csla.Analyzers
     /// </summary>
     public override void Initialize(AnalysisContext context)
     {
-      // Generated code must be skipped: the generated extension methods
-      // themselves call the untyped data portal methods.
-      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
+      // Razor pages (.razor, .cshtml) are compiled from generated code, so
+      // generated code is analyzed, but calls are only reported where they
+      // map to a Razor file: the generated extension methods themselves
+      // (and other generated code) call the untyped data portal methods on purpose.
+      context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
       context.EnableConcurrentExecution();
       context.RegisterCompilationStartAction(compilationContext =>
       {
@@ -102,6 +104,12 @@ namespace Csla.Analyzers
         return;
       }
 
+      var location = GetLocation(invocation);
+      if (context.IsGeneratedCode && !IsRazorUserCode(location))
+      {
+        return;
+      }
+
       context.CancellationToken.ThrowIfCancellationRequested();
 
       if (containingType.TypeArguments[0] is not INamedTypeSymbol businessType ||
@@ -118,7 +126,27 @@ namespace Csla.Analyzers
 
       var properties = ImmutableDictionary<string, string?>.Empty.Add(ExtensionNamesProperty, string.Join(";", extensionNames));
       context.ReportDiagnostic(Diagnostic.Create(
-        useExtensionRule, GetLocation(invocation), properties, businessType.Name, method.Name));
+        useExtensionRule, location, properties, businessType.Name, method.Name));
+    }
+
+    /// <summary>
+    /// The generated code is user code from a Razor file: it maps through a
+    /// #line directive to a .razor or .cshtml file and is not in a #line hidden
+    /// region. Detecting Razor output by #line rather than #pragma checksum
+    /// also covers the .razor.decl.g.cs file holding the @code block, which has no checksum.
+    /// </summary>
+    private static bool IsRazorUserCode(Location location)
+    {
+      if (location.SourceTree is not { } tree ||
+        tree.GetLineVisibility(location.SourceSpan.Start) != LineVisibility.Visible)
+      {
+        return false;
+      }
+
+      var span = location.GetMappedLineSpan();
+      return span.HasMappedPath &&
+        (span.Path.EndsWith(".razor", StringComparison.OrdinalIgnoreCase) ||
+        span.Path.EndsWith(".cshtml", StringComparison.OrdinalIgnoreCase));
     }
 
     private static bool IsCriteriaMethod(IMethodSymbol method, bool isRootPortal, bool isChildPortal)

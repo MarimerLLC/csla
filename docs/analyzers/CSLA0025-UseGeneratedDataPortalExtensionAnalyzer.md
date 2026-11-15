@@ -34,7 +34,7 @@ A call is only reported when the generator produces an extension method that can
 
 `Update`, `UpdateAsync`, `UpdateChild`, `UpdateChildAsync`, and `Execute`/`ExecuteAsync` called with a command object are not reported, because they do not take untyped criteria.
 
-Generated code is not analyzed, because the generated extension methods themselves call the untyped data portal methods.
+Calls in Razor files (`.razor` and `.cshtml`), both in markup and in `@code` blocks, are reported at their line in the Razor file. Calls in other generated code are not reported, because the generated extension methods themselves call the untyped data portal methods.
 
 ## Code Fix
 
@@ -49,3 +49,5 @@ becomes
 ```
 public Task<Customer> GetCustomerAsync(int id) => portal.GetByIdAsync(id);
 ```
+
+In Razor files the editor might not offer the code fix. Change the call to the generated extension method by hand.

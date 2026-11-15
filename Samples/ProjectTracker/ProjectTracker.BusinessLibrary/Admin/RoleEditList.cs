@@ -58,7 +58,7 @@ namespace ProjectTracker.Library
         {
           List<ProjectTracker.Dal.RoleDto> list = dal.Fetch();
           foreach (var item in list)
-            Add(roleEditPortal.FetchChild(item));
+            Add(roleEditPortal.PortalFetch(item));
         }
       }
 

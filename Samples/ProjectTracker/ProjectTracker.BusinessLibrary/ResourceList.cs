@@ -38,7 +38,7 @@ namespace ProjectTracker.Library
       {
         List<ProjectTracker.Dal.ResourceDto> list = dal.Fetch();
         foreach (var item in list)
-          Add(portal.FetchChild(item));
+          Add(portal.PortalFetch(item));
       }
     }
   }

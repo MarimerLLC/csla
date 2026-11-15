@@ -39,7 +39,7 @@ namespace ProjectTracker.Library
       {
         List<Dal.ProjectDto> list = name == null ? dal.Fetch() : dal.Fetch(name);
         foreach (var item in list)
-          Add(portal.FetchChild(item));
+          Add(portal.PortalFetch(item));
       }
     }
   }

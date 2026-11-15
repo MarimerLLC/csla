@@ -32,7 +32,7 @@ namespace ProjectTracker.Library
     public async Task<ProjectResourceEdit> AssignAsync(int resourceId)
     {
       var portal = ApplicationContext.GetRequiredService<IDataPortal<ProjectResourceEditCreator>>();
-      var resourceCreator = await portal.FetchAsync(resourceId);
+      var resourceCreator = await portal.PortalExecuteAsync(resourceId);
       var resourceEdit = resourceCreator.ProjectResource;
       this.Add(resourceEdit);
       return resourceEdit;
@@ -133,7 +133,7 @@ namespace ProjectTracker.Library
       {
         var assignments = assignmentDal.FetchForProject(id);
         foreach (var item in assignments)
-          Add(childPortal.FetchChild(item));
+          Add(childPortal.PortalFetch(item));
       }
     }
 

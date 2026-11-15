@@ -84,7 +84,7 @@ else
             vm.Saved += () => NavigationManager.NavigateTo("roles");
             vm.ModelPropertyChanged += async (s, e) => await InvokeAsync(() => StateHasChanged());
 
-            await vm.RefreshAsync(() => roleEditListPortal.FetchAsync());
+            await vm.RefreshAsync(() => roleEditListPortal.PortalFetchAsync());
 
             if (Id.HasValue)
             {
@@ -92,7 +92,7 @@ else
             }
             else
             {
-                _currentRole = roleEditChildPortal.CreateChild();
+                _currentRole = roleEditChildPortal.PortalCreate();
                 vm.Model?.Add(_currentRole);
             }
         }

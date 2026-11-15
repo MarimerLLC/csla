@@ -117,6 +117,21 @@
   <resheader name="writer">
     <value>System.Resources.ResXResourceWriter, System.Windows.Forms, Version=4.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089</value>
   </resheader>
+  <data name="AddsToRuleContextAttributeUsageAnalyzer_Title" xml:space="preserve">
+    <value>Methods with [AddsToRuleContext] should add to the rule context</value>
+  </data>
+  <data name="AddsToRuleContextAttributeUsageAnalyzer_Message" xml:space="preserve">
+    <value>Method '{0}' has [AddsToRuleContext] but {1}</value>
+  </data>
+  <data name="AddsToRuleContextAttributeUsageAnalyzer_InheritedImplementationMessage" xml:space="preserve">
+    <value>'{0}' implements the [AddsToRuleContext] method '{1}' with the inherited method '{2}', which must have [AddsToRuleContext] so that it is checked</value>
+  </data>
+  <data name="AddsToRuleContextAttributeUsageAnalyzer_NoRuleContextParameter" xml:space="preserve">
+    <value>it has no IRuleContext parameter</value>
+  </data>
+  <data name="AddsToRuleContextAttributeUsageAnalyzer_NoAddCall" xml:space="preserve">
+    <value>it doesn't call an Add method on its rule context, or another [AddsToRuleContext] method that it passes the rule context to</value>
+  </data>
   <data name="AsynchronousBusinessRuleInheritingFromBusinessRuleAnalyzer_Title" xml:space="preserve">
     <value>Find Asynchronous Business Rules That Do Not Derive From BusinessRuleAsync</value>
   </data>

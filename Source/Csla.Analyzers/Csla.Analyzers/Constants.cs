@@ -129,6 +129,12 @@
       /// is not an interface declared in the same project or the type doesn't inherit a supported base class.
       /// </summary>
       public const string InvalidImplementPropertiesInterface = "CSLA0030";
+      /// <summary>
+      /// A method with <c>[AddsToRuleContext]</c> has no <c>IRuleContext</c> parameter, or doesn't
+      /// call an <c>Add</c> method on that context or another <c>[AddsToRuleContext]</c> method
+      /// that it passes the context to.
+      /// </summary>
+      public const string AddsToRuleContextUsage = "CSLA0031";
 
     }
 

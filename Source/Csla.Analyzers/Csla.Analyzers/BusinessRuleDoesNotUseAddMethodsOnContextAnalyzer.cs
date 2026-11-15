@@ -36,10 +36,14 @@ namespace Csla.Analyzers
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.Analyze | GeneratedCodeAnalysisFlags.ReportDiagnostics);
       context.EnableConcurrentExecution();
-      context.RegisterSyntaxNodeAction(AnalyzeMethodDeclaration, SyntaxKind.MethodDeclaration);
+      context.RegisterCompilationStartAction(startContext =>
+      {
+        var attributeType = startContext.Compilation.GetTypeByMetadataName(RuleContextAddCallDetector.AttributeMetadataName);
+        startContext.RegisterSyntaxNodeAction(c => AnalyzeMethodDeclaration(c, attributeType), SyntaxKind.MethodDeclaration);
+      });
     }
 
-    private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context)
+    private static void AnalyzeMethodDeclaration(SyntaxNodeAnalysisContext context, INamedTypeSymbol? attributeType)
     {
       var methodNode = (MethodDeclarationSyntax)context.Node;
 
@@ -62,7 +66,8 @@ namespace Csla.Analyzers
             .Any(invocation =>
             {
               return context.SemanticModel.GetSymbolInfo(invocation.Expression).Symbol is IMethodSymbol invocationSymbol &&
-                invocationSymbol.Name.StartsWith("Add") && SymbolEqualityComparer.Default.Equals(invocationSymbol.ContainingType, contextParameter.Type);
+                (RuleContextAddCallDetector.IsAddMethodOn(invocationSymbol, contextParameter.Type) ||
+                  RuleContextAddCallDetector.HasAttribute(invocationSymbol, attributeType));
             });
 
           if (!wasAddMethodCalled)

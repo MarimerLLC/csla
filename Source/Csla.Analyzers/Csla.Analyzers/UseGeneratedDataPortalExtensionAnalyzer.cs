@@ -7,6 +7,7 @@ using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
 using Microsoft.CodeAnalysis.Diagnostics;
 using Microsoft.CodeAnalysis.Operations;
+using System.Collections.Concurrent;
 using System.Collections.Immutable;
 
 namespace Csla.Analyzers
@@ -121,6 +122,7 @@ namespace Csla.Analyzers
 
       // A business type from a referenced assembly has no visible private
       // operation methods, so use the extension methods generated in that assembly.
+      // The prefix is then only a gate: no [DataPortalExtensions], no extensions.
       var criteriaArguments = GetCriteriaArguments(invocation);
       var extensionNames = SymbolEqualityComparer.Default.Equals(businessType.ContainingAssembly, context.Compilation.Assembly)
         ? GetGeneratedExtensionNames(businessType, prefix, method.Name, criteriaArguments, context.Compilation, symbols)
@@ -141,7 +143,7 @@ namespace Csla.Analyzers
     /// region. Detecting Razor output by #line rather than #pragma checksum
     /// also covers the .razor.decl.g.cs file holding the @code block, which has no checksum.
     /// </summary>
-    private static bool IsRazorUserCode(Location location)
+    internal static bool IsRazorUserCode(Location location)
     {
       if (location.SourceTree is not { } tree ||
         tree.GetLineVisibility(location.SourceSpan.Start) != LineVisibility.Visible)
@@ -340,71 +342,72 @@ namespace Csla.Analyzers
     /// <summary>
     /// Returns the names of the extension methods generated in the business
     /// type's own (referenced) assembly that replace the data portal method
-    /// called and accept the criteria values passed. The generator marks each
-    /// with [GeneratedDataPortalExtension] naming the data portal method.
+    /// called and accept the criteria values passed.
     /// </summary>
     private static List<string> GetReferencedExtensionNames(INamedTypeSymbol businessType, string portalMethodName,
       ImmutableArray<IOperation>? criteriaArguments, Compilation compilation, KnownSymbols symbols)
     {
       var names = new List<string>();
-      if (symbols.GeneratedExtensionAttribute is null || businessType.ContainingNamespace is not { } @namespace)
+      foreach (var (extension, replaces) in symbols.GetReferencedExtensions(businessType, compilation))
       {
-        return names;
-      }
-
-      // Mirrors the generator's class name: containing type names joined by underscores.
-      var className = businessType.Name + "DataPortalExtensions";
-      for (var container = businessType.ContainingType; container is not null; container = container.ContainingType)
-      {
-        className = container.Name + "_" + className;
-      }
-
-      foreach (var extensionClass in @namespace.GetTypeMembers(className))
-      {
-        if (!SymbolEqualityComparer.Default.Equals(extensionClass.ContainingAssembly, businessType.ContainingAssembly))
+        if (replaces != portalMethodName)
         {
           continue;
         }
 
-        foreach (var extension in extensionClass.GetMembers().OfType<IMethodSymbol>())
+        if (criteriaArguments is { } arguments && !AcceptsArguments(extension.Parameters.Skip(1).ToList(), arguments, compilation))
         {
-          if (!extension.IsExtensionMethod ||
-            extension.Parameters[0].Type is not INamedTypeSymbol { TypeArguments.Length: 1 } receiver ||
-            !SymbolEqualityComparer.Default.Equals(receiver.TypeArguments[0], businessType) ||
-            !compilation.IsSymbolAccessibleWithin(extension, compilation.Assembly) ||
-            !ReplacesPortalMethod(extension, portalMethodName, symbols.GeneratedExtensionAttribute))
-          {
-            continue;
-          }
+          continue;
+        }
 
-          if (criteriaArguments is { } arguments && !AcceptsArguments(extension.Parameters.Skip(1).ToList(), arguments, compilation))
-          {
-            continue;
-          }
-
-          if (!names.Contains(extension.Name))
-          {
-            names.Add(extension.Name);
-          }
+        if (!names.Contains(extension.Name))
+        {
+          names.Add(extension.Name);
         }
       }
 
       return names;
     }
 
-    private static bool ReplacesPortalMethod(IMethodSymbol extension, string portalMethodName, INamedTypeSymbol attributeType)
+    /// <summary>
+    /// Finds the extension methods for a business type from a referenced
+    /// assembly that the generator marked with [GeneratedDataPortalExtension],
+    /// with the data portal method each replaces, keeping those accessible
+    /// from the compilation. Scans the static classes of the business type's
+    /// namespace in its own assembly, so it does not depend on how the
+    /// generator names the extension class.
+    /// </summary>
+    private static ImmutableArray<(IMethodSymbol Extension, string PortalMethodName)> FindReferencedExtensions(
+      INamedTypeSymbol businessType, Compilation compilation, INamedTypeSymbol? attributeType)
     {
-      foreach (var attribute in extension.GetAttributes())
+      if (attributeType is null || businessType.ContainingNamespace is not { } @namespace)
       {
-        if (SymbolEqualityComparer.Default.Equals(attribute.AttributeClass, attributeType) &&
-          attribute.ConstructorArguments is [{ Value: string name }] &&
-          name == portalMethodName)
+        return ImmutableArray<(IMethodSymbol, string)>.Empty;
+      }
+
+      // The namespace of a type from a referenced assembly holds only that assembly's types.
+      var extensions = ImmutableArray.CreateBuilder<(IMethodSymbol, string)>();
+      foreach (var type in @namespace.GetTypeMembers())
+      {
+        if (!type.IsStatic || !type.MightContainExtensionMethods)
         {
-          return true;
+          continue;
+        }
+
+        foreach (var extension in type.GetMembers().OfType<IMethodSymbol>())
+        {
+          if (extension.IsExtensionMethod &&
+            extension.Parameters[0].Type is INamedTypeSymbol { TypeArguments.Length: 1 } receiver &&
+            SymbolEqualityComparer.Default.Equals(receiver.TypeArguments[0], businessType) &&
+            FindAttribute(extension.GetAttributes(), attributeType)?.ConstructorArguments is [{ Value: string portalMethodName }] &&
+            compilation.IsSymbolAccessibleWithin(extension, compilation.Assembly))
+          {
+            extensions.Add((extension, portalMethodName));
+          }
         }
       }
 
-      return false;
+      return extensions.ToImmutable();
     }
 
     private static bool IsPreferredAmongSameCriteria(IMethodSymbol operation, List<IParameterSymbol> criteria,
@@ -625,6 +628,17 @@ namespace Csla.Analyzers
       public INamedTypeSymbol? InjectAttribute { get; } = injectAttribute;
       public INamedTypeSymbol? ICslaObject { get; } = iCslaObject;
       public INamedTypeSymbol? GeneratedExtensionAttribute { get; } = generatedExtensionAttribute;
+
+      private readonly ConcurrentDictionary<INamedTypeSymbol, ImmutableArray<(IMethodSymbol Extension, string PortalMethodName)>> _referencedExtensions =
+        new(SymbolEqualityComparer.Default);
+
+      /// <summary>
+      /// The marked extension methods of a business type from a referenced
+      /// assembly, found once per compilation.
+      /// </summary>
+      public ImmutableArray<(IMethodSymbol Extension, string PortalMethodName)> GetReferencedExtensions(
+        INamedTypeSymbol businessType, Compilation compilation) =>
+        _referencedExtensions.GetOrAdd(businessType, type => FindReferencedExtensions(type, compilation, GeneratedExtensionAttribute));
     }
   }
 }

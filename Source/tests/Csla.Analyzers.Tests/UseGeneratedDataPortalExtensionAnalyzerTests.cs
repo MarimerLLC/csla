@@ -555,6 +555,8 @@ namespace Csla.Analyzers.Tests
 
     // A business library as the generator leaves it: private operation methods,
     // which a referencing assembly cannot see, and marked extension methods.
+    // Person.Address and the top-level Person_Address share an extension class
+    // name, so their methods merge into one class, as the generator does.
     private const string ReferencedLibrary =
       """
       using Csla;
@@ -588,6 +590,13 @@ namespace Csla.Analyzers.Tests
           }
         }
 
+        [Serializable]
+        public partial class Person_Address : BusinessBase<Person_Address>
+        {
+          [Fetch]
+          private void Fetch(string code) { }
+        }
+
         public static partial class PersonDataPortalExtensions
         {
           [GeneratedDataPortalExtension("CreateAsync")]
@@ -610,22 +619,37 @@ namespace Csla.Analyzers.Tests
         {
           [GeneratedDataPortalExtension("FetchAsync")]
           public static Task<Person.Address> PortalFetchAsync(this IDataPortal<Person.Address> portal, int id) => portal.FetchAsync(id);
+
+          [GeneratedDataPortalExtension("FetchAsync")]
+          public static Task<Person_Address> PortalFetchAsync(this IDataPortal<Person_Address> portal, string code) => portal.FetchAsync(code);
         }
       }
       """;
 
-    private static async Task RunReferencedAnalysisAsync(string body, string[] diagnosticIds, string extensionNames = null)
+    private static readonly Lazy<Task<MetadataReference>> referencedLibrary =
+      new(() => TestHelpers.CreateLibraryReferenceAsync(ReferencedLibrary, "Library"));
+
+    // The same library with its internals visible to the consuming test assembly.
+    private static readonly Lazy<Task<MetadataReference>> friendLibrary =
+      new(() => TestHelpers.CreateLibraryReferenceAsync(
+        ReferencedLibrary.Replace("[assembly: DataPortalExtensions",
+          "[assembly: System.Runtime.CompilerServices.InternalsVisibleTo(\"Test\")]\n[assembly: DataPortalExtensions"), "Library"));
+
+    private static async Task RunReferencedAnalysisAsync(string body, string[] diagnosticIds, string extensionNames = null,
+      bool internalsVisible = false, string header = "", Action<Diagnostic> inspect = null)
     {
-      var library = await TestHelpers.CreateLibraryReferenceAsync(ReferencedLibrary, "Library");
+      var library = await (internalsVisible ? friendLibrary : referencedLibrary).Value;
       var code =
         $$"""
+        {{header}}
         using Csla;
         using Library;
         using System.Threading.Tasks;
 
         public class Consumer
         {
-          public async Task Run(IDataPortal<Person> portal, IChildDataPortal<Person> childPortal, IDataPortal<Person.Address> addressPortal)
+          public async Task Run(IDataPortal<Person> portal, IChildDataPortal<Person> childPortal,
+            IDataPortal<Person.Address> addressPortal, IDataPortal<Person_Address> codePortal)
           {
             {{body}}
             await Task.CompletedTask;
@@ -639,6 +663,11 @@ namespace Csla.Analyzers.Tests
           {
             Assert.AreEqual(extensionNames, diagnostics[0].Properties[UseGeneratedDataPortalExtensionAnalyzer.ExtensionNamesProperty]);
           }
+
+          if (inspect is not null)
+          {
+            inspect(diagnostics[0]);
+          }
         },
         additionalReferences: [library]);
     }
@@ -648,12 +677,16 @@ namespace Csla.Analyzers.Tests
     [DataRow("portal.Fetch(1);", "PortalFetch")]
     [DataRow("await portal.CreateAsync();", "PortalCreateAsync")]
     [DataRow("await addressPortal.FetchAsync(1);", "PortalFetchAsync")]
+    [DataRow("await codePortal.FetchAsync(\"x\");", "PortalFetchAsync")]
     public async Task AnalyzeWhenBusinessTypeIsInReferencedAssembly(string body, string extensionNames) =>
       await RunReferencedAnalysisAsync(body, [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension], extensionNames);
 
     [TestMethod]
-    public async Task AnalyzeWhenBusinessTypeIsInReferencedAssemblyAndArgumentsDoNotMatch() =>
-      await RunReferencedAnalysisAsync("await portal.FetchAsync(\"x\");", []);
+    [DataRow("await portal.FetchAsync(\"x\");")]
+    // Person.Address's PortalFetchAsync(int) is in the same class but has another receiver.
+    [DataRow("await codePortal.FetchAsync(1);")]
+    public async Task AnalyzeWhenBusinessTypeIsInReferencedAssemblyAndArgumentsDoNotMatch(string body) =>
+      await RunReferencedAnalysisAsync(body, []);
 
     [TestMethod]
     public async Task AnalyzeWhenBusinessTypeIsInReferencedAssemblyAndExtensionIsNotMarked() =>
@@ -662,6 +695,27 @@ namespace Csla.Analyzers.Tests
     [TestMethod]
     public async Task AnalyzeWhenBusinessTypeIsInReferencedAssemblyAndExtensionIsNotAccessible() =>
       await RunReferencedAnalysisAsync("childPortal.FetchChild(1);", []);
+
+    [TestMethod]
+    public async Task AnalyzeWhenBusinessTypeIsInReferencedAssemblyAndInternalsAreVisible() =>
+      await RunReferencedAnalysisAsync("childPortal.FetchChild(1);",
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension], "PortalFetchChild", internalsVisible: true);
+
+    [TestMethod]
+    public async Task AnalyzeWhenBusinessTypeIsInReferencedAssemblyAndCallIsInRazorFile() =>
+      await RunReferencedAnalysisAsync(
+        """
+        #line (12,5)-(12,40) "Pages/EditPerson.razor"
+        await portal.FetchAsync(1);
+        #line default
+        """,
+        [Constants.AnalyzerIdentifiers.UseGeneratedDataPortalExtension], "PortalFetchAsync", header: "// <auto-generated/>",
+        inspect: diagnostic =>
+        {
+          var span = diagnostic.Location.GetMappedLineSpan();
+          Assert.AreEqual("Pages/EditPerson.razor", span.Path);
+          Assert.AreEqual(11, span.StartLinePosition.Line);
+        });
 
     [TestMethod]
     public async Task AnalyzeWhenGeneratedCodeMapsToOtherFile()

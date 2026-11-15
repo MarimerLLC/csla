@@ -52,4 +52,4 @@ becomes
 public Task<Customer> GetCustomerAsync(int id) => portal.GetByIdAsync(id);
 ```
 
-In Razor files the editor might not offer the code fix. Change the call to the generated extension method by hand.
+The code fix is not offered for calls in Razor files, because the diagnostic is reported in the C# code generated from the Razor file, which cannot be edited. Change the call to the generated extension method by hand.

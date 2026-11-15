@@ -123,6 +123,9 @@
   <data name="AddsToRuleContextAttributeUsageAnalyzer_Message" xml:space="preserve">
     <value>Method '{0}' has [AddsToRuleContext] but {1}</value>
   </data>
+  <data name="AddsToRuleContextAttributeUsageAnalyzer_InheritedImplementationMessage" xml:space="preserve">
+    <value>'{0}' implements the [AddsToRuleContext] method '{1}' with the inherited method '{2}', which must have [AddsToRuleContext] so that it is checked</value>
+  </data>
   <data name="AddsToRuleContextAttributeUsageAnalyzer_NoRuleContextParameter" xml:space="preserve">
     <value>it has no IRuleContext parameter</value>
   </data>

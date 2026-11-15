@@ -11,22 +11,26 @@ namespace Csla.Analyzers.Tests
     {
       var analyzer = new AddsToRuleContextAttributeUsageAnalyzer();
       var diagnostics = analyzer.SupportedDiagnostics;
-      Assert.AreEqual(1, diagnostics.Length);
+      Assert.AreEqual(2, diagnostics.Length);
 
-      var diagnostic = diagnostics[0];
-      Assert.AreEqual(Constants.AnalyzerIdentifiers.AddsToRuleContextUsage, diagnostic.Id,
-        nameof(DiagnosticDescriptor.Id));
-      Assert.AreEqual("Methods with [AddsToRuleContext] should add to the rule context", diagnostic.Title.ToString(),
-        nameof(DiagnosticDescriptor.Title));
-      Assert.AreEqual("Method '{0}' has [AddsToRuleContext] but {1}", diagnostic.MessageFormat.ToString(),
+      foreach (var diagnostic in diagnostics)
+      {
+        Assert.AreEqual(Constants.AnalyzerIdentifiers.AddsToRuleContextUsage, diagnostic.Id,
+          nameof(DiagnosticDescriptor.Id));
+        Assert.AreEqual("Methods with [AddsToRuleContext] should add to the rule context", diagnostic.Title.ToString(),
+          nameof(DiagnosticDescriptor.Title));
+        Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
+          nameof(DiagnosticDescriptor.Category));
+        Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity,
+          nameof(DiagnosticDescriptor.DefaultSeverity));
+        Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.AddsToRuleContextUsage, nameof(AddsToRuleContextAttributeUsageAnalyzer)),
+          diagnostic.HelpLinkUri,
+          nameof(DiagnosticDescriptor.HelpLinkUri));
+      }
+      Assert.AreEqual("Method '{0}' has [AddsToRuleContext] but {1}", diagnostics[0].MessageFormat.ToString(),
         nameof(DiagnosticDescriptor.MessageFormat));
-      Assert.AreEqual(Constants.Categories.Usage, diagnostic.Category,
-        nameof(DiagnosticDescriptor.Category));
-      Assert.AreEqual(DiagnosticSeverity.Warning, diagnostic.DefaultSeverity,
-        nameof(DiagnosticDescriptor.DefaultSeverity));
-      Assert.AreEqual(HelpUrlBuilder.Build(Constants.AnalyzerIdentifiers.AddsToRuleContextUsage, nameof(AddsToRuleContextAttributeUsageAnalyzer)),
-        diagnostic.HelpLinkUri,
-        nameof(DiagnosticDescriptor.HelpLinkUri));
+      Assert.AreEqual("'{0}' implements the [AddsToRuleContext] method '{1}' with the inherited method '{2}', which must have [AddsToRuleContext] so that it is checked",
+        diagnostics[1].MessageFormat.ToString(), nameof(DiagnosticDescriptor.MessageFormat));
     }
 
     [TestMethod]
@@ -426,6 +430,136 @@ namespace Csla.Analyzers.Tests
         """;
       await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(
         code, [Constants.AnalyzerIdentifiers.AddsToRuleContextUsage]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenStaticImplementationOfAttributedStaticAbstractInterfaceMethodDoesNotCallAddMethod()
+    {
+      var code =
+        """
+        using Csla.Rules;
+
+        public interface IHelper
+        {
+          [AddsToRuleContext]
+          static abstract void Fail(IRuleContext context);
+        }
+
+        public class Helper : IHelper
+        {
+          public static void Fail(IRuleContext context) { }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.AddsToRuleContextUsage],
+        diagnostics => Assert.AreEqual(10, diagnostics[0].Location.GetLineSpan().StartLinePosition.Line));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenStaticImplementationOfAttributedStaticAbstractInterfaceMethodCallsAddMethod()
+    {
+      var code =
+        """
+        using Csla.Rules;
+
+        public interface IHelper
+        {
+          [AddsToRuleContext]
+          static abstract void Fail(IRuleContext context);
+        }
+
+        public class Helper : IHelper
+        {
+          public static void Fail(IRuleContext context) => context.AddErrorResult("failed");
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenInheritedMethodImplementsAttributedInterfaceMethod()
+    {
+      var code =
+        """
+        using Csla.Rules;
+
+        public interface IHelper
+        {
+          [AddsToRuleContext]
+          void Fail(IRuleContext context);
+        }
+
+        public class Base
+        {
+          public void Fail(IRuleContext context) { }
+        }
+
+        public class Derived : Base, IHelper { }
+
+        public class MoreDerived : Derived { }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.AddsToRuleContextUsage],
+        diagnostics => Assert.AreEqual("'Derived' implements the [AddsToRuleContext] method 'IHelper.Fail(IRuleContext)' with the inherited method 'Base.Fail(IRuleContext)', which must have [AddsToRuleContext] so that it is checked",
+          diagnostics[0].GetMessage()));
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenAttributedInheritedMethodImplementsAttributedInterfaceMethod()
+    {
+      var code =
+        """
+        using Csla.Rules;
+
+        public interface IHelper
+        {
+          [AddsToRuleContext]
+          void Fail(IRuleContext context);
+        }
+
+        public class Base
+        {
+          [AddsToRuleContext]
+          public void Fail(IRuleContext context) => context.AddErrorResult("failed");
+        }
+
+        public class Derived : Base, IHelper { }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(code, []);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenAddMethodIsCalledThroughCastToUnrelatedType()
+    {
+      var code =
+        """
+        using System.Collections.Generic;
+        using Csla.Rules;
+
+        public static class Helper
+        {
+          [AddsToRuleContext]
+          public static void Trace(IRuleContext context) => ((ICollection<string>)context).Add("trace");
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(
+        code, [Constants.AnalyzerIdentifiers.AddsToRuleContextUsage]);
+    }
+
+    [TestMethod]
+    public async Task AnalyzeWhenAddMethodIsCalledThroughCastToRuleContextClass()
+    {
+      var code =
+        """
+        using Csla.Rules;
+
+        public static class Helper
+        {
+          [AddsToRuleContext]
+          public static void Fail(IRuleContext context) => ((RuleContext)context).AddErrorResult("failed");
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(code, []);
     }
 
     [TestMethod]

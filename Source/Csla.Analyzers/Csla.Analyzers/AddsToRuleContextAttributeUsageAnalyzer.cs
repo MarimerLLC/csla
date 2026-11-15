@@ -12,7 +12,9 @@ namespace Csla.Analyzers
   /// context nor another <c>[AddsToRuleContext]</c> method that it passes the context to (CSLA0031).
   /// Overrides and implementations of an attributed method are checked too, because CSLA0017
   /// trusts the attribute on the method they override or implement. Methods without a body
-  /// (abstract, interface or extern methods) are not checked.
+  /// (abstract, interface or extern methods) are not checked. A class that implements an
+  /// attributed interface method with a method inherited from its base class is reported unless
+  /// the inherited method is checked itself (for example because it has the attribute).
   /// </summary>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class AddsToRuleContextAttributeUsageAnalyzer
@@ -26,10 +28,18 @@ namespace Csla.Analyzers
         helpLinkUri: HelpUrlBuilder.Build(
           Constants.AnalyzerIdentifiers.AddsToRuleContextUsage, nameof(AddsToRuleContextAttributeUsageAnalyzer)));
 
+    private static readonly DiagnosticDescriptor inheritedImplementationRule =
+      new(
+        Constants.AnalyzerIdentifiers.AddsToRuleContextUsage, AddsToRuleContextAttributeUsageAnalyzerConstants.Title,
+        AddsToRuleContextAttributeUsageAnalyzerConstants.InheritedImplementationMessage, Constants.Categories.Usage,
+        DiagnosticSeverity.Warning, true,
+        helpLinkUri: HelpUrlBuilder.Build(
+          Constants.AnalyzerIdentifiers.AddsToRuleContextUsage, nameof(AddsToRuleContextAttributeUsageAnalyzer)));
+
     /// <summary>
     ///
     /// </summary>
-    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [rule];
+    public override ImmutableArray<DiagnosticDescriptor> SupportedDiagnostics => [rule, inheritedImplementationRule];
 
     /// <summary>
     ///
@@ -47,29 +57,69 @@ namespace Csla.Analyzers
           return;
 
         startContext.RegisterOperationBlockAction(c => AnalyzeOperationBlock(c, attributeType, ruleContextType));
+        startContext.RegisterOperationAction(c => AnalyzeLocalFunction(c, attributeType, ruleContextType), OperationKind.LocalFunction);
+        startContext.RegisterSymbolAction(c => AnalyzeInheritedImplementations(c, attributeType), SymbolKind.NamedType);
       });
     }
 
     private static void AnalyzeOperationBlock(OperationBlockAnalysisContext context,
       INamedTypeSymbol attributeType, INamedTypeSymbol ruleContextType)
     {
+      if (context.OwningSymbol is not IMethodSymbol method || !IsMarked(method, attributeType))
+        return;
+
       // The operation blocks also include attribute applications and parameter default
       // values; only the body (a block, also for an expression body) is analyzed, so
       // abstract, interface and extern methods are skipped
       var bodies = context.OperationBlocks.Where(b => b is IBlockOperation).ToImmutableArray();
-      if (!bodies.IsEmpty && context.OwningSymbol is IMethodSymbol method && IsMarked(method, attributeType))
-        Analyze(context, method, bodies, attributeType, ruleContextType);
+      if (!bodies.IsEmpty)
+        Analyze(context.ReportDiagnostic, method, bodies, attributeType, ruleContextType);
+    }
 
-      foreach (var localFunction in context.OperationBlocks
-        .SelectMany(b => b.DescendantsAndSelf())
-        .OfType<ILocalFunctionOperation>())
+    private static void AnalyzeLocalFunction(OperationAnalysisContext context,
+      INamedTypeSymbol attributeType, INamedTypeSymbol ruleContextType)
+    {
+      var localFunction = (ILocalFunctionOperation)context.Operation;
+      if (localFunction.Body is { } body && RuleContextAddCallDetector.HasAttribute(localFunction.Symbol, attributeType))
+        Analyze(context.ReportDiagnostic, localFunction.Symbol, [body], attributeType, ruleContextType);
+    }
+
+    /// <summary>
+    /// A type that implements an <c>[AddsToRuleContext]</c> interface method with a method it
+    /// inherits from a base class, which doesn't implement that interface itself. The operation
+    /// block of the inherited method doesn't know about this type, so its body isn't checked;
+    /// it must have <c>[AddsToRuleContext]</c> itself to be checked.
+    /// </summary>
+    private static void AnalyzeInheritedImplementations(SymbolAnalysisContext context, INamedTypeSymbol attributeType)
+    {
+      var type = (INamedTypeSymbol)context.Symbol;
+      if (type.TypeKind != TypeKind.Class || type.BaseType is not { } baseType || type.Locations.IsEmpty)
+        return;
+
+      foreach (var interfaceType in type.AllInterfaces)
       {
-        if (localFunction.Body is { } body && RuleContextAddCallDetector.HasAttribute(localFunction.Symbol, attributeType))
-          Analyze(context, localFunction.Symbol, [body], attributeType, ruleContextType);
+        // An interface the base class already implements is checked on the base class
+        if (baseType.AllInterfaces.Contains(interfaceType, SymbolEqualityComparer.Default))
+          continue;
+
+        foreach (var interfaceMethod in interfaceType.GetMembers().OfType<IMethodSymbol>())
+        {
+          if (!RuleContextAddCallDetector.HasAttribute(interfaceMethod, attributeType)
+            || type.FindImplementationForInterfaceMember(interfaceMethod) is not IMethodSymbol implementation
+            || SymbolEqualityComparer.Default.Equals(implementation.ContainingType, type)
+            || !implementation.Locations.Any(l => l.IsInSource)
+            || IsMarked(implementation, attributeType))
+            continue;
+
+          context.ReportDiagnostic(Diagnostic.Create(inheritedImplementationRule, type.Locations[0],
+            type.Name,
+            interfaceMethod.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat),
+            implementation.ToDisplayString(SymbolDisplayFormat.CSharpShortErrorMessageFormat)));
+        }
       }
     }
 
-    private static void Analyze(OperationBlockAnalysisContext context, IMethodSymbol method,
+    private static void Analyze(Action<Diagnostic> reportDiagnostic, IMethodSymbol method,
       ImmutableArray<IOperation> blocks, INamedTypeSymbol attributeType, INamedTypeSymbol ruleContextType)
     {
       var contextParameters = method.Parameters
@@ -79,13 +129,13 @@ namespace Csla.Analyzers
       string? reason = null;
       if (contextParameters.IsEmpty)
         reason = nameof(Resources.AddsToRuleContextAttributeUsageAnalyzer_NoRuleContextParameter);
-      else if (!AddsToContext(method, blocks, contextParameters, attributeType))
+      else if (!AddsToContext(method, blocks, contextParameters, attributeType, ruleContextType))
         reason = nameof(Resources.AddsToRuleContextAttributeUsageAnalyzer_NoAddCall);
 
       if (reason is null || method.Locations.IsEmpty)
         return;
 
-      context.ReportDiagnostic(Diagnostic.Create(rule, method.Locations[0],
+      reportDiagnostic(Diagnostic.Create(rule, method.Locations[0],
         method.Name, new LocalizableResourceString(reason, Resources.ResourceManager, typeof(Resources))));
     }
 
@@ -106,7 +156,8 @@ namespace Csla.Analyzers
       if (method.ExplicitInterfaceImplementations.Any(m => RuleContextAddCallDetector.HasAttribute(m, attributeType)))
         return true;
 
-      if (method.MethodKind != MethodKind.Ordinary || method.IsStatic || method.ContainingType is not { } containingType)
+      // Static methods too: they implement static abstract and static virtual interface members
+      if (method.MethodKind != MethodKind.Ordinary || method.ContainingType is not { } containingType)
         return false;
 
       foreach (var interfaceMethod in containingType.AllInterfaces
@@ -134,17 +185,20 @@ namespace Csla.Analyzers
     }
 
     /// <summary>
-    /// The body calls an <c>Add</c> method on a context parameter, or another
-    /// <c>[AddsToRuleContext]</c> method that it passes a context parameter to, as the
+    /// The body calls an <c>Add</c> method of a rule context type on a context parameter, or
+    /// another <c>[AddsToRuleContext]</c> method that it passes a context parameter to, as the
     /// receiver or as an argument (which includes the <c>this</c> argument of an extension method).
+    /// The rule context type check rejects an <c>Add</c> call through a cast to an unrelated
+    /// type, such as <c>((ICollection&lt;string&gt;)context).Add(...)</c>.
     /// </summary>
     private static bool AddsToContext(IMethodSymbol method, ImmutableArray<IOperation> blocks,
-      ImmutableArray<IParameterSymbol> contextParameters, INamedTypeSymbol attributeType)
+      ImmutableArray<IParameterSymbol> contextParameters, INamedTypeSymbol attributeType, INamedTypeSymbol ruleContextType)
     {
       foreach (var invocation in blocks.SelectMany(b => b.DescendantsAndSelf()).OfType<IInvocationOperation>())
       {
         var target = invocation.TargetMethod;
         if (!target.IsStatic && target.Name.StartsWith("Add")
+          && IsRuleContext(target.ContainingType, ruleContextType)
           && IsContextParameterReference(invocation.Instance, contextParameters))
           return true;
 

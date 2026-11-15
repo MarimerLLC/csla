@@ -61,6 +61,15 @@ namespace Csla.Analyzers.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; implements the [AddsToRuleContext] method &apos;{1}&apos; with the inherited method &apos;{2}&apos;, which must have [AddsToRuleContext] so that it is checked.
+        /// </summary>
+        internal static string AddsToRuleContextAttributeUsageAnalyzer_InheritedImplementationMessage {
+            get {
+                return ResourceManager.GetString("AddsToRuleContextAttributeUsageAnalyzer_InheritedImplementationMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to Method &apos;{0}&apos; has [AddsToRuleContext] but {1}.
         /// </summary>
         internal static string AddsToRuleContextAttributeUsageAnalyzer_Message {

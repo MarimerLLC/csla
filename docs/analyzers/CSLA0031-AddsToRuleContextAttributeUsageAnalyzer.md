@@ -4,7 +4,7 @@
 `[AddsToRuleContext]` tells [CSLA0017](CSLA0017-BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer.md) that a call to the method counts as a call to an `Add...()` method of the rule context. This analyzer reports a method or local function with the attribute when:
 
 * it has no parameter of type `IRuleContext`, a type that implements it, or a type parameter constrained to one of those (the `this` parameter of an extension method counts), or
-* its body neither calls an `Add...()` method on that rule context parameter, nor calls another method with `[AddsToRuleContext]` and passes that parameter to it (as the receiver or as an argument).
+* its body neither calls an `Add...()` method of a rule context type on that rule context parameter, nor calls another method with `[AddsToRuleContext]` and passes that parameter to it (as the receiver or as an argument). An `Add` method of an unrelated type, called through a cast such as `((ICollection<string>)context).Add(...)`, doesn't count.
 
 ```
 using Csla.Rules;
@@ -67,7 +67,28 @@ public class MyRule
 }
 ```
 
-Methods without a body, such as abstract, interface and `extern` methods, are not checked themselves.
+This includes static methods that implement a `static abstract` or `static virtual` interface method with the attribute. Methods without a body, such as abstract, interface and `extern` methods, are not checked themselves.
+
+A class can also implement an interface method with a method it inherits from a base class that doesn't implement the interface. The analyzer can't check the inherited method's body from the derived class, so it reports the derived class instead, until the inherited method is checked itself (for example because it has `[AddsToRuleContext]`):
+
+```
+using Csla.Rules;
+
+public interface IHelper
+{
+  [AddsToRuleContext]
+  void Fail(IRuleContext context);
+}
+
+public class Base
+{
+  public void Fail(IRuleContext context) { }
+}
+
+// CSLA0031: 'Derived' implements the [AddsToRuleContext] method 'IHelper.Fail(IRuleContext)'
+// with the inherited method 'Base.Fail(IRuleContext)', which must have [AddsToRuleContext]
+public class Derived : Base, IHelper { }
+```
 
 ## Limitations
 * The analyzer only checks that the body contains an `Add...()` call. It doesn't check that the call runs on every path through the method.

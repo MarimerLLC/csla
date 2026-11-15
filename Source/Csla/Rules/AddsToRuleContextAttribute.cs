@@ -25,6 +25,8 @@ namespace Csla.Rules
   /// The CSLA0031 analyzer reports a method with this attribute that has no
   /// <see cref="IRuleContext"/> parameter, or that calls neither an <c>Add</c> method of that
   /// context nor another method with this attribute that it passes the context to.
+  /// The attribute is not inherited, but CSLA0031 also checks overrides and implementations
+  /// of a method that has it, because a call through the base or interface method runs them.
   /// </para>
   /// </remarks>
   [AttributeUsage(AttributeTargets.Method, AllowMultiple = false, Inherited = false)]

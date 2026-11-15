@@ -1,10 +1,10 @@
 # Methods with [AddsToRuleContext] should add to the rule context
 
 ## Issue
-`[AddsToRuleContext]` tells [CSLA0017](CSLA0017-BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer.md) that a call to the method counts as a call to an `Add...()` method of the rule context. This analyzer reports a method with the attribute when:
+`[AddsToRuleContext]` tells [CSLA0017](CSLA0017-BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer.md) that a call to the method counts as a call to an `Add...()` method of the rule context. This analyzer reports a method or local function with the attribute when:
 
-* it has no parameter of type `IRuleContext` (or a type that implements it), including the `this` parameter of an extension method, or
-* its body calls neither an `Add...()` method of that rule context, nor another method with `[AddsToRuleContext]` that it passes the rule context to.
+* it has no parameter of type `IRuleContext`, a type that implements it, or a type parameter constrained to one of those (the `this` parameter of an extension method counts), or
+* its body neither calls an `Add...()` method on that rule context parameter, nor calls another method with `[AddsToRuleContext]` and passes that parameter to it (as the receiver or as an argument).
 
 ```
 using Csla.Rules;
@@ -44,9 +44,35 @@ public static class RuleContextExtensions
 }
 ```
 
-A call to the method itself doesn't count. Methods without a body, such as abstract, interface and `extern` methods, are not checked.
+## Overrides and interface implementations
+The attribute is not inherited, but CSLA0017 accepts a call to an abstract, virtual or interface method that has it, and that call runs an override or implementation. So this analyzer also checks overrides and implementations of a method with `[AddsToRuleContext]`, even when they don't have the attribute themselves:
 
-The analyzer only checks that the body contains an `Add...()` call. It doesn't check that the call runs on every path through the method.
+```
+using Csla.Rules;
+
+public abstract class MyRuleBase
+  : BusinessRule
+{
+  [AddsToRuleContext]
+  protected abstract void Fail(IRuleContext context);
+}
+
+public class MyRule
+  : MyRuleBase
+{
+  // CSLA0031: overrides an [AddsToRuleContext] method but has no Add...() call
+  protected override void Fail(IRuleContext context) { }
+
+  protected override void Execute(IRuleContext context) => Fail(context);
+}
+```
+
+Methods without a body, such as abstract, interface and `extern` methods, are not checked themselves.
+
+## Limitations
+* The analyzer only checks that the body contains an `Add...()` call. It doesn't check that the call runs on every path through the method.
+* A call to the method itself doesn't count, but methods that only call each other (`A` calls `B`, `B` calls `A`) are not reported.
+* The rule context must be passed as the parameter itself (`context`, `context?.`, or with a cast). A copy in a local variable (`var c = context; c.AddErrorResult(...)`) is not recognized.
 
 ## Code Fix
 

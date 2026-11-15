@@ -19,6 +19,7 @@ public class ExecuteWithoutAdd
 A rule that calls a reusable helper which calls the `Add...()` methods itself, such as an extension method on `IRuleContext`, a static helper, or a helper method in a rule base class, is reported too, because the analyzer only sees the call to the helper. Add `[AddsToRuleContext]` (namespace `Csla.Rules`) to the helper, and the analyzer treats a call to it like a call to an `Add...()` method:
 
 ```
+using Csla;
 using Csla.Rules;
 
 public static class RuleContextExtensions
@@ -31,13 +32,22 @@ public static class RuleContextExtensions
   }
 }
 
-public class MyRule
+public class SetToFortyTwo
   : BusinessRule
 {
+  private readonly PropertyInfo<int> _target;
+
+  public SetToFortyTwo(PropertyInfo<int> target)
+    : base(target)
+  {
+    _target = target;
+    AffectedProperties.Add(target);
+  }
+
   protected override void Execute(IRuleContext context)
   {
     // No CSLA0017: SetOutValue has [AddsToRuleContext].
-    context.SetOutValue(MyProperty, 42);
+    context.SetOutValue(_target, 42);
   }
 }
 ```

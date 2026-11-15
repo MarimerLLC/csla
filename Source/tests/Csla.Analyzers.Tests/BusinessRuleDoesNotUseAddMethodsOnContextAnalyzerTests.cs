@@ -158,6 +158,52 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeDocumentationSampleWithAttributedHelper()
+    {
+      // Same code as the "Helper methods" sample in
+      // docs/analyzers/CSLA0017-BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer.md
+      var code =
+        """
+        using Csla;
+        using Csla.Rules;
+
+        public static class RuleContextExtensions
+        {
+          [AddsToRuleContext]
+          public static void SetOutValue<T>(this IRuleContext context, PropertyInfo<T> property, T value)
+          {
+            // normalization, logging, ...
+            context.AddOutValue(property, value);
+          }
+        }
+
+        public class SetToFortyTwo
+          : BusinessRule
+        {
+          private readonly PropertyInfo<int> _target;
+
+          public SetToFortyTwo(PropertyInfo<int> target)
+            : base(target)
+          {
+            _target = target;
+            AffectedProperties.Add(target);
+          }
+
+          protected override void Execute(IRuleContext context)
+          {
+            // No CSLA0017: SetOutValue has [AddsToRuleContext].
+            context.SetOutValue(_target, 42);
+          }
+        }
+        """;
+      var compilation = await TestHelpers.Create(code).Project.GetCompilationAsync();
+      var errors = compilation.GetDiagnostics().Where(d => d.Severity == DiagnosticSeverity.Error).ToList();
+      Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(code, []);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAndCallsAttributedGenericExtensionMethod()
     {
       var code =

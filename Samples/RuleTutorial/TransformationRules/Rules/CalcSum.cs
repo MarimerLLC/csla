@@ -68,7 +68,7 @@ namespace TransformationRules.Rules
       else if (context.IsCheckRulesContext)
         Console.WriteLine(".... Rule {0} running from CheckRules", this.GetType().Name);
       else
-        Console.WriteLine(".... Rule {0} running from {2} was changed", this.GetType().Name, this.PrimaryProperty.Name);
+        Console.WriteLine(".... Rule {0} running from {1} was changed", this.GetType().Name, PrimaryProperty!.Name);
     }
   }
 }

@@ -14,16 +14,6 @@ namespace AddonPropertyRules.Rules
   public class ConcatStrings : BusinessRule
   {
     /// <summary>
-    /// Gets the first input property.
-    /// </summary>
-    public IPropertyInfo FirstProperty { get; }
-
-    /// <summary>
-    /// Gets the second input property.
-    /// </summary>
-    public IPropertyInfo SecondProperty { get; }
-
-    /// <summary>
     /// Creates an instance of the rule.
     /// </summary>
     /// <param name="primaryProperty">Property that gets the combined value.</param>
@@ -32,10 +22,9 @@ namespace AddonPropertyRules.Rules
     public ConcatStrings(IPropertyInfo primaryProperty, IPropertyInfo firstProperty, IPropertyInfo secondProperty)
       : base(primaryProperty)
     {
-      FirstProperty = firstProperty;
-      SecondProperty = secondProperty;
       InputProperties.Add(firstProperty);
       InputProperties.Add(secondProperty);
+      RuleUri.AddQueryParameter("input", string.Join(",", InputProperties.Select(p => p.Name)));
     }
 
     /// <summary>
@@ -44,8 +33,8 @@ namespace AddonPropertyRules.Rules
     /// <param name="context">Rule context object.</param>
     protected override void Execute(IRuleContext context)
     {
-      var first = context.InputPropertyValues[FirstProperty];
-      var second = context.InputPropertyValues[SecondProperty];
+      var first = context.InputPropertyValues[InputProperties[0]];
+      var second = context.InputPropertyValues[InputProperties[1]];
       context.AddOutValue(PrimaryProperty!, string.Format("{0} {1}", first, second));
     }
   }

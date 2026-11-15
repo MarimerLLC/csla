@@ -82,7 +82,6 @@ namespace TransformationRules
     public int Sum
     {
       get { return GetProperty(SumProperty); }
-      private set { SetProperty(SumProperty, value); }
     }
 
     #endregion

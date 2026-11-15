@@ -38,11 +38,7 @@ namespace BusinessRuleDemo
     // calculated by the CalcSum rule; not serialized, never makes the object dirty,
     // and recalculated after deserialization
     [CalculatedProperty]
-    public int Sum
-    {
-      get => GetProperty(SumProperty);
-      private set => SetProperty(SumProperty, value);
-    }
+    public int Sum => GetProperty(SumProperty);
 
     public static readonly PropertyInfo<string> CountryProperty = RegisterProperty<string>(nameof(Country));
     public string Country

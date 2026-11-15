@@ -49,7 +49,10 @@ namespace BusinessLibrary
     private void Fetch(int id, [Inject] DataAccess.IPersonDal dal)
     {
       var data = dal.Get(id);
-      Csla.Data.DataMapper.Map(data, this);
+      // LoadProperty doesn't mark the object dirty; the data portal
+      // marks the object old and clean before calling Fetch
+      LoadProperty(IdProperty, data.Id);
+      LoadProperty(NameProperty, data.Name);
       BusinessRules.CheckRules();
     }
 

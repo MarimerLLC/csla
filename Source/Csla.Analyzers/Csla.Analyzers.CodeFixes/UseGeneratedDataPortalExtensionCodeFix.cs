@@ -40,6 +40,15 @@ namespace Csla.Analyzers
       }
 
       var diagnostic = context.Diagnostics.First();
+
+      // A call in a Razor file is reported in the source-generated C# document,
+      // which cannot be edited, and Razor places its using directives inside the
+      // namespace; the call has to be changed in the Razor file by hand.
+      if (UseGeneratedDataPortalExtensionAnalyzer.IsRazorUserCode(diagnostic.Location))
+      {
+        return;
+      }
+
       if (!diagnostic.Properties.TryGetValue(UseGeneratedDataPortalExtensionAnalyzer.ExtensionNamesProperty, out var extensionNames) ||
         string.IsNullOrEmpty(extensionNames))
       {

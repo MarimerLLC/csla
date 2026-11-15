@@ -58,7 +58,7 @@ var person = await portal.PortalFetchAsync(42);
   With no async suffix, the sync methods would have the same names as the async methods, so they are not generated.
 * The `CSLADP002` to `CSLADP011` diagnostics, about operation methods that share an operation name and about extension methods that are not generated, are reported by analyzers rather than by the source generators, so they can be suppressed in source. They are described in the [analyzer documentation](docs/analyzers/index.md#data-portal-generator-diagnostics).
 * Custom or mock `IDataPortal<T>` implementations continue to work; the generated methods fall back to the existing `params object[]` methods.
-* Analyzer **CSLA0025** suggests using the generated extension methods instead of calling `IDataPortal<T>` methods with untyped criteria, and provides a code fix that replaces the call.
+* Analyzer **CSLA0025** suggests using the generated extension methods instead of calling `IDataPortal<T>` methods with untyped criteria, including calls in Razor (`.razor`, `.cshtml`) files and calls for business classes declared in a referenced assembly, and provides a code fix that replaces the call.
 
 The data portal extension generator and the CSLA0025 analyzer are adapted from [Csla.DataPortalExtensions](https://github.com/StefanOssendorf/Csla.DataPortalExtensions) by [Stefan Ossendorf](https://github.com/StefanOssendorf), used under the MIT License. Thank you, Stefan!
 

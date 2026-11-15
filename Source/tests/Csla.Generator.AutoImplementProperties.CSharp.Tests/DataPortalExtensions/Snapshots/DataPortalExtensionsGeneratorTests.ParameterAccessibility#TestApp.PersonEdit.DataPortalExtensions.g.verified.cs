@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>GetByInternal(InternalCriteria)</c> Fetch operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchAsync")]
     internal static global::System.Threading.Tasks.Task<global::TestApp.PersonEdit> GetByInternalAsync(this global::Csla.IDataPortal<global::TestApp.PersonEdit> portal, global::TestApp.InternalCriteria criteria)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>GetByInternal(InternalCriteria)</c> Fetch operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("Fetch")]
     internal static global::TestApp.PersonEdit GetByInternal(this global::Csla.IDataPortal<global::TestApp.PersonEdit> portal, global::TestApp.InternalCriteria criteria)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)

@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>Run(int)</c> Execute operation of <see cref="global::TestApp.RecalculateCommand"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("ExecuteAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.RecalculateCommand> RunAsync(this global::Csla.IDataPortal<global::TestApp.RecalculateCommand> portal, int count)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.RecalculateCommand> __invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>Run(int)</c> Execute operation of <see cref="global::TestApp.RecalculateCommand"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("Execute")]
     public static global::TestApp.RecalculateCommand Run(this global::Csla.IDataPortal<global::TestApp.RecalculateCommand> portal, int count)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.RecalculateCommand> __invoker)

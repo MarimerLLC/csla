@@ -12,6 +12,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>CreateChild(int)</c> Create operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("CreateAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.PersonEdit> CreateChildAsync(this global::Csla.IDataPortal<global::TestApp.PersonEdit> portal, int id)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)
@@ -22,6 +23,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>CreateChild(int)</c> Create operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("Create")]
     public static global::TestApp.PersonEdit CreateChild(this global::Csla.IDataPortal<global::TestApp.PersonEdit> portal, int id)
     {
       if (portal is global::Csla.IDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)
@@ -32,6 +34,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>Fetch(int)</c> FetchChild operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchChildAsync")]
     public static global::System.Threading.Tasks.Task<global::TestApp.PersonEdit> FetchAsync(this global::Csla.IChildDataPortal<global::TestApp.PersonEdit> portal, int id)
     {
       if (portal is global::Csla.IChildDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)
@@ -42,6 +45,7 @@ namespace TestApp
     /// <summary>
     /// Invokes the <c>Fetch(int)</c> FetchChild operation of <see cref="global::TestApp.PersonEdit"/>.
     /// </summary>
+    [global::Csla.GeneratedDataPortalExtension("FetchChild")]
     public static global::TestApp.PersonEdit Fetch(this global::Csla.IChildDataPortal<global::TestApp.PersonEdit> portal, int id)
     {
       if (portal is global::Csla.IChildDataPortalOperationInvoker<global::TestApp.PersonEdit> __invoker)

@@ -44,6 +44,7 @@ Extension methods are generated for `[Create]`, `[Fetch]`, `[Execute]` and `[Del
 * The method names come from the operation method name, without an `Async` suffix, plus the `Prefix`.
 * The methods take only the criteria parameters. `[Inject]` parameters are resolved on the server as usual. Parameter default values are kept.
 * The methods pass the operation name to the data portal, so the data portal calls the operation method directly instead of searching for it using reflection. With a custom or mock `IDataPortal<T>` implementation, the methods call the existing `params object[]` methods instead.
+* Each method has a `[GeneratedDataPortalExtension]` attribute naming the data portal method it replaces, for example `[GeneratedDataPortalExtension("FetchAsync")]`. Analyzer [CSLA0025](analyzers/CSLA0025-UseGeneratedDataPortalExtensionAnalyzer.md) uses it to find the extension methods of business classes declared in a referenced assembly.
 
 ### Choosing a prefix
 

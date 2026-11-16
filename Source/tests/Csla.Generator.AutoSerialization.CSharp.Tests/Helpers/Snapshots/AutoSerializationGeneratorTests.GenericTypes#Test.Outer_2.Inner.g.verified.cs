@@ -6,7 +6,7 @@ using Csla.Serialization.Mobile;
 
 namespace Test
 {
-	public partial class Outer<TKey, TValue>
+	public partial class Outer_2
 	{
 		[Serializable]
 		public partial class Inner : IMobileObject

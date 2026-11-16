@@ -188,15 +188,16 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     }
 
     /// <summary>
-    /// Get the hint name segment of a type: its name, with its arity if it is generic
-    /// ('&lt;' and '&gt;' aren't allowed in hint names, and the arity keeps Foo and Foo&lt;T&gt; apart)
+    /// Get the hint name segment of a type: its name, with its arity if it is generic.
+    /// '&lt;' and '&gt;' aren't allowed in hint names, and the arity follows a '-', which can't occur in an
+    /// identifier, so Foo&lt;T&gt; (Foo-1) collides neither with Foo nor with a class named Foo_1
     /// </summary>
     /// <param name="typeDeclaration">The declaration of the type</param>
-    /// <returns>The hint name segment, such as <c>Foo</c> or <c>Foo_1</c></returns>
+    /// <returns>The hint name segment, such as <c>Foo</c> or <c>Foo-1</c></returns>
     internal static string GetHintSegment(TypeDeclarationSyntax typeDeclaration)
     {
       var arity = typeDeclaration.TypeParameterList?.Parameters.Count ?? 0;
-      return arity > 0 ? $"{typeDeclaration.Identifier}_{arity}" : typeDeclaration.Identifier.ToString();
+      return arity > 0 ? $"{typeDeclaration.Identifier}-{arity}" : typeDeclaration.Identifier.ToString();
     }
 
     /// <summary>

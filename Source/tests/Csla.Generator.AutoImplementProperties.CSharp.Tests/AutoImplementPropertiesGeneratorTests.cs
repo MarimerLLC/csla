@@ -391,6 +391,46 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source, [interfaceSource]);
     }
 
+    [TestMethod("A generic class's hint name doesn't collide with a class named like its arity, as the target or as a containing type.")]
+    public async Task ArityHintNamesDoNotCollide()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Foo<T> : Csla.BusinessBase<Foo<T>>
+        {
+          public partial T? Value { get; set; }
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class Foo_1 : Csla.BusinessBase<Foo_1>
+        {
+          public partial string Name { get; set; }
+        }
+
+        public partial class Outer<T>
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Line : Csla.BusinessBase<Line>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+
+        public partial class Outer_1
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Line : Csla.BusinessBase<Line>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
     [TestMethod("A class whose base class only has a CSLA base class's name gets no file generated.")]
     public void BaseClassOutsideCslaGeneratesNoProperties()
     {

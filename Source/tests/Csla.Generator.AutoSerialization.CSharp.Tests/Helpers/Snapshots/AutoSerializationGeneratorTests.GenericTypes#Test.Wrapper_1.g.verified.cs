@@ -7,7 +7,7 @@ using Csla.Serialization.Mobile;
 namespace Test
 {
 	[Serializable]
-	public partial class Wrapper<T> : IMobileObject
+	public partial class Wrapper_1 : IMobileObject
 	{
 		void IMobileObject.GetChildren(SerializationInfo info, MobileFormatter formatter)
 		{

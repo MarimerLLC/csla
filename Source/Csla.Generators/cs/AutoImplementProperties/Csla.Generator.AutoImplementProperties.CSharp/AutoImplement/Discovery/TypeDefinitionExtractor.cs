@@ -106,7 +106,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         DefaultPropertySetterModifiers = [],
         ContainingTypeDeclarations = containingTypes.Select(GetPartialDeclaration).ToArray(),
         // Used as the hint name, so it must be unique in the compilation: namespace, containing
-        // types and the type, each generic one with its arity ('<' and '>' aren't allowed there)
+        // types and the type, each generic one with its arity (see GetHintSegment)
         FullyQualifiedName = string.Join(".", new[] { nameSpace }
           .Concat(containingTypes.Concat([targetTypeDeclaration]).Select(GetHintSegment))
           .Where(s => !string.IsNullOrEmpty(s)))
@@ -178,14 +178,16 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     }
 
     /// <summary>
-    /// Get the hint name segment of a type: its name, with its arity if it is generic
+    /// Get the hint name segment of a type: its name, with its arity if it is generic.
+    /// '&lt;' and '&gt;' aren't allowed in hint names, and the arity follows a '-', which can't occur in an
+    /// identifier, so Foo&lt;T&gt; (Foo-1) collides neither with Foo nor with a class named Foo_1
     /// </summary>
     /// <param name="typeDeclaration">The declaration of the type</param>
-    /// <returns>The hint name segment, such as <c>Foo</c> or <c>Foo_1</c></returns>
+    /// <returns>The hint name segment, such as <c>Foo</c> or <c>Foo-1</c></returns>
     private static string GetHintSegment(TypeDeclarationSyntax typeDeclaration)
     {
       var arity = typeDeclaration.TypeParameterList?.Parameters.Count ?? 0;
-      return arity > 0 ? $"{typeDeclaration.Identifier}_{arity}" : typeDeclaration.Identifier.ToString();
+      return arity > 0 ? $"{typeDeclaration.Identifier}-{arity}" : typeDeclaration.Identifier.ToString();
     }
 
     #endregion

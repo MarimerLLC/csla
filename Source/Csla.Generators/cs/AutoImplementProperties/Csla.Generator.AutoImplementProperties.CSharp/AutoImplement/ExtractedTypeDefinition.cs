@@ -27,6 +27,12 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public string TypeParameters { get; init; } = string.Empty;
 
   /// <summary>
+  /// The partial declarations of the types that contain a nested type, outermost first,
+  /// such as <c>partial class Outer&lt;T&gt;</c>; empty for a top-level type
+  /// </summary>
+  public string[] ContainingTypeDeclarations { get; init; } = [];
+
+  /// <summary>
   /// The name of the kind of type being represented
   /// </summary>
   public required string TypeKind { get; set; }
@@ -76,6 +82,7 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
            Scope == other.Scope &&
            TypeName == other.TypeName &&
            TypeParameters == other.TypeParameters &&
+           ContainingTypeDeclarations.SequenceEqual(other.ContainingTypeDeclarations) &&
            TypeKind == other.TypeKind &&
            FullyQualifiedName == other.FullyQualifiedName &&
            Properties.SequenceEqual(other.Properties) &&
@@ -102,6 +109,6 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public override int GetHashCode()
   {
     // Calculate and return the hash code based on the properties, fields, or any other relevant data
-    return HashCode.Combine(Namespace + Scope + TypeName + TypeParameters, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
+    return HashCode.Combine(Namespace + Scope + TypeName + TypeParameters + string.Join(";", ContainingTypeDeclarations), TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
   }
 }

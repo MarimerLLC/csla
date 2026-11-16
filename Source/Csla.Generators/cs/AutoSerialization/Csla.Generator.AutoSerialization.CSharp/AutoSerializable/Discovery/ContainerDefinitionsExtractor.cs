@@ -57,10 +57,11 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
       containerDefinitionBuilder.Append(typeDeclarationSyntax.Keyword.ToString());
       containerDefinitionBuilder.Append(' ');
       containerDefinitionBuilder.Append(typeDeclarationSyntax.Identifier.ToString());
+      containerDefinitionBuilder.Append(TypeDefinitionExtractor.GetTypeParameters(typeDeclarationSyntax));
 
       containerDefinition = new ExtractedContainerDefinition
       {
-        Name = typeDeclarationSyntax.Identifier.ToString(),
+        Name = TypeDefinitionExtractor.GetHintSegment(typeDeclarationSyntax),
         FullDefinition = containerDefinitionBuilder.ToString()
       };
 

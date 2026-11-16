@@ -346,6 +346,72 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
 
+    [TestMethod("Type parameter shapes: struct-constrained T?, arrays of T, jagged and multi-dimensional arrays, and an @-escaped type parameter.")]
+    public async Task TypeParameterShapes()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Measure<T, @class> : Csla.BusinessBase<Measure<T, @class>> where T : struct
+        {
+          public partial T? Amount { get; set; }
+          public partial T[] Items { get; set; }
+          public partial T[][] Jagged { get; set; }
+          public partial int[,] Grid { get; set; }
+          public partial string?[]? Tags { get; set; }
+          public partial @class Value { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("A class nested in a generic class is generated inside its containing type.")]
+    public async Task NestedInGenericClass()
+    {
+      var source = """
+        namespace Test;
+
+        public partial class Outer<T>
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Line : Csla.BusinessBase<Line>
+          {
+            public partial T? Value { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("Classes with the same name in different namespaces each get their own file.")]
+    public async Task SameNameInDifferentNamespaces()
+    {
+      var source = """
+        namespace Sales
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Order : Csla.BusinessBase<Order>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+
+        namespace Purchasing
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Order : Csla.BusinessBase<Order>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
     [TestMethod("A class whose base class only has a CSLA base class's name gets no file generated.")]
     public void BaseClassOutsideCslaGeneratesNoProperties()
     {

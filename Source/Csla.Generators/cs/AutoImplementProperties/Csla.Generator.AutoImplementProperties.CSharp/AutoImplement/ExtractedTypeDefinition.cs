@@ -22,6 +22,11 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public required string TypeName { get; set; }
 
   /// <summary>
+  /// The type parameter list of a generic type, such as <c>&lt;T&gt;</c>; empty for a non-generic type
+  /// </summary>
+  public string TypeParameters { get; init; } = string.Empty;
+
+  /// <summary>
   /// The name of the kind of type being represented
   /// </summary>
   public required string TypeKind { get; set; }
@@ -70,6 +75,7 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
     return Namespace == other.Namespace &&
            Scope == other.Scope &&
            TypeName == other.TypeName &&
+           TypeParameters == other.TypeParameters &&
            TypeKind == other.TypeKind &&
            FullyQualifiedName == other.FullyQualifiedName &&
            Properties.SequenceEqual(other.Properties) &&
@@ -96,6 +102,6 @@ public class ExtractedTypeDefinition : IEquatable<ExtractedTypeDefinition>
   public override int GetHashCode()
   {
     // Calculate and return the hash code based on the properties, fields, or any other relevant data
-    return HashCode.Combine(Namespace + Scope + TypeName, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
+    return HashCode.Combine(Namespace + Scope + TypeName + TypeParameters, TypeKind, FullyQualifiedName, Properties, BaseClassTypeName, DefaultPropertyModifiers, DefaultPropertySetterModifiers);
   }
 }

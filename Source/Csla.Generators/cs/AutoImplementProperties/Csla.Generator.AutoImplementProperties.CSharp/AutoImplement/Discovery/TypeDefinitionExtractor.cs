@@ -78,16 +78,20 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     public static ExtractedTypeDefinition ExtractTypeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       var typeName = GetTypeName(targetTypeDeclaration);
+      var typeParameters = targetTypeDeclaration.TypeParameterList?.Parameters ?? default;
       ExtractedTypeDefinition definition = new ExtractedTypeDefinition
       {
         TypeName = typeName,
+        TypeParameters = GetTypeParameters(typeParameters),
         TypeKind = GetTypeKind(targetTypeDeclaration),
         Namespace = GetNamespace(targetTypeDeclaration),
         Scope = GetScopeDefinition(targetTypeDeclaration),
         BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration),
         DefaultPropertyModifiers = ["public"],
         DefaultPropertySetterModifiers = [],
-        FullyQualifiedName = typeName
+        // Used as the hint name: '<' and '>' aren't allowed there, and the arity keeps
+        // Foo and Foo<T> apart, as in OperationDiscovery.GetHintSegment
+        FullyQualifiedName = typeParameters.Count > 0 ? $"{typeName}_{typeParameters.Count}" : typeName
       };
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
@@ -235,6 +239,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private static string GetTypeName(TypeDeclarationSyntax targetTypeDeclaration)
     {
       return targetTypeDeclaration.Identifier.ToString();
+    }
+
+    /// <summary>
+    /// Build the type parameter list the generated partial declaration must repeat
+    /// </summary>
+    /// <param name="typeParameters">The type parameters of the type declaration</param>
+    /// <returns>The type parameter names in angle brackets, such as <c>&lt;T&gt;</c>, without
+    /// attributes or constraints (which a partial declaration may omit); empty for a non-generic type</returns>
+    private static string GetTypeParameters(SeparatedSyntaxList<TypeParameterSyntax> typeParameters)
+    {
+      if (typeParameters.Count == 0)
+      {
+        return string.Empty;
+      }
+
+      return $"<{string.Join(", ", typeParameters.Select(p => p.Identifier.ToString()))}>";
     }
 
     /// <summary>

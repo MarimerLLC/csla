@@ -302,6 +302,50 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
 
+    [TestMethod("A generic class keeps its type parameter in the generated partial declaration (#5042).")]
+    public async Task GenericClass()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class MyBusinessBase<T> : Csla.BusinessBase<T> where T : MyBusinessBase<T>
+        {
+        }
+
+        [Csla.CslaImplementProperties]
+        public abstract partial class PersonBase<T> : MyBusinessBase<T> where T : PersonBase<T>
+        {
+          public partial string PersonDisplayName { get; set; }
+          public partial T? Self { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("Generic classes with several type parameters, and generic and non-generic classes sharing a name, each get their own file.")]
+    public async Task GenericClassesWithSameName()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Pair : Csla.BusinessBase<Pair>
+        {
+          public partial string Name { get; set; }
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class Pair<TKey, TValue> : Csla.ReadOnlyBase<Pair<TKey, TValue>>
+        {
+          public partial TKey Key { get; private set; }
+          public partial TValue Value { get; private set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
     [TestMethod("A class whose base class only has a CSLA base class's name gets no file generated.")]
     public void BaseClassOutsideCslaGeneratesNoProperties()
     {

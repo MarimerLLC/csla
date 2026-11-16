@@ -121,6 +121,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       textWriter.Write(typeDefinition.TypeKind);
       textWriter.Write(' ');
       textWriter.Write(typeDefinition.TypeName);
+      textWriter.Write(typeDefinition.TypeParameters);
       textWriter.WriteLine();
     }
 

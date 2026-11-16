@@ -70,7 +70,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     public string GetFullyQualifiedType(TypeSyntax typeSyntax)
     {
       bool isNullable = false;
-      INamedTypeSymbol? typeSymbol;
+      ITypeSymbol? typeSymbol;
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
       {
         typeSyntax = nullableTypeSyntax.ElementType;
@@ -80,14 +80,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       bool isArray = false;
       if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
       {
-        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
+        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as ITypeSymbol;
         isArray = true;
       }
       else
       {
-        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as ITypeSymbol;
       }
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
+      // A type parameter of a generic business class (T) is written as its name
+      if (typeSymbol is not (INamedTypeSymbol { ContainingNamespace: not null } or ITypeParameterSymbol))
         return string.Empty;
 
       var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);

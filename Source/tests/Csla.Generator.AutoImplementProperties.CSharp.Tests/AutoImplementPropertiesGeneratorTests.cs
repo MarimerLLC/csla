@@ -204,6 +204,100 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
 
+    [TestMethod("A generic class keeps its type parameter in the generated partial declaration (#5042).")]
+    public async Task GenericClass()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class MyBusinessBase<T> : Csla.BusinessBase<T> where T : MyBusinessBase<T>
+        {
+        }
+
+        [Csla.CslaImplementProperties]
+        public abstract partial class PersonBase<T> : MyBusinessBase<T> where T : PersonBase<T>
+        {
+          public partial string PersonDisplayName { get; set; }
+          public partial T? Self { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("Generic classes with several type parameters, and generic and non-generic classes sharing a name, each get their own file.")]
+    public async Task GenericClassesWithSameName()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Pair : Csla.BusinessBase<Pair>
+        {
+          public partial string Name { get; set; }
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class Pair<TKey, TValue> : Csla.ReadOnlyBase<Pair<TKey, TValue>>
+        {
+          public partial TKey Key { get; private set; }
+          public partial TValue Value { get; private set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("The property methods come from the CSLA base class inherited through an intermediate base class whose name doesn't contain the CSLA base class's name (#5042).")]
+    public async Task IntermediateBaseClass()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class EntityBase<T> : Csla.ReadOnlyBase<T> where T : EntityBase<T>
+        {
+        }
+
+        public abstract class PersonBase<T> : EntityBase<T> where T : PersonBase<T>
+        {
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class Person : PersonBase<Person>
+        {
+          public partial string Name { get; private set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("[CslaImplementPropertiesInterface<T>] on a generic class keeps its type parameter (#5042).")]
+    public async Task GenericClassImplementingInterface()
+    {
+      var source = """
+        using Csla;
+
+        namespace Test;
+
+        public abstract class MyBusinessBase<T> : Csla.BusinessBase<T> where T : MyBusinessBase<T>
+        {
+        }
+
+        [CslaImplementPropertiesInterface<IPerson>]
+        public abstract partial class PersonBase<T> : MyBusinessBase<T> where T : PersonBase<T>
+        {
+        }
+
+        public interface IPerson
+        {
+          string Name { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
+    }
+
     public static IEnumerable<object[]> Case09TestData()
     {
       var nonNullableBuiltInTypes = new string[] { "bool", "byte", "sbyte", "char", "decimal", "double", "float", "int", "uint", "long", "ulong", "short", "ushort" };

@@ -86,16 +86,19 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     public static ExtractedTypeDefinition ExtractTypeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       var typeName = GetTypeName(targetTypeDeclaration);
+      var typeParameters = targetTypeDeclaration.TypeParameterList?.Parameters ?? default;
       ExtractedTypeDefinition definition = new ExtractedTypeDefinition
       {
         TypeName = typeName,
+        TypeParameters = GetTypeParameters(typeParameters),
         TypeKind = GetTypeKind(targetTypeDeclaration),
         Namespace = GetNamespace(targetTypeDeclaration),
         Scope = GetScopeDefinition(targetTypeDeclaration),
         BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration),
         DefaultPropertyModifiers = ["public"],
         DefaultPropertySetterModifiers = [],
-        FullyQualifiedName = typeName
+        // Used as the hint name: '<' and '>' aren't allowed there, and the arity keeps Foo and Foo<T> apart
+        FullyQualifiedName = typeParameters.Count > 0 ? $"{typeName}_{typeParameters.Count}" : typeName
       };
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
@@ -115,14 +118,29 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// </summary>
     /// <param name="extractionContext">The definition extraction context in which the extraction is being performed</param>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
-    /// <returns>The name of the base class of the type for which generation is being performed</returns>
+    /// <returns>The name of the nearest CSLA base class the type inherits, through any intermediate
+    /// base classes; otherwise the name of the type's direct base class</returns>
     private static string GetBaseClassTypeName(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       var targetTypeSymbol = extractionContext.SemanticModel.GetDeclaredSymbol(targetTypeDeclaration) as INamedTypeSymbol;
-      var baseTypeSymbol = targetTypeSymbol?.BaseType;
 
-      return baseTypeSymbol?.Name ?? string.Empty;
+      for (var baseType = targetTypeSymbol?.BaseType; baseType is not null; baseType = baseType.BaseType)
+      {
+        if (baseType.ContainingNamespace is { Name: "Csla" } containingNamespace
+          && containingNamespace.ContainingNamespace?.IsGlobalNamespace == true
+          && _cslaBaseClasses.Contains(baseType.Name))
+        {
+          return baseType.Name;
+        }
+      }
+
+      return targetTypeSymbol?.BaseType?.Name ?? string.Empty;
     }
+
+    /// <summary>
+    /// The CSLA base classes whose properties can be generated
+    /// </summary>
+    private static readonly string[] _cslaBaseClasses = ["BusinessDocumentBase", "BusinessBase", "ReadOnlyBase", "CommandBase"];
 
     #endregion
 
@@ -235,6 +253,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private static string GetTypeName(TypeDeclarationSyntax targetTypeDeclaration)
     {
       return targetTypeDeclaration.Identifier.ToString();
+    }
+
+    /// <summary>
+    /// Build the type parameter list the generated partial declaration must repeat
+    /// </summary>
+    /// <param name="typeParameters">The type parameters of the type declaration</param>
+    /// <returns>The type parameter names in angle brackets, such as <c>&lt;T&gt;</c>, without
+    /// attributes or constraints (which a partial declaration may omit); empty for a non-generic type</returns>
+    private static string GetTypeParameters(SeparatedSyntaxList<TypeParameterSyntax> typeParameters)
+    {
+      if (typeParameters.Count == 0)
+      {
+        return string.Empty;
+      }
+
+      return $"<{string.Join(", ", typeParameters.Select(p => p.Identifier.ToString()))}>";
     }
 
     /// <summary>

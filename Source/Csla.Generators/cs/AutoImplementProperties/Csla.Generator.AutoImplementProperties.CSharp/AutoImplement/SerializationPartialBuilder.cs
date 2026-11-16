@@ -20,9 +20,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// Build the text of a partial type that implements the properties of the target type
     /// </summary>
     /// <param name="typeDefinition">The definition of the type for which is required</param>
-    /// <returns>Generated code to fulfil the required auto implementation of the properties</returns>
-    internal GenerationResults BuildPartialTypeDefinition(ExtractedTypeDefinition typeDefinition)
+    /// <returns>Generated code to fulfil the required auto implementation of the properties,
+    /// or null if the type doesn't inherit a supported CSLA base class</returns>
+    internal GenerationResults? BuildPartialTypeDefinition(ExtractedTypeDefinition typeDefinition)
     {
+      if (!CslaBaseClasses.PropertyMethods.TryGetValue(typeDefinition.BaseClassTypeName, out var methods))
+        return null;
+
       using var stringWriter = new StringWriter();
       var textWriter = new IndentedTextWriter(stringWriter, "\t");
 
@@ -37,9 +41,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       AppendTypeDefinition(textWriter, typeDefinition);
       AppendBlockStart(textWriter);
 
-      AppendProperties(textWriter, typeDefinition);
+      AppendProperties(textWriter, typeDefinition, methods);
 
       AppendBlockEnd(textWriter);
+
+      foreach (var _ in typeDefinition.ContainingTypeDeclarations)
+      {
+        AppendBlockEnd(textWriter);
+      }
 
       textWriter.WriteLine("#pragma warning restore CSLA0007");
 
@@ -115,6 +124,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
         textWriter.WriteLine();
       }
 
+      // Reopen the types a nested type is declared in
+      foreach (var containingTypeDeclaration in typeDefinition.ContainingTypeDeclarations)
+      {
+        textWriter.WriteLine(containingTypeDeclaration);
+        AppendBlockStart(textWriter);
+      }
+
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");
       textWriter.Write(typeDefinition.TypeKind);
@@ -129,12 +145,13 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the method definition</param>
     /// <param name="typeDefinition">The definition of the type for which we are generating</param>
-    private void AppendProperties(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition)
+    /// <param name="methods">The property methods of the type's base class</param>
+    private void AppendProperties(IndentedTextWriter textWriter, ExtractedTypeDefinition typeDefinition, (string Getter, string Setter) methods)
     {
 
       foreach (ExtractedPropertyDefinition propertyDefinition in typeDefinition.Properties)
       {
-        AppendSerializeChildFragment(textWriter, propertyDefinition, typeDefinition);
+        AppendSerializeChildFragment(textWriter, propertyDefinition, methods);
       }
     }
 
@@ -143,13 +160,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     /// <param name="textWriter">The IndentedTextWriter instance to which to append the fragment</param>
     /// <param name="propertyDefinition">The definition of the member we are writing for</param>
-    /// <param name="typeDefinition"></param>
-    private void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, ExtractedTypeDefinition typeDefinition)
+    /// <param name="methods">The property methods of the type's base class</param>
+    private void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, (string Getter, string Setter) methods)
     {
-      var getter = GetGetterMethod(typeDefinition);
-      var setter = GetSetterMethod(typeDefinition);
-      if (string.IsNullOrEmpty(getter) || string.IsNullOrEmpty(setter))
-        return;
+      var (getter, setter) = methods;
 
       textWriter.WriteLine($"public static readonly PropertyInfo<{propertyDefinition.TypeDefinition.FullyQualifiedType}> {propertyDefinition.PropertyName}Property = RegisterProperty<{propertyDefinition.TypeDefinition.FullyQualifiedType}>(nameof({propertyDefinition.PropertyName}));");
 
@@ -183,46 +197,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       AppendBlockEnd(textWriter);
     }
 
-    private string GetGetterMethod(ExtractedTypeDefinition typeDefinition)
-    {
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessDocumentBase"))
-      {
-        return "GetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
-      {
-        return "GetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase"))
-      {
-        return "GetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("CommandBase"))
-      {
-        return "ReadProperty";
-      }
-      return string.Empty;
-    }
-    private string GetSetterMethod(ExtractedTypeDefinition typeDefinition)
-    {
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessDocumentBase"))
-      {
-        return "SetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("BusinessBase"))
-      {
-        return "SetProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("ReadOnlyBase"))
-      {
-        return "LoadProperty";
-      }
-      if (typeDefinition.BaseClassTypeName.Contains("CommandBase"))
-      {
-        return "LoadProperty";
-      }
-      return string.Empty;
-    }
     #endregion
 
   }

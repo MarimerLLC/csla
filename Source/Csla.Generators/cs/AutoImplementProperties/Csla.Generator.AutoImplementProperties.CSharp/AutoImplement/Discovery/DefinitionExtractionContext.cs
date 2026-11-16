@@ -15,7 +15,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
   /// </summary>
   internal class DefinitionExtractionContext(SemanticModel _semanticModel, bool _addAttributes, bool _filterPartialProperties)
   {
-    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
     public SemanticModel SemanticModel => _semanticModel;
     private const string _cslaNamespace = "Csla";
 
@@ -77,25 +77,27 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         isNullable = true;
       }
 
-      bool isArray = false;
       if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
       {
-        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as ITypeSymbol;
-        isArray = true;
+        // Display the array type itself, so jagged and multi-dimensional arrays keep every rank
+        typeSymbol = _semanticModel.GetTypeInfo(arrayTypeSyntax).Type;
+        var elementType = typeSymbol;
+        while (elementType is IArrayTypeSymbol arrayType)
+        {
+          elementType = arrayType.ElementType;
+        }
+        if (elementType is not (INamedTypeSymbol { ContainingNamespace: not null } or ITypeParameterSymbol))
+          return string.Empty;
       }
       else
       {
         typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as ITypeSymbol;
+        // A type parameter of a generic business class (T) is written as its name
+        if (typeSymbol is not (INamedTypeSymbol { ContainingNamespace: not null } or ITypeParameterSymbol))
+          return string.Empty;
       }
-      // A type parameter of a generic business class (T) is written as its name
-      if (typeSymbol is not (INamedTypeSymbol { ContainingNamespace: not null } or ITypeParameterSymbol))
-        return string.Empty;
 
-      var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);
-      if (isArray && fullyQualified[^1] != ']')
-      {
-        fullyQualified += "[]";
-      }
+      var fullyQualified = typeSymbol!.ToDisplayString(FullyQualifiedFormat);
       if (isNullable && fullyQualified[^1] != '?')
       {
         fullyQualified += '?';

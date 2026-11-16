@@ -16,7 +16,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
   /// </summary>
   internal class DefinitionExtractionContext
   {
-    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes);
+    private static SymbolDisplayFormat FullyQualifiedFormat { get; } = SymbolDisplayFormat.FullyQualifiedFormat.WithMiscellaneousOptions(SymbolDisplayMiscellaneousOptions.IncludeNullableReferenceTypeModifier | SymbolDisplayMiscellaneousOptions.UseSpecialTypes | SymbolDisplayMiscellaneousOptions.EscapeKeywordIdentifiers);
     private readonly SemanticModel _semanticModel;
     private const string _serializationNamespace = "Csla.Serialization";
     private const string _cslaNamespace = "Csla";
@@ -143,31 +143,34 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     public string GetFullyQualifiedType(TypeSyntax typeSyntax)
     {
       bool isNullable = false;
-      INamedTypeSymbol? typeSymbol;
+      ITypeSymbol? typeSymbol;
       if (typeSyntax is NullableTypeSyntax nullableTypeSyntax)
       {
         typeSyntax = nullableTypeSyntax.ElementType;
         isNullable = true;
       }
 
-      bool isArray = false;
       if (typeSyntax is ArrayTypeSyntax arrayTypeSyntax)
       {
-        typeSymbol = _semanticModel.GetSymbolInfo(arrayTypeSyntax.ElementType).Symbol as INamedTypeSymbol;
-        isArray = true;
+        // Display the array type itself, so jagged and multi-dimensional arrays keep every rank
+        typeSymbol = _semanticModel.GetTypeInfo(arrayTypeSyntax).Type;
+        var elementType = typeSymbol;
+        while (elementType is IArrayTypeSymbol arrayType)
+        {
+          elementType = arrayType.ElementType;
+        }
+        if (elementType is not (INamedTypeSymbol { ContainingNamespace: not null } or ITypeParameterSymbol))
+          return string.Empty;
       }
       else
       {
-        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as INamedTypeSymbol;
+        typeSymbol = _semanticModel.GetSymbolInfo(typeSyntax).Symbol as ITypeSymbol;
+        // A type parameter of a generic serializable type (T) is written as its name
+        if (typeSymbol is not (INamedTypeSymbol { ContainingNamespace: not null } or ITypeParameterSymbol))
+          return string.Empty;
       }
-      if (typeSymbol is null || typeSymbol.ContainingNamespace is null)
-        return string.Empty;
 
-      var fullyQualified = typeSymbol.ToDisplayString(FullyQualifiedFormat);
-      if (isArray && fullyQualified[^1] != ']')
-      {
-        fullyQualified += "[]";
-      }
+      var fullyQualified = typeSymbol!.ToDisplayString(FullyQualifiedFormat);
       if (isNullable && fullyQualified[^1] != '?')
       {
         fullyQualified += '?';

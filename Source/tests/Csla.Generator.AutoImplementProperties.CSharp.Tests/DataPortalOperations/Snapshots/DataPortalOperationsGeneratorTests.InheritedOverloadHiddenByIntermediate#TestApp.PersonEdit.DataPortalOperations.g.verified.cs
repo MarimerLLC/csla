@@ -15,11 +15,13 @@ namespace TestApp
     internal interface IDataPortalOperations
     {
       void Create();
+      void Fetch__Int32(int id);
       void Delete__Int32(int id);
       void CreateChild();
     }
 
     void IDataPortalOperations.Create() => Create();
+    void IDataPortalOperations.Fetch__Int32(int id) => Load(id);
     void IDataPortalOperations.Delete__Int32(int id) => Delete(id);
     void IDataPortalOperations.CreateChild() => Child_Create();
 

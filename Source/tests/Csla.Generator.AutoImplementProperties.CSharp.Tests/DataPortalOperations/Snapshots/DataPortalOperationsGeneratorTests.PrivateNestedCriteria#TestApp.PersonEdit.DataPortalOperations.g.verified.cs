@@ -14,16 +14,33 @@ namespace TestApp
     [global::System.ComponentModel.EditorBrowsable(global::System.ComponentModel.EditorBrowsableState.Never)]
     internal interface IDataPortalOperations
     {
+      void Fetch__Object(object value);
       void CreateChild();
     }
 
+    void IDataPortalOperations.Fetch__Object(object value) => Fetch(value);
     void IDataPortalOperations.CreateChild() => Child_Create();
 
     async global::System.Threading.Tasks.Task global::Csla.Server.IDataPortalOperationMapping.InvokeOperationAsync(
       global::System.Type operationType, bool isSync, object?[]? criteria, global::System.IServiceProvider serviceProvider)
     {
       var __operations = (IDataPortalOperations)this;
-      if (operationType == typeof(global::Csla.CreateChildAttribute))
+      if (operationType == typeof(global::Csla.FetchAttribute))
+      {
+        if (criteria is { Length: 1 } && criteria[0] is object __c0p0 && !(criteria[0] is global::TestApp.PersonEdit.Criteria))
+        {
+          try
+          {
+            __operations.Fetch__Object(__c0p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
+          return;
+        }
+      }
+      else if (operationType == typeof(global::Csla.CreateChildAttribute))
       {
         if (criteria is null or { Length: 0 })
         {
@@ -47,6 +64,20 @@ namespace TestApp
       var __operations = (IDataPortalOperations)this;
       switch (operationName)
       {
+        case "Fetch__Object":
+          if (criteria is { Length: 1 } && (criteria[0] is null || criteria[0] is object))
+          {
+            try
+            {
+              __operations.Fetch__Object((object)criteria[0]!);
+            }
+            catch (global::System.Exception __ex)
+            {
+              throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+            }
+            return;
+          }
+          break;
         case "CreateChild":
           if (criteria is null or { Length: 0 })
           {

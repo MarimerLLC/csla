@@ -41,6 +41,18 @@ namespace TestApp
           }
           return;
         }
+        if (criteria is { Length: 1 } && criteria[0] is int __c1p0)
+        {
+          try
+          {
+            __operations.Fetch__Int32(__c1p0);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Load", __ex);
+          }
+          return;
+        }
       }
       else if (operationType == typeof(global::Csla.CreateChildAttribute))
       {

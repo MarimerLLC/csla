@@ -512,6 +512,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
             [Fetch]
             protected void Fetch(int id) { }
 
+            // Ties with the hidden Fetch(int), so reflection reports an ambiguous match.
+            [Fetch]
+            protected void Load(int id) { }
+
             [Delete]
             protected void Delete(int id) { }
           }
@@ -668,6 +672,102 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
 
             [Fetch]
             private void Fetch(Criteria criteria) { }
+
+            // Must not capture a Criteria value, which reflection gives to Fetch(Criteria).
+            [Fetch]
+            private void Fetch(object value) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Injected parameters of a method further up the chain can outscore a closer method")]
+    public async Task InheritedInjectionScoring()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public interface IA { }
+          public interface IB { }
+          public interface IC { }
+          public interface ID { }
+
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected void Load(object value, [Inject] IA a, [Inject] IB b, [Inject] IC c, [Inject] ID d) { }
+          }
+
+          public abstract class PersonMiddle<T> : PersonBase<T>
+            where T : PersonMiddle<T>
+          {
+            // For an int, reflection scores this 3 - 1 = 2 and Load 1 - 2 + 4 = 3.
+            [Fetch]
+            protected void Fetch(int id) { }
+          }
+
+          public partial class PersonEdit : PersonMiddle<PersonEdit>
+          {
+            [Create]
+            private void Create() { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Inherited method marked with a subclass of an operation attribute is dispatched")]
+    public async Task InheritedDerivedOperationAttribute()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public class InitializeChildAttribute : CreateChildAttribute { }
+
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            // Closer than BusinessBase.Child_Create, so reflection calls this.
+            [InitializeChild]
+            protected void Initialize() { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Declared method marked with a subclass of an operation attribute leaves its kind to reflection")]
+    public async Task DeclaredDerivedOperationAttribute()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public class InitializeChildAttribute : CreateChildAttribute { }
+
+          public partial class PersonEdit : Csla.BusinessBase<PersonEdit>
+          {
+            [InitializeChild]
+            private void Initialize() { }
+
+            [Fetch]
+            private void Fetch(int id) { }
           }
         }
         """;

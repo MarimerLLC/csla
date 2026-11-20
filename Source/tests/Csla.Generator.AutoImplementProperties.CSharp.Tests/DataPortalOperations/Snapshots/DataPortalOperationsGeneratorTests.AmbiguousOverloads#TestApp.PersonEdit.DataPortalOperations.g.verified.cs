@@ -31,7 +31,7 @@ namespace TestApp
       var __operations = (IDataPortalOperations)this;
       if (operationType == typeof(global::Csla.FetchAttribute))
       {
-        if (criteria is { Length: 1 } && criteria[0] is object __c0p0 && __c0p0.GetType() == typeof(object))
+        if (criteria is { Length: 1 } && criteria[0] is object __c0p0 && !(criteria[0] is global::TestApp.Criteria) && !(criteria[0] is int))
         {
           try
           {
@@ -43,7 +43,7 @@ namespace TestApp
           }
           return;
         }
-        if (criteria is { Length: 1 } && criteria[0] is global::TestApp.Criteria __c1p0 && __c1p0.GetType() == typeof(global::TestApp.Criteria))
+        if (criteria is { Length: 1 } && criteria[0] is global::TestApp.Criteria __c1p0)
         {
           try
           {

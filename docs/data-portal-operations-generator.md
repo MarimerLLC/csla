@@ -72,17 +72,18 @@ public partial class Customer : AppBase<Customer>
 The generated code for `Customer` calls `Create`, `InsertChild` and `Update` directly, along with operation methods inherited from CSLA's base classes, such as `BusinessBase.Child_Create` and the `Child_UpdateAsync(params object[])` method of the editable list base classes. It chooses between methods the same way reflection-based dispatch does:
 
 * Private methods of a base class are not included.
-* A method declared closer to the class is preferred over one declared further up the inheritance chain.
+* A subclass of an operation attribute counts as that attribute.
 * An override is called virtually, even when it does not repeat the operation attribute.
 * If the class declares a member with the same name as an inherited operation method, the generated code calls the inherited method through `base`.
+* When several methods could take the criteria, the generated code uses the scores of reflection-based dispatch: 3 per criteria value of the exact parameter type, 2 for an assignable type and 1 for `object`, less one per level of inheritance, plus one per injected parameter. It calls a method only when no other method could tie or outscore it for those criteria, and otherwise leaves the call to reflection.
 
-In a few cases the generated code leaves an inherited method to reflection-based dispatch, which still calls it as before:
+The generated code cannot call some methods, but still takes them into account when it chooses between methods, and reflection-based dispatch calls them as before:
 
-* An intermediate base class declares another member with the same name, which would hide the method from the generated code.
-* A method closer to the class takes the same number of criteria, and a less specific parameter type, such as `object`, means reflection could choose that closer method instead.
-* The criteria also match a method further up the inheritance chain, and do not exactly match the types of a closer method with a less specific parameter type.
-* The method is internal to another assembly.
-* The method takes or returns a protected or private nested type, which the generated internal interface cannot name. The same applies to an operation method the class declares.
+* An inherited method hidden by another member with the same name in an intermediate base class.
+* An inherited method that is internal to another assembly.
+* A method, declared or inherited, that takes or returns a protected or private nested type, which the generated internal interface cannot name.
+
+When the class declares a generic operation method, or marks a method with a subclass of an operation attribute, the generator leaves every call of that kind of operation (for example all `[CreateChild]` calls) to reflection-based dispatch.
 
 When a method the class declares and an inherited method map to the same operation, analyzers CSLADP002 and CSLADP009 report it at the declared method. If they tie, the data portal reports an ambiguous match, as reflection-based dispatch does.
 

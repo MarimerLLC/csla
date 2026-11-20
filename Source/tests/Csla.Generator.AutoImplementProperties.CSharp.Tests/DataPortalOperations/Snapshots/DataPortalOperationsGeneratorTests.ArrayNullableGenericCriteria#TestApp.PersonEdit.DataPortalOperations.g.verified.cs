@@ -35,7 +35,7 @@ namespace TestApp
       var __operations = (IDataPortalOperations)this;
       if (operationType == typeof(global::Csla.FetchAttribute))
       {
-        if (criteria is { Length: 1 } && criteria[0] is int[] __c0p0 && __c0p0.GetType() == typeof(int[]))
+        if (criteria is { Length: 1 } && criteria[0] is int[] __c0p0)
         {
           try
           {
@@ -59,7 +59,7 @@ namespace TestApp
           }
           return;
         }
-        if (criteria is { Length: 1 } && criteria[0] is global::System.Collections.Generic.List<int> __c2p0 && __c2p0.GetType() == typeof(global::System.Collections.Generic.List<int>))
+        if (criteria is { Length: 1 } && criteria[0] is global::System.Collections.Generic.List<int> __c2p0)
         {
           try
           {
@@ -83,7 +83,7 @@ namespace TestApp
           }
           return;
         }
-        if (criteria is { Length: 1 } && criteria[0] is global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[] __c4p0 && __c4p0.GetType() == typeof(global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[]))
+        if (criteria is { Length: 1 } && criteria[0] is global::System.Collections.Generic.Dictionary<string, global::System.Collections.Generic.List<int?>>[] __c4p0)
         {
           try
           {

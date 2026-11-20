@@ -150,7 +150,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     /// methods except those whose signature the interface cannot name.
     /// </summary>
     private static IEnumerable<OperationMethodModel> InterfaceMethods(OperationTypeModel model)
-      => model.Methods.Where(m => m.CanNameSignature);
+      => model.Methods.Where(m => m.CanCall);
 
     private static Dictionary<OperationMethodModel, string> GetInterfaceMemberNames(IEnumerable<OperationMethodModel> methods)
     {
@@ -210,50 +210,31 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       // only the one the runtime would select takes part in dispatch.
       var (_, collisions) = SelectNamedDispatchMethods(model.Methods);
       var excluded = GetExcludedFromDispatch(collisions);
-      var dispatchable = model.Methods.Where(m => m.CanDispatch && m.CanNameSignature && !excluded.Contains(m)).ToList();
+      var dispatchable = model.Methods.Where(m => m.CanDispatch && m.CanCall && !excluded.Contains(m)).ToList();
 
       var byKind = new List<(string Kind, List<CriteriaDispatch> Methods)>();
       foreach (var kind in OperationDiscovery.OperationKinds)
       {
+        // Reflection-based dispatch may see a method of this kind that the
+        // generator does not model, so the call is left to it.
+        if (model.UnresolvedKinds.Contains(kind))
+          continue;
+
         // Every method of the kind competes in reflection-based dispatch,
         // including those left out of generated dispatch.
         var all = model.Methods.Where(m => m.Kind == kind).ToList();
-        var ofKind = dispatchable.Where(m => m.Kind == kind).ToList();
         var methods = new List<CriteriaDispatch>();
-        foreach (var method in ofKind)
+        foreach (var method in dispatchable.Where(m => m.Kind == kind))
         {
-          var sameShape = all.Where(m => m.CriteriaCount == method.CriteriaCount).ToList();
-
-          // Reflection-based dispatch scores a method lower for each level of
-          // inheritance. An inherited method is dispatched only when every
-          // method closer to the type with that criteria count takes criteria
-          // that match exact types only (value types and sealed types), which
-          // a less specific match cannot outscore; otherwise the call is left
-          // to reflection.
-          if (!sameShape.Where(m => m.InheritanceDepth < method.InheritanceDepth).All(HasExactCriteriaTypes))
-            continue;
-
-          // When several methods at one level take the same number of
-          // criteria, require exact runtime types so a less specific overload
-          // cannot capture the call.
-          var requireExactTypes = ofKind.Count(m => m.CriteriaCount == method.CriteriaCount && m.InheritanceDepth == method.InheritanceDepth) > 1;
-
-          // A method with less specific criteria types leaves the call to
-          // reflection when the criteria also match a method further up the
-          // inheritance chain, unless they match its own types exactly.
-          var guards = requireExactTypes || HasExactCriteriaTypes(method)
-            ? []
-            : sameShape.Where(m => m.InheritanceDepth > method.InheritanceDepth && !HasSameCriteriaTypes(m, method)).ToList();
-
-          methods.Add(new CriteriaDispatch(method, requireExactTypes, guards));
+          if (PlanCriteriaDispatch(method, all) is { } dispatch)
+            methods.Add(dispatch);
         }
 
         // A method taking the whole criteria array as params object[] is
         // called by reflection-based dispatch when no other method matches;
         // it is dispatched only when it is the only method of its kind.
-        if (all.Count == 1 && all[0].TakesCriteriaArray && all[0].Parameters[0].IsParams
-          && all[0].CanNameSignature && !model.UnresolvedKinds.Contains(kind))
-          methods.Add(new CriteriaDispatch(all[0], RequireExactTypes: false, []));
+        if (all.Count == 1 && all[0].TakesCriteriaArray && all[0].Parameters[0].IsParams && all[0].CanCall)
+          methods.Add(new CriteriaDispatch(all[0], RequireExactTypes: false, [], []));
 
         if (methods.Count > 0)
           byKind.Add((kind, methods));
@@ -270,7 +251,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         isFirst = false;
         OpenBlock(writer);
         foreach (var dispatch in methods)
-          AppendDispatch(writer, dispatch.Method, memberNames[dispatch.Method], candidateIndex++, byName: false, dispatch.RequireExactTypes, dispatch.Guards);
+          AppendDispatch(writer, dispatch.Method, memberNames[dispatch.Method], candidateIndex++, byName: false, dispatch.RequireExactTypes, dispatch.Excluding, dispatch.ExcludingUnlessExact);
         CloseBlock(writer);
       }
 
@@ -279,14 +260,139 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     }
 
     /// <summary>
-    /// A method in criteria-based dispatch. <see cref="Guards"/> are methods
-    /// further up the inheritance chain whose criteria types, when matched,
-    /// leave the call to reflection-based dispatch.
+    /// A method in criteria-based dispatch. The call is left to
+    /// reflection-based dispatch when the criteria match a method in
+    /// <see cref="Excluding"/>, or match a method in
+    /// <see cref="ExcludingUnlessExact"/> without matching this method's
+    /// criteria types exactly.
     /// </summary>
-    private sealed record CriteriaDispatch(OperationMethodModel Method, bool RequireExactTypes, IReadOnlyList<OperationMethodModel> Guards);
+    private sealed record CriteriaDispatch(OperationMethodModel Method, bool RequireExactTypes,
+      IReadOnlyList<OperationMethodModel> Excluding, IReadOnlyList<OperationMethodModel> ExcludingUnlessExact);
 
-    private static bool HasExactCriteriaTypes(OperationMethodModel method)
-      => method.CriteriaParameters.All(p => p.IsExactTypeMatch);
+    /// <summary>
+    /// Decides when generated dispatch can call a method for the criteria
+    /// it matches, or returns null to leave every call to reflection.
+    /// Reflection-based dispatch scores each method that matches the
+    /// criteria: per criteria value 3 for an exact type, 2 for an assignable
+    /// type and 1 for object, less one per level of inheritance, plus one
+    /// per injected parameter when more than one method matches; the highest
+    /// score wins and a tie is ambiguous. For every other method of the kind
+    /// with the same criteria count, this compares the lowest score the
+    /// method can have with the highest the other can have, and keeps the
+    /// generated code from calling the method whenever the other could tie
+    /// or win.
+    /// </summary>
+    private static CriteriaDispatch? PlanCriteriaDispatch(OperationMethodModel method, List<OperationMethodModel> all)
+    {
+      var methodMin = MinScore(method);
+      var methodExact = ExactScore(method);
+      var requireExactTypes = false;
+      var excluding = new List<OperationMethodModel>();
+      var excludingUnlessExact = new List<OperationMethodModel>();
+
+      foreach (var other in all)
+      {
+        // Methods with the same criteria types share an operation name and
+        // are chosen by SelectNamedDispatchMethods. Reflection never matches
+        // criteria to ref, out or in parameters.
+        if (ReferenceEquals(other, method) || other.CriteriaCount != method.CriteriaCount
+          || HasSameCriteriaTypes(other, method) || AreDisjoint(other, method)
+          || other.CriteriaParameters.Any(p => p.RefKindPrefix.Length > 0))
+          continue;
+
+        var otherMax = MaxScore(other, method);
+        if (otherMax < methodMin)
+          continue;
+
+        if (!other.CanNameCriteriaTypes)
+        {
+          // The generated code cannot test for the other method's types.
+          if (otherMax >= methodExact)
+            return null;
+          requireExactTypes = true;
+        }
+        else if (otherMax >= methodExact)
+        {
+          // When every value this method accepts also matches the other
+          // method, the call is always left to reflection.
+          if (Covers(other, method))
+            return null;
+          excluding.Add(other);
+        }
+        else
+        {
+          excludingUnlessExact.Add(other);
+        }
+      }
+
+      return new CriteriaDispatch(method, requireExactTypes, excluding, requireExactTypes ? [] : excludingUnlessExact);
+    }
+
+    private static int MinScore(OperationMethodModel method)
+      => method.CriteriaParameters.Sum(p => p.IsNullableValueType ? 2 : p.IsExactTypeMatch ? 3 : IsObject(p) ? 1 : 2)
+        - method.InheritanceDepth + method.InjectCount;
+
+    private static int ExactScore(OperationMethodModel method)
+      => method.CriteriaParameters.Sum(p => p.IsNullableValueType ? 2 : 3)
+        - method.InheritanceDepth + method.InjectCount;
+
+    /// <summary>
+    /// The highest score of another method for criteria that match the method.
+    /// </summary>
+    private static int MaxScore(OperationMethodModel other, OperationMethodModel method)
+      => other.CriteriaParameters.Zip(method.CriteriaParameters, (o, m) =>
+          o.IsNullableValueType ? 2 : IsObject(o) && !IsObject(m) ? 1 : 3).Sum()
+        - other.InheritanceDepth + other.InjectCount;
+
+    /// <summary>
+    /// Every value matching the criteria types of the method also matches
+    /// those of the other method.
+    /// </summary>
+    private static bool Covers(OperationMethodModel other, OperationMethodModel method)
+      => other.CriteriaParameters.Zip(method.CriteriaParameters, (o, m) =>
+          IsObject(o) || o.PatternTypeDisplay == m.PatternTypeDisplay || m.AssignableTo.Contains(o.PatternTypeDisplay)).All(c => c);
+
+    /// <summary>
+    /// No criteria can match both methods: at some position no value can
+    /// match both parameter types.
+    /// </summary>
+    private static bool AreDisjoint(OperationMethodModel other, OperationMethodModel method)
+      => other.CriteriaParameters.Zip(method.CriteriaParameters, CanOverlap).Any(overlap => !overlap);
+
+    /// <summary>
+    /// Some value can match both parameter types. A boxed int matches both
+    /// int and int?, so the pattern types are compared, without nullability.
+    /// </summary>
+    private static bool CanOverlap(OperationParameterModel left, OperationParameterModel right)
+    {
+      if (left.PatternTypeDisplay == right.PatternTypeDisplay)
+        return true;
+      if (left.Category is CriteriaTypeCategory.Unknown or CriteriaTypeCategory.TypeParameter
+        || right.Category is CriteriaTypeCategory.Unknown or CriteriaTypeCategory.TypeParameter)
+        return true;
+
+      // Array covariance lets a string[] match object[], but only arrays of
+      // reference types are covariant.
+      if (left.Category == CriteriaTypeCategory.Array && right.Category == CriteriaTypeCategory.Array)
+        return !left.HasValueTypeElements && !right.HasValueTypeElements;
+
+      if (left.Category == CriteriaTypeCategory.Interface || right.Category == CriteriaTypeCategory.Interface)
+      {
+        if (left.Category == right.Category)
+          return true;
+        var (type, @interface) = left.Category == CriteriaTypeCategory.Interface ? (right, left) : (left, right);
+        // A subclass of a class can implement any interface, and array
+        // covariance makes a string[] an IList<object>.
+        return type.Category == CriteriaTypeCategory.Class
+          || (type.Category == CriteriaTypeCategory.Array && !type.HasValueTypeElements)
+          || type.AssignableTo.Contains(@interface.PatternTypeDisplay);
+      }
+
+      // Classes, arrays and sealed types overlap only through inheritance.
+      return left.AssignableTo.Contains(right.PatternTypeDisplay) || right.AssignableTo.Contains(left.PatternTypeDisplay);
+    }
+
+    private static bool IsObject(OperationParameterModel parameter) => parameter.PatternTypeDisplay == "object";
 
     private static bool HasSameCriteriaTypes(OperationMethodModel left, OperationMethodModel right)
       => left.CriteriaParameters.Select(CriteriaTypeKey).SequenceEqual(right.CriteriaParameters.Select(CriteriaTypeKey));
@@ -302,8 +408,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       writer.Indent--;
       OpenBlock(writer);
 
-      // A selected method the interface cannot name is left to reflection.
-      var selected = SelectNamedDispatchMethods(model.Methods).Selected.Where(m => m.CanNameSignature).ToList();
+      // A selected method the generated code cannot call, or of a kind with
+      // methods the generator does not model, is left to reflection.
+      var selected = SelectNamedDispatchMethods(model.Methods).Selected
+        .Where(m => m.CanCall && !model.UnresolvedKinds.Contains(m.Kind))
+        .ToList();
       if (selected.Count > 0)
       {
         writer.WriteLine($"var {OperationsLocal} = ({OperationDiscovery.OperationsInterfaceName})this;");
@@ -326,7 +435,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     }
 
     private static void AppendDispatch(IndentedTextWriter writer, OperationMethodModel method, string memberName, int candidateIndex, bool byName, bool requireExactTypes,
-      IReadOnlyList<OperationMethodModel>? guards = null)
+      IReadOnlyList<OperationMethodModel>? excluding = null, IReadOnlyList<OperationMethodModel>? excludingUnlessExact = null)
     {
       var criteria = method.CriteriaParameters.ToList();
       var conditions = new List<string>();
@@ -357,17 +466,19 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
           }
         }
 
-        if (guards is { Count: > 0 })
+        // Leave the call to reflection when another method could tie or
+        // outscore this one for these criteria.
+        foreach (var other in excluding ?? [])
+          conditions.Add($"!({MatchCondition(other)})");
+
+        if (excludingUnlessExact is { Count: > 0 })
         {
           var exactMatch = string.Join(" && ", criteria
             .Select((p, i) => (Parameter: p, Index: i))
             .Where(c => !c.Parameter.IsExactTypeMatch)
             .Select(c => $"{CriteriaVariable(candidateIndex, c.Index)}.GetType() == typeof({c.Parameter.PatternTypeDisplay})"));
-          foreach (var guard in guards)
-          {
-            var guardMatch = string.Join(" && ", guard.CriteriaParameters.Select((p, i) => $"criteria[{i}] is {p.PatternTypeDisplay}"));
-            conditions.Add($"!({guardMatch} && !({exactMatch}))");
-          }
+          foreach (var other in excludingUnlessExact)
+            conditions.Add($"!({MatchCondition(other)} && !({exactMatch}))");
         }
       }
 
@@ -438,6 +549,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       writer.WriteLine("return;");
       CloseBlock(writer);
     }
+
+    /// <summary>
+    /// The criteria values match the criteria parameter types of a method.
+    /// </summary>
+    private static string MatchCondition(OperationMethodModel method)
+      => string.Join(" && ", method.CriteriaParameters.Select((p, i) => $"criteria[{i}] is {p.PatternTypeDisplay}"));
 
     private static string FormatServiceResolution(OperationParameterModel parameter)
     {

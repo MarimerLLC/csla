@@ -92,12 +92,21 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
       && !TakesCriteriaArray;
 
     /// <summary>
-    /// The parameter and return types can be used in the type's internal
+    /// The generated code can call the method through the type's internal
     /// IDataPortalOperations interface. A method taking a private or
-    /// protected nested type is left out of the interface and of generated
-    /// dispatch, and is called through reflection.
+    /// protected nested type cannot be named by the interface, and an
+    /// inherited method may be inaccessible or hidden by another member of
+    /// the same name. Such a method is left out of the interface and of
+    /// generated dispatch, and is called through reflection, but it still
+    /// competes with the other methods when generated dispatch selects one.
     /// </summary>
-    public bool CanNameSignature { get; init; } = true;
+    public bool CanCall { get; init; } = true;
+
+    /// <summary>
+    /// The generated code can name the criteria parameter types, for type
+    /// checks that keep another method from capturing a call.
+    /// </summary>
+    public bool CanNameCriteriaTypes { get; init; } = true;
 
     /// <summary>
     /// The method can take part in name-based dispatch. When criteria

@@ -399,10 +399,17 @@ namespace Csla.Test.DataPortal
           var attributeType = typeof(FetchAttribute).Assembly.GetType($"Csla.{kind}Attribute", throwOnError: true)!;
           var memberParameters = member.GetParameters().Select(p => p.ParameterType).ToArray();
 
-          var method = type
-            .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)
-            .Single(m => m.GetCustomAttributes(attributeType, false).Any()
-              && m.GetParameters().Select(p => p.ParameterType).SequenceEqual(memberParameters));
+          // The interface also names operation methods inherited from base
+          // types; find the nearest declaration, as the data portal does.
+          System.Reflection.MethodInfo method = null;
+          for (var declaringType = type; method is null && declaringType is not null; declaringType = declaringType.BaseType)
+          {
+            method = declaringType
+              .GetMethods(BindingFlags.Instance | BindingFlags.Public | BindingFlags.NonPublic | BindingFlags.DeclaredOnly)
+              .SingleOrDefault(m => m.GetCustomAttributes(attributeType, true).Any()
+                && m.GetParameters().Select(p => p.ParameterType).SequenceEqual(memberParameters));
+          }
+          method.Should().NotBeNull($"{type.Name}.{member.Name} should name an operation method");
 
           var expected = (string)typeof(DataPortalOperationNameHelper)
             .GetMethod(nameof(DataPortalOperationNameHelper.ComputeOperationName), BindingFlags.Static | BindingFlags.NonPublic)!

@@ -47,6 +47,43 @@ The data portal dispatches an operation in this order:
 
 The generated code resolves `[Inject]` parameters and reports errors the same way as reflection-based dispatch. An exception thrown by an operation method is wrapped in a `CallMethodException`, as before.
 
+## Inherited operation methods
+
+The generated dispatch of a concrete class also calls the operation methods it inherits, so operation methods can live on a shared base class:
+
+```csharp
+public abstract partial class AppBase<T> : BusinessBase<T>
+  where T : AppBase<T>
+{
+  [Create, RunLocal]
+  protected virtual void Create(MyCriteria<T> criteria) { }
+
+  [InsertChild]
+  protected virtual void InsertChild() { }
+}
+
+public partial class Customer : AppBase<Customer>
+{
+  [Update]
+  private void Update() { }
+}
+```
+
+The generated code for `Customer` calls `Create`, `InsertChild` and `Update` directly, along with operation methods inherited from CSLA's base classes, such as `BusinessBase.Child_Create`. It chooses between methods the same way reflection-based dispatch does:
+
+* Private methods of a base class are not included.
+* A method declared closer to the class is preferred over one declared further up the inheritance chain.
+* An override is called virtually, even when it does not repeat the operation attribute.
+* If the class declares a member with the same name as an inherited operation method, the generated code calls the inherited method through `base`.
+
+In a few cases the generated code leaves an inherited method to reflection-based dispatch, which still calls it as before:
+
+* An intermediate base class declares another member with the same name, which would hide the method from the generated code.
+* A method closer to the class takes the same number of criteria, and a less specific parameter type, such as `object`, means reflection could choose that closer method instead.
+* The method is internal to another assembly.
+
+Extension methods from the [data portal extensions generator](data-portal-extensions-generator.md) and the CSLADP002 and CSLADP009 analyzers cover only the operation methods a class declares.
+
 ## Operation methods that share a name
 
 Two operation methods map to the same operation when they have the same attribute and the same criteria parameter types, and differ only in their `[Inject]` parameters. As with reflection-based dispatch, the data portal calls the method with more injected parameters, and analyzer [CSLADP002](analyzers/CSLADP002-DuplicateOperationName.md) reports which method is used. If the methods have the same number of injected parameters, the data portal cannot choose between them, and analyzer [CSLADP009](analyzers/CSLADP009-AmbiguousOperationName.md) reports the ambiguity.

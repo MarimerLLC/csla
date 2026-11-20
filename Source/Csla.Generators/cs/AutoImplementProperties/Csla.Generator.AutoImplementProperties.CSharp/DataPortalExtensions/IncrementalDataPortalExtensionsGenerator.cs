@@ -68,9 +68,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions
       if (type is null)
         return null;
 
+      // Extension methods are generated for the operation methods a type
+      // declares, not for those it inherits.
       return new ExtensionGenerationModel(
         type,
-        new EquatableArray<OperationMethodModel>(operationType.Methods.Where(m => SupportedKinds.Contains(m.Kind))),
+        new EquatableArray<OperationMethodModel>(operationType.Methods.Where(m => !m.IsInherited && SupportedKinds.Contains(m.Kind))),
         options);
     }
   }

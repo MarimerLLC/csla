@@ -48,6 +48,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
 
     public LocationInfo? Location { get; init; }
 
+    /// <summary>
+    /// How far up the inheritance chain the method is declared: 0 for a
+    /// method declared by the type, 1 for one inherited from its base type,
+    /// and so on. Like reflection-based dispatch, a method closer to the
+    /// type is preferred.
+    /// </summary>
+    public int InheritanceDepth { get; init; }
+
+    /// <summary>
+    /// The generated code calls the inherited method as <c>base.Method(...)</c>
+    /// because the type declares another member with the same name.
+    /// </summary>
+    public bool CallThroughBase { get; init; }
+
+    public bool IsInherited => InheritanceDepth > 0;
+
     public IEnumerable<OperationParameterModel> CriteriaParameters => Parameters.Where(p => !p.IsInjected);
 
     public int CriteriaCount => Parameters.Count(p => !p.IsInjected);

@@ -60,7 +60,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       if (model is null || !model.Type.IsPartial)
         return;
 
-      var (_, collisions) = DataPortalOperationsBuilder.SelectNamedDispatchMethods(model.Methods);
+      // Collisions among inherited methods are reported on the type declaring them.
+      var (_, collisions) = DataPortalOperationsBuilder.SelectNamedDispatchMethods(model.Methods.Where(m => !m.IsInherited));
       foreach (var collision in collisions)
       {
         context.ReportDiagnostic(Diagnostic.Create(

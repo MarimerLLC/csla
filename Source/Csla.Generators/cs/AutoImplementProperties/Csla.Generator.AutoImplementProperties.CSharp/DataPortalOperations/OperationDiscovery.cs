@@ -148,7 +148,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
 
     /// <summary>
     /// Groups discovered operation methods by type so a partial class
-    /// spread across several files yields one model.
+    /// spread across several files yields one model. The methods a type
+    /// declares come first, followed by the operation methods it inherits.
     /// </summary>
     public static EquatableArray<OperationTypeModel> GroupByType(IEnumerable<OperationMethodEntry> entries, CancellationToken ct)
     {
@@ -161,7 +162,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
           .Select(e => e.Method)
           .OrderBy(m => m.Location?.FilePath ?? string.Empty, StringComparer.Ordinal)
           .ThenBy(m => m.Location?.TextSpan.Start ?? 0)
-          .ThenBy(m => Array.IndexOf(OperationKinds, m.Kind));
+          .ThenBy(m => Array.IndexOf(OperationKinds, m.Kind))
+          .Concat(header.InheritedMethods);
         result.Add(new OperationTypeModel(header, new EquatableArray<OperationMethodModel>(methods)));
       }
       return new EquatableArray<OperationTypeModel>(result);
@@ -211,8 +213,136 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         Visibility = GetVisibility(type),
         HasExtensionsAttribute = extensionsAttribute is not null,
         ExtensionsPrefix = GetPrefix(extensionsAttribute),
-        NoExtensions = HasAttribute(type, NoDataPortalExtensionAttributeName)
+        NoExtensions = HasAttribute(type, NoDataPortalExtensionAttributeName),
+        InheritedMethods = GetInheritedMethods(type, compilation)
       };
+    }
+
+    /// <summary>
+    /// The operation methods a concrete type inherits that its generated
+    /// dispatch can call, nearest base type first. Like reflection-based
+    /// dispatch, private base methods are not included, and a virtual
+    /// method overridden without an operation attribute is treated as
+    /// declared at the level of its most derived override, because the
+    /// attribute is inherited. A method is left to reflection-based dispatch
+    /// when the generated code could not call it without binding to another
+    /// method of the same name.
+    /// </summary>
+    private static EquatableArray<OperationMethodModel> GetInheritedMethods(INamedTypeSymbol type, Compilation compilation)
+    {
+      if (type.TypeKind != TypeKind.Class || type.IsAbstract)
+        return EquatableArray<OperationMethodModel>.Empty;
+
+      var result = new List<OperationMethodModel>();
+      // The type and the base types already walked, nearest first; the index is the inheritance depth.
+      var chain = new List<INamedTypeSymbol> { type };
+      for (var baseType = type.BaseType; baseType is not null && baseType.SpecialType != SpecialType.System_Object; baseType = baseType.BaseType)
+      {
+        foreach (var method in baseType.GetMembers().OfType<IMethodSymbol>())
+        {
+          if (!IsCandidateMethod(method)
+            || method.DeclaredAccessibility == Accessibility.Private
+            || method.Parameters.Any(p => p.RefKind is RefKind.Ref or RefKind.Out))
+            continue;
+
+          var kinds = GetOperationKinds(method);
+          if (kinds.Count == 0 || !compilation.IsSymbolAccessibleWithin(method, type, type))
+            continue;
+
+          // An override declaring the same operation attribute is discovered on its own.
+          var overrides = FindOverrides(chain, method);
+          kinds.RemoveAll(kind => overrides.Any(o => GetOperationKinds(o.Method).Contains(kind)));
+          if (kinds.Count == 0)
+            continue;
+
+          if (!TryGetCallForm(chain, method, out var callThroughBase))
+            continue;
+
+          var depth = overrides.Count > 0 ? overrides.Min(o => o.Depth) : chain.Count;
+          foreach (var kind in kinds)
+            result.Add(BuildMethod(method, kind) with { InheritanceDepth = depth, CallThroughBase = callThroughBase });
+        }
+        chain.Add(baseType);
+      }
+
+      // Stable: methods at the same depth keep declaration order.
+      return new EquatableArray<OperationMethodModel>(result.OrderBy(m => m.InheritanceDepth));
+    }
+
+    /// <summary>
+    /// The overrides of a base method declared by the types in the chain,
+    /// with the inheritance depth of each.
+    /// </summary>
+    private static List<(IMethodSymbol Method, int Depth)> FindOverrides(List<INamedTypeSymbol> chain, IMethodSymbol method)
+    {
+      var result = new List<(IMethodSymbol, int)>();
+      if (!method.IsVirtual && !method.IsAbstract && !method.IsOverride)
+        return result;
+
+      for (var depth = 0; depth < chain.Count; depth++)
+      {
+        foreach (var candidate in chain[depth].GetMembers(method.Name).OfType<IMethodSymbol>())
+        {
+          for (var overridden = candidate.OverriddenMethod; overridden is not null; overridden = overridden.OverriddenMethod)
+          {
+            if (SymbolEqualityComparer.Default.Equals(overridden.OriginalDefinition, method.OriginalDefinition))
+            {
+              result.Add((candidate, depth));
+              break;
+            }
+          }
+        }
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Decides how the type calls an inherited method. C# prefers an
+    /// applicable method declared in a more derived type, so the method is
+    /// called by name only when no type between the type and the declaring
+    /// type declares another member of that name. When only the type itself
+    /// does, and does not override the method, the call goes through
+    /// <c>base</c>. Otherwise the method is left to reflection-based dispatch.
+    /// </summary>
+    private static bool TryGetCallForm(List<INamedTypeSymbol> chain, IMethodSymbol method, out bool callThroughBase)
+    {
+      callThroughBase = false;
+      var hidingDepths = new List<int>();
+      for (var depth = 0; depth < chain.Count; depth++)
+      {
+        if (chain[depth].GetMembers(method.Name).Any(m => m is not IMethodSymbol { IsOverride: true }))
+          hidingDepths.Add(depth);
+      }
+
+      if (hidingDepths.Count == 0)
+        return true;
+
+      if (hidingDepths.Count == 1 && hidingDepths[0] == 0 && FindOverrides([chain[0]], method).Count == 0)
+      {
+        callThroughBase = true;
+        return true;
+      }
+
+      return false;
+    }
+
+    /// <summary>
+    /// The operation kinds of the operation attributes on a method, in attribute order.
+    /// </summary>
+    private static List<string> GetOperationKinds(IMethodSymbol method)
+    {
+      var result = new List<string>();
+      foreach (var attribute in method.GetAttributes())
+      {
+        if (IsOperationAttribute(attribute.AttributeClass))
+        {
+          var name = attribute.AttributeClass!.Name;
+          var kind = name.Substring(0, name.Length - "Attribute".Length);
+          if (!result.Contains(kind))
+            result.Add(kind);
+        }
+      }
+      return result;
     }
 
     /// <summary>

@@ -69,6 +69,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
 
     /// <summary>The type has the NoDataPortalExtension attribute.</summary>
     public bool NoExtensions { get; init; }
+
+    /// <summary>
+    /// Operation methods inherited from base types that the generated
+    /// dispatch of a concrete type can call, nearest base type first.
+    /// </summary>
+    public EquatableArray<OperationMethodModel> InheritedMethods { get; init; }
   }
 
   /// <summary>

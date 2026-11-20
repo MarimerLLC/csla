@@ -29,7 +29,7 @@ namespace TestApp
       var __operations = (IDataPortalOperations)this;
       if (operationType == typeof(global::Csla.FetchAttribute))
       {
-        if (criteria is { Length: 1 } && criteria[0] is object __c0p0 && __c0p0.GetType() == typeof(object))
+        if (criteria is { Length: 1 } && criteria[0] is object __c0p0 && !(criteria[0] is int && !(__c0p0.GetType() == typeof(object))))
         {
           try
           {

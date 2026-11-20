@@ -31,7 +31,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     public static string Build(OperationTypeModel model)
     {
       var type = model.Type;
-      var memberNames = GetInterfaceMemberNames(model.Methods);
+      var memberNames = GetInterfaceMemberNames(InterfaceMethods(model));
 
       using var stringWriter = new StringWriter();
       var writer = new IndentedTextWriter(stringWriter, "  ");
@@ -145,7 +145,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       return result;
     }
 
-    private static Dictionary<OperationMethodModel, string> GetInterfaceMemberNames(EquatableArray<OperationMethodModel> methods)
+    /// <summary>
+    /// The methods named by the IDataPortalOperations interface: all
+    /// methods except those whose signature the interface cannot name.
+    /// </summary>
+    private static IEnumerable<OperationMethodModel> InterfaceMethods(OperationTypeModel model)
+      => model.Methods.Where(m => m.CanNameSignature);
+
+    private static Dictionary<OperationMethodModel, string> GetInterfaceMemberNames(IEnumerable<OperationMethodModel> methods)
     {
       var result = new Dictionary<OperationMethodModel, string>(ReferenceEqualityComparer.Instance);
       var signatures = new HashSet<string>();
@@ -176,14 +183,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       var modifiers = model.Type.HidesInheritedOperationsInterface ? "internal new interface" : "internal interface";
       writer.WriteLine($"{modifiers} {OperationDiscovery.OperationsInterfaceName}");
       OpenBlock(writer);
-      foreach (var method in model.Methods)
+      foreach (var method in InterfaceMethods(model))
         writer.WriteLine($"{method.ReturnTypeDisplay} {memberNames[method]}({FormatParameters(method)});");
       CloseBlock(writer);
     }
 
     private static void AppendExplicitImplementations(IndentedTextWriter writer, OperationTypeModel model, Dictionary<OperationMethodModel, string> memberNames)
     {
-      foreach (var method in model.Methods)
+      foreach (var method in InterfaceMethods(model))
       {
         var arguments = string.Join(", ", method.Parameters.Select(p => ArgumentPrefix(p) + p.Name));
         var target = method.CallThroughBase ? "base." + method.MethodName : method.MethodName;
@@ -203,29 +210,51 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       // only the one the runtime would select takes part in dispatch.
       var (_, collisions) = SelectNamedDispatchMethods(model.Methods);
       var excluded = GetExcludedFromDispatch(collisions);
-      var dispatchable = model.Methods.Where(m => m.CanDispatch && !excluded.Contains(m)).ToList();
+      var dispatchable = model.Methods.Where(m => m.CanDispatch && m.CanNameSignature && !excluded.Contains(m)).ToList();
 
-      // When several methods of a kind take the same number of criteria,
-      // require exact runtime types so a less specific overload cannot
-      // capture the call. Reflection-based dispatch scores a method lower
-      // for each level of inheritance, so an inherited method is dispatched
-      // only when every method closer to the type with that criteria count
-      // takes criteria that match exact types only (value types and sealed
-      // types); otherwise reflection might prefer the closer method through
-      // a less specific match, and the call falls back to reflection.
-      var byKind = new List<(string Kind, List<(OperationMethodModel Method, bool RequireExactTypes)> Methods)>();
+      var byKind = new List<(string Kind, List<CriteriaDispatch> Methods)>();
       foreach (var kind in OperationDiscovery.OperationKinds)
       {
+        // Every method of the kind competes in reflection-based dispatch,
+        // including those left out of generated dispatch.
+        var all = model.Methods.Where(m => m.Kind == kind).ToList();
         var ofKind = dispatchable.Where(m => m.Kind == kind).ToList();
-        var methods = new List<(OperationMethodModel, bool)>();
+        var methods = new List<CriteriaDispatch>();
         foreach (var method in ofKind)
         {
-          var sameShape = ofKind.Where(m => m.CriteriaCount == method.CriteriaCount).ToList();
-          // Methods left out of generated dispatch still compete in reflection-based dispatch.
-          var closer = model.Methods.Where(m => m.Kind == kind && m.CriteriaCount == method.CriteriaCount && m.InheritanceDepth < method.InheritanceDepth);
-          if (closer.All(m => m.CriteriaParameters.All(p => p.IsExactTypeMatch)))
-            methods.Add((method, sameShape.Count > 1));
+          var sameShape = all.Where(m => m.CriteriaCount == method.CriteriaCount).ToList();
+
+          // Reflection-based dispatch scores a method lower for each level of
+          // inheritance. An inherited method is dispatched only when every
+          // method closer to the type with that criteria count takes criteria
+          // that match exact types only (value types and sealed types), which
+          // a less specific match cannot outscore; otherwise the call is left
+          // to reflection.
+          if (!sameShape.Where(m => m.InheritanceDepth < method.InheritanceDepth).All(HasExactCriteriaTypes))
+            continue;
+
+          // When several methods at one level take the same number of
+          // criteria, require exact runtime types so a less specific overload
+          // cannot capture the call.
+          var requireExactTypes = ofKind.Count(m => m.CriteriaCount == method.CriteriaCount && m.InheritanceDepth == method.InheritanceDepth) > 1;
+
+          // A method with less specific criteria types leaves the call to
+          // reflection when the criteria also match a method further up the
+          // inheritance chain, unless they match its own types exactly.
+          var guards = requireExactTypes || HasExactCriteriaTypes(method)
+            ? []
+            : sameShape.Where(m => m.InheritanceDepth > method.InheritanceDepth && !HasSameCriteriaTypes(m, method)).ToList();
+
+          methods.Add(new CriteriaDispatch(method, requireExactTypes, guards));
         }
+
+        // A method taking the whole criteria array as params object[] is
+        // called by reflection-based dispatch when no other method matches;
+        // it is dispatched only when it is the only method of its kind.
+        if (all.Count == 1 && all[0].TakesCriteriaArray && all[0].Parameters[0].IsParams
+          && all[0].CanNameSignature && !model.UnresolvedKinds.Contains(kind))
+          methods.Add(new CriteriaDispatch(all[0], RequireExactTypes: false, []));
+
         if (methods.Count > 0)
           byKind.Add((kind, methods));
       }
@@ -240,14 +269,30 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         writer.WriteLine($"{(isFirst ? "if" : "else if")} (operationType == typeof(global::Csla.{kind}Attribute))");
         isFirst = false;
         OpenBlock(writer);
-        foreach (var (method, requireExactTypes) in methods)
-          AppendDispatch(writer, method, memberNames[method], candidateIndex++, byName: false, requireExactTypes);
+        foreach (var dispatch in methods)
+          AppendDispatch(writer, dispatch.Method, memberNames[dispatch.Method], candidateIndex++, byName: false, dispatch.RequireExactTypes, dispatch.Guards);
         CloseBlock(writer);
       }
 
       writer.WriteLine("throw new global::Csla.Server.DataPortalOperationNotSupportedException(operationType, criteria);");
       CloseBlock(writer);
     }
+
+    /// <summary>
+    /// A method in criteria-based dispatch. <see cref="Guards"/> are methods
+    /// further up the inheritance chain whose criteria types, when matched,
+    /// leave the call to reflection-based dispatch.
+    /// </summary>
+    private sealed record CriteriaDispatch(OperationMethodModel Method, bool RequireExactTypes, IReadOnlyList<OperationMethodModel> Guards);
+
+    private static bool HasExactCriteriaTypes(OperationMethodModel method)
+      => method.CriteriaParameters.All(p => p.IsExactTypeMatch);
+
+    private static bool HasSameCriteriaTypes(OperationMethodModel left, OperationMethodModel right)
+      => left.CriteriaParameters.Select(CriteriaTypeKey).SequenceEqual(right.CriteriaParameters.Select(CriteriaTypeKey));
+
+    private static string CriteriaTypeKey(OperationParameterModel parameter)
+      => parameter.PatternTypeDisplay + (parameter.IsNullableValueType ? "?" : string.Empty);
 
     private static void AppendInvokeNamedOperationAsync(IndentedTextWriter writer, OperationTypeModel model, Dictionary<OperationMethodModel, string> memberNames)
     {
@@ -257,7 +302,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       writer.Indent--;
       OpenBlock(writer);
 
-      var (selected, _) = SelectNamedDispatchMethods(model.Methods);
+      // A selected method the interface cannot name is left to reflection.
+      var selected = SelectNamedDispatchMethods(model.Methods).Selected.Where(m => m.CanNameSignature).ToList();
       if (selected.Count > 0)
       {
         writer.WriteLine($"var {OperationsLocal} = ({OperationDiscovery.OperationsInterfaceName})this;");
@@ -279,11 +325,16 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       CloseBlock(writer);
     }
 
-    private static void AppendDispatch(IndentedTextWriter writer, OperationMethodModel method, string memberName, int candidateIndex, bool byName, bool requireExactTypes)
+    private static void AppendDispatch(IndentedTextWriter writer, OperationMethodModel method, string memberName, int candidateIndex, bool byName, bool requireExactTypes,
+      IReadOnlyList<OperationMethodModel>? guards = null)
     {
       var criteria = method.CriteriaParameters.ToList();
       var conditions = new List<string>();
-      if (criteria.Count == 0)
+      if (method.TakesCriteriaArray)
+      {
+        // The method receives the whole criteria array, whatever it holds.
+      }
+      else if (criteria.Count == 0)
       {
         conditions.Add("criteria is null or { Length: 0 }");
       }
@@ -305,9 +356,23 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
               conditions.Add($"{variable}.GetType() == typeof({parameter.PatternTypeDisplay})");
           }
         }
+
+        if (guards is { Count: > 0 })
+        {
+          var exactMatch = string.Join(" && ", criteria
+            .Select((p, i) => (Parameter: p, Index: i))
+            .Where(c => !c.Parameter.IsExactTypeMatch)
+            .Select(c => $"{CriteriaVariable(candidateIndex, c.Index)}.GetType() == typeof({c.Parameter.PatternTypeDisplay})"));
+          foreach (var guard in guards)
+          {
+            var guardMatch = string.Join(" && ", guard.CriteriaParameters.Select((p, i) => $"criteria[{i}] is {p.PatternTypeDisplay}"));
+            conditions.Add($"!({guardMatch} && !({exactMatch}))");
+          }
+        }
       }
 
-      writer.WriteLine($"if ({string.Join(" && ", conditions)})");
+      if (conditions.Count > 0)
+        writer.WriteLine($"if ({string.Join(" && ", conditions)})");
       OpenBlock(writer);
 
       if (method.IsAsync)
@@ -348,6 +413,12 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
               writer.WriteLine($"var {variable} = {argument};");
               argument = variable;
             }
+          }
+          else if (method.TakesCriteriaArray)
+          {
+            // Like reflection-based dispatch, pass the criteria array itself.
+            // The cast through object avoids a nullability mismatch with object[].
+            argument = $"({parameter.TypeDisplay})(object)criteria!";
           }
           else
           {

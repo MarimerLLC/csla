@@ -188,5 +188,15 @@ namespace Csla.Test.DataPortal
     private void FetchChild(string name) => LoadProperty(NameProperty, name);
   }
 
-  public class InheritedOpsChildList : BusinessListBase<InheritedOpsChildList, InheritedOpsChild>;
+  // Declares an operation of its own, so it has a generated mapping that
+  // must dispatch the inherited Child_Create and Child_UpdateAsync.
+  public partial class InheritedOpsChildList : BusinessListBase<InheritedOpsChildList, InheritedOpsChild>
+  {
+    [FetchChild]
+    private void FetchChild(string[] names, [Inject] IChildDataPortal<InheritedOpsChild> childPortal)
+    {
+      foreach (var name in names)
+        Add(childPortal.FetchChild(name));
+    }
+  }
 }

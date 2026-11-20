@@ -623,6 +623,83 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await DataPortalOperationsTestHelper<IncrementalDataPortalOperationsGenerator>.VerifyWithDiagnostics(source);
     }
 
+    [TestMethod("Inherited method taking a protected nested type is left to reflection")]
+    public async Task InheritedProtectedNestedCriteria()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            protected class Criteria { }
+
+            [Fetch]
+            protected void Fetch(Criteria criteria) { }
+
+            [Delete]
+            protected void Delete(int id) { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Create]
+            private void Create() { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Declared method taking a private nested type is left to reflection")]
+    public async Task PrivateNestedCriteria()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public partial class PersonEdit : Csla.BusinessBase<PersonEdit>
+          {
+            private class Criteria { }
+
+            [Fetch]
+            private void Fetch(Criteria criteria) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Child list dispatches the inherited params object array update")]
+    public async Task InheritedParamsArrayUpdateChild()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public partial class LineItem : Csla.BusinessBase<LineItem>
+          {
+            [FetchChild]
+            private void FetchChild(int id) { }
+          }
+
+          public partial class LineItems : Csla.BusinessListBase<LineItems, LineItem>
+          {
+            [FetchChild]
+            private void FetchChild(int count) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
     [TestMethod("Generic business object excludes type parameter criteria from name dispatch")]
     public async Task GenericBusinessObject()
     {

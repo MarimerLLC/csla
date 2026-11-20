@@ -130,7 +130,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         }
       }
 
-      return entries.Count == 0 ? null : GroupByType(entries, ct)[0];
+      return entries.Count == 0 ? null : AddInheritedMethods(GroupByType(entries, ct)[0], type, compilation);
     }
 
     /// <summary>
@@ -148,8 +148,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
 
     /// <summary>
     /// Groups discovered operation methods by type so a partial class
-    /// spread across several files yields one model. The methods a type
-    /// declares come first, followed by the operation methods it inherits.
+    /// spread across several files yields one model. Inherited methods are
+    /// added afterwards by <see cref="AddInheritedMethods(EquatableArray{OperationTypeModel}, Compilation, CancellationToken)"/>.
     /// </summary>
     public static EquatableArray<OperationTypeModel> GroupByType(IEnumerable<OperationMethodEntry> entries, CancellationToken ct)
     {
@@ -162,8 +162,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
           .Select(e => e.Method)
           .OrderBy(m => m.Location?.FilePath ?? string.Empty, StringComparer.Ordinal)
           .ThenBy(m => m.Location?.TextSpan.Start ?? 0)
-          .ThenBy(m => Array.IndexOf(OperationKinds, m.Kind))
-          .Concat(header.InheritedMethods);
+          .ThenBy(m => Array.IndexOf(OperationKinds, m.Kind));
         result.Add(new OperationTypeModel(header, new EquatableArray<OperationMethodModel>(methods)));
       }
       return new EquatableArray<OperationTypeModel>(result);
@@ -213,8 +212,48 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         Visibility = GetVisibility(type),
         HasExtensionsAttribute = extensionsAttribute is not null,
         ExtensionsPrefix = GetPrefix(extensionsAttribute),
-        NoExtensions = HasAttribute(type, NoDataPortalExtensionAttributeName),
-        InheritedMethods = GetInheritedMethods(type, compilation)
+        NoExtensions = HasAttribute(type, NoDataPortalExtensionAttributeName)
+      };
+    }
+
+    /// <summary>
+    /// Adds the inherited operation methods to each type model. Runs once
+    /// per type, after the methods a type declares are grouped.
+    /// </summary>
+    public static EquatableArray<OperationTypeModel> AddInheritedMethods(EquatableArray<OperationTypeModel> models, Compilation compilation, CancellationToken ct)
+    {
+      var result = new List<OperationTypeModel>(models.Count);
+      foreach (var model in models)
+      {
+        ct.ThrowIfCancellationRequested();
+        var type = compilation.Assembly.GetTypeByMetadataName(model.Type.MetadataName);
+        result.Add(type is null ? model : AddInheritedMethods(model, type, compilation));
+      }
+      return new EquatableArray<OperationTypeModel>(result);
+    }
+
+    /// <summary>
+    /// Adds the inherited operation methods to the model of a type.
+    /// </summary>
+    public static OperationTypeModel AddInheritedMethods(OperationTypeModel model, INamedTypeSymbol type, Compilation compilation)
+    {
+      var unresolved = new List<string>();
+      var inherited = GetInheritedMethods(type, compilation, unresolved);
+
+      // Reflection-based dispatch also sees generic operation methods the type declares.
+      foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
+      {
+        if (method.MethodKind == MethodKind.Ordinary && !method.IsStatic && method.IsGenericMethod)
+          unresolved.AddRange(GetOperationKinds(method));
+      }
+
+      if (inherited.Count == 0 && unresolved.Count == 0)
+        return model;
+
+      return model with
+      {
+        Methods = new EquatableArray<OperationMethodModel>(model.Methods.Concat(inherited)),
+        UnresolvedKinds = new EquatableArray<string>(unresolved.Distinct().OrderBy(k => Array.IndexOf(OperationKinds, k)))
       };
     }
 
@@ -226,27 +265,27 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     /// declared at the level of its most derived override, because the
     /// attribute is inherited. A method is left to reflection-based dispatch
     /// when the generated code could not call it without binding to another
-    /// method of the same name.
+    /// method of the same name, or could not name its parameter or return
+    /// types; the kinds of such methods are added to <paramref name="unresolvedKinds"/>.
     /// </summary>
-    private static EquatableArray<OperationMethodModel> GetInheritedMethods(INamedTypeSymbol type, Compilation compilation)
+    private static List<OperationMethodModel> GetInheritedMethods(INamedTypeSymbol type, Compilation compilation, List<string> unresolvedKinds)
     {
-      if (type.TypeKind != TypeKind.Class || type.IsAbstract)
-        return EquatableArray<OperationMethodModel>.Empty;
-
       var result = new List<OperationMethodModel>();
+      if (type.TypeKind != TypeKind.Class || type.IsAbstract)
+        return result;
+
       // The type and the base types already walked, nearest first; the index is the inheritance depth.
       var chain = new List<INamedTypeSymbol> { type };
       for (var baseType = type.BaseType; baseType is not null && baseType.SpecialType != SpecialType.System_Object; baseType = baseType.BaseType)
       {
         foreach (var method in baseType.GetMembers().OfType<IMethodSymbol>())
         {
-          if (!IsCandidateMethod(method)
-            || method.DeclaredAccessibility == Accessibility.Private
-            || method.Parameters.Any(p => p.RefKind is RefKind.Ref or RefKind.Out))
+          // Reflection-based dispatch ignores static and private base methods.
+          if (method.MethodKind != MethodKind.Ordinary || method.IsStatic || method.DeclaredAccessibility == Accessibility.Private)
             continue;
 
           var kinds = GetOperationKinds(method);
-          if (kinds.Count == 0 || !compilation.IsSymbolAccessibleWithin(method, type, type))
+          if (kinds.Count == 0)
             continue;
 
           // An override declaring the same operation attribute is discovered on its own.
@@ -255,19 +294,37 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
           if (kinds.Count == 0)
             continue;
 
-          if (!TryGetCallForm(chain, method, out var callThroughBase))
+          if (!IsCandidateMethod(method)
+            || method.Parameters.Any(p => p.RefKind is RefKind.Ref or RefKind.Out)
+            || !compilation.IsSymbolAccessibleWithin(method, type, type)
+            || !CanNameSignature(method)
+            || !TryGetCallForm(chain, method, out var callThroughBase))
+          {
+            unresolvedKinds.AddRange(kinds);
             continue;
+          }
 
           var depth = overrides.Count > 0 ? overrides.Min(o => o.Depth) : chain.Count;
           foreach (var kind in kinds)
-            result.Add(BuildMethod(method, kind) with { InheritanceDepth = depth, CallThroughBase = callThroughBase });
+            result.Add(BuildMethod(method, kind) with { InheritanceDepth = depth, CallThroughBase = callThroughBase, IsInherited = true });
         }
         chain.Add(baseType);
       }
 
       // Stable: methods at the same depth keep declaration order.
-      return new EquatableArray<OperationMethodModel>(result.OrderBy(m => m.InheritanceDepth));
+      return result.OrderBy(m => m.InheritanceDepth).ToList();
     }
+
+    /// <summary>
+    /// The parameter and return types of a method can be used in the type's
+    /// internal IDataPortalOperations interface. A private or protected
+    /// nested criteria type, for example, cannot: the interface member would
+    /// fail to compile (CS0051), so the method is left to reflection-based
+    /// dispatch.
+    /// </summary>
+    private static bool CanNameSignature(IMethodSymbol method)
+      => GetVisibility(method.ReturnType) != TypeVisibility.Private
+        && method.Parameters.All(p => GetVisibility(p.Type) != TypeVisibility.Private);
 
     /// <summary>
     /// The overrides of a base method declared by the types in the chain,
@@ -377,6 +434,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         OperationName = operationName,
         RunLocal = HasAttribute(method, RunLocalAttributeName),
         NoExtension = HasAttribute(method, NoDataPortalExtensionAttributeName),
+        CanNameSignature = CanNameSignature(method),
         Location = LocationInfo.From(method.Locations.FirstOrDefault())
       };
     }

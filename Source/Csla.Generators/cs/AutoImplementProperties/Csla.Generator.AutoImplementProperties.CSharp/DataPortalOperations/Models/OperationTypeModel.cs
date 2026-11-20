@@ -69,12 +69,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
 
     /// <summary>The type has the NoDataPortalExtension attribute.</summary>
     public bool NoExtensions { get; init; }
-
-    /// <summary>
-    /// Operation methods inherited from base types that the generated
-    /// dispatch of a concrete type can call, nearest base type first.
-    /// </summary>
-    public EquatableArray<OperationMethodModel> InheritedMethods { get; init; }
   }
 
   /// <summary>
@@ -83,7 +77,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
   internal sealed record OperationMethodEntry(OperationTypeHeader Type, OperationMethodModel Method);
 
   /// <summary>
-  /// A type and all of its data portal operation methods.
+  /// A type and all of its data portal operation methods: those it
+  /// declares, followed by those it inherits, nearest base type first.
   /// </summary>
-  internal sealed record OperationTypeModel(OperationTypeHeader Type, EquatableArray<OperationMethodModel> Methods);
+  internal sealed record OperationTypeModel(OperationTypeHeader Type, EquatableArray<OperationMethodModel> Methods)
+  {
+    /// <summary>
+    /// Operation kinds for which reflection-based dispatch can see an
+    /// operation method that is not in <see cref="Methods"/>, such as an
+    /// inherited method the generated code cannot call. Generated dispatch
+    /// must not assume it knows every candidate method of these kinds.
+    /// </summary>
+    public EquatableArray<string> UnresolvedKinds { get; init; }
+  }
 }

@@ -69,7 +69,7 @@ public partial class Customer : AppBase<Customer>
 }
 ```
 
-The generated code for `Customer` calls `Create`, `InsertChild` and `Update` directly, along with operation methods inherited from CSLA's base classes, such as `BusinessBase.Child_Create`. It chooses between methods the same way reflection-based dispatch does:
+The generated code for `Customer` calls `Create`, `InsertChild` and `Update` directly, along with operation methods inherited from CSLA's base classes, such as `BusinessBase.Child_Create` and the `Child_UpdateAsync(params object[])` method of the editable list base classes. It chooses between methods the same way reflection-based dispatch does:
 
 * Private methods of a base class are not included.
 * A method declared closer to the class is preferred over one declared further up the inheritance chain.
@@ -80,9 +80,13 @@ In a few cases the generated code leaves an inherited method to reflection-based
 
 * An intermediate base class declares another member with the same name, which would hide the method from the generated code.
 * A method closer to the class takes the same number of criteria, and a less specific parameter type, such as `object`, means reflection could choose that closer method instead.
+* The criteria also match a method further up the inheritance chain, and do not exactly match the types of a closer method with a less specific parameter type.
 * The method is internal to another assembly.
+* The method takes or returns a protected or private nested type, which the generated internal interface cannot name. The same applies to an operation method the class declares.
 
-Extension methods from the [data portal extensions generator](data-portal-extensions-generator.md) and the CSLADP002 and CSLADP009 analyzers cover only the operation methods a class declares.
+When a method the class declares and an inherited method map to the same operation, analyzers CSLADP002 and CSLADP009 report it at the declared method. If they tie, the data portal reports an ambiguous match, as reflection-based dispatch does.
+
+Extension methods from the [data portal extensions generator](data-portal-extensions-generator.md) cover only the operation methods a class declares. An override of an inherited operation method is not a declared operation method, even though the data portal calls it.
 
 ## Operation methods that share a name
 

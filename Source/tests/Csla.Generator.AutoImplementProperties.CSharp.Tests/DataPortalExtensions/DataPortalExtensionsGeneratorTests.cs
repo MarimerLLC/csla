@@ -82,6 +82,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
           {
             [Fetch]
             protected void Load(int id) { }
+
+            [Fetch]
+            protected virtual void Find(string name) { }
           }
 
           [DataPortalExtensions]
@@ -89,6 +92,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
           {
             [Create]
             private void New() { }
+
+            // Overrides without the attribute are still inherited operations.
+            protected override void Find(string name) { }
+
+            protected override void Child_Create() { }
           }
         }
         """;

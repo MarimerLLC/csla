@@ -62,7 +62,19 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
     /// </summary>
     public bool CallThroughBase { get; init; }
 
-    public bool IsInherited => InheritanceDepth > 0;
+    /// <summary>
+    /// The method is declared by a base type, not by the type itself. An
+    /// inherited method the type overrides without repeating the operation
+    /// attribute has an <see cref="InheritanceDepth"/> of 0 but is still
+    /// inherited.
+    /// </summary>
+    public bool IsInherited { get; init; }
+
+    /// <summary>
+    /// The method takes a single <c>object[]</c> parameter, which receives
+    /// the whole criteria array.
+    /// </summary>
+    public bool TakesCriteriaArray => Parameters.Count == 1 && Parameters[0].IsObjectArray;
 
     public IEnumerable<OperationParameterModel> CriteriaParameters => Parameters.Where(p => !p.IsInjected);
 
@@ -77,7 +89,15 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
     /// </summary>
     public bool CanDispatch =>
       !Parameters.Any(p => p.RefKindPrefix is "ref " or "out ")
-      && !(Parameters.Count == 1 && Parameters[0].IsObjectArray);
+      && !TakesCriteriaArray;
+
+    /// <summary>
+    /// The parameter and return types can be used in the type's internal
+    /// IDataPortalOperations interface. A method taking a private or
+    /// protected nested type is left out of the interface and of generated
+    /// dispatch, and is called through reflection.
+    /// </summary>
+    public bool CanNameSignature { get; init; } = true;
 
     /// <summary>
     /// The method can take part in name-based dispatch. When criteria

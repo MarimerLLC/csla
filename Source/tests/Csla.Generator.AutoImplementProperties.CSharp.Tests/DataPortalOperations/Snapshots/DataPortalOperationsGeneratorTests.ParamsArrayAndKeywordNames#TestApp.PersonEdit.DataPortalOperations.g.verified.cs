@@ -42,6 +42,20 @@ namespace TestApp
           return;
         }
       }
+      else if (operationType == typeof(global::Csla.FetchAttribute))
+      {
+        {
+          try
+          {
+            __operations.Fetch__ObjectArray((object[])(object)criteria!);
+          }
+          catch (global::System.Exception __ex)
+          {
+            throw global::Csla.Server.DataPortalOperationHelper.CreateCallMethodException(this, "Fetch", __ex);
+          }
+          return;
+        }
+      }
       else if (operationType == typeof(global::Csla.CreateChildAttribute))
       {
         if (criteria is null or { Length: 0 })

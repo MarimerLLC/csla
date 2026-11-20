@@ -19,6 +19,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     /// <summary>Grouping of operation methods by containing type.</summary>
     public const string GroupOperationTypes = nameof(GroupOperationTypes);
 
+    /// <summary>Addition of the operation methods each type inherits.</summary>
+    public const string InheritedOperationMethods = nameof(InheritedOperationMethods);
+
     /// <summary>Per-type models for operations generation.</summary>
     public const string OperationTypes = nameof(OperationTypes);
 

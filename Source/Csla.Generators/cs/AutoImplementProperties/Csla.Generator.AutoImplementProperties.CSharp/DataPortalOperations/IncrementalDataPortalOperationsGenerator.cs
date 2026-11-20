@@ -57,9 +57,14 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
           .Select(static (pair, _) => pair.Left.AddRange(pair.Right));
       }
 
+      // Inherited operation methods are added once per type, rather than
+      // for each operation method the type declares.
       return all
         .Select(static (entries, ct) => OperationDiscovery.GroupByType(entries, ct))
-        .WithTrackingName(TrackingNames.GroupOperationTypes);
+        .WithTrackingName(TrackingNames.GroupOperationTypes)
+        .Combine(context.CompilationProvider)
+        .Select(static (pair, ct) => OperationDiscovery.AddInheritedMethods(pair.Left, pair.Right, ct))
+        .WithTrackingName(TrackingNames.InheritedOperationMethods);
     }
 
     private static IncrementalValueProvider<ImmutableArray<OperationMethodEntry>> GetOperationMethods(IncrementalGeneratorInitializationContext context, string kind)

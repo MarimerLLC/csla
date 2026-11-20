@@ -1,0 +1,47 @@
+﻿{
+  target: null,
+  Diagnostics: [
+    {
+      Location: /*
+    [Fetch]
+    private void Fetch(int id) { }
+                 ^^^^^
+
+*/
+ Source0.cs: (19,17)-(19,22),
+      Message: Methods 'Fetch(int)' and 'Load(int, IDal)' on 'PersonEdit' both map to data portal operation 'Fetch__Int32' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match,
+      Severity: Warning,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP009,
+        Title: Data portal operation methods are ambiguous,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP009-AmbiguousOperationName.md,
+        MessageFormat: Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}' with the same number of injected parameters; the data portal cannot choose between them and reports an ambiguous match,
+        Category: Csla.DataPortal,
+        DefaultSeverity: Warning,
+        IsEnabledByDefault: true
+      }
+    },
+    {
+      Location: /*
+    [Delete]
+    private void Delete(int id) { }
+                 ^^^^^^
+  }
+*/
+ Source0.cs: (22,17)-(22,23),
+      Message: Methods 'Delete(int)' and 'Remove(int)' on 'PersonEdit' both map to data portal operation 'Delete__Int32'; name-based dispatch uses 'Delete(int)',
+      Severity: Info,
+      WarningLevel: 1,
+      Descriptor: {
+        Id: CSLADP002,
+        Title: Data portal operation methods share an operation name,
+        HelpLink: https://github.com/MarimerLLC/csla/tree/main/docs/analyzers/CSLADP002-DuplicateOperationName.md,
+        MessageFormat: Methods '{0}' and '{1}' on '{2}' both map to data portal operation '{3}'; name-based dispatch uses '{0}',
+        Category: Csla.DataPortal,
+        DefaultSeverity: Info,
+        IsEnabledByDefault: true
+      }
+    }
+  ]
+}

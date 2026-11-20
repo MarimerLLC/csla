@@ -47,6 +47,48 @@ The data portal dispatches an operation in this order:
 
 The generated code resolves `[Inject]` parameters and reports errors the same way as reflection-based dispatch. An exception thrown by an operation method is wrapped in a `CallMethodException`, as before.
 
+## Inherited operation methods
+
+The generated dispatch of a concrete class also calls the operation methods it inherits, so operation methods can live on a shared base class:
+
+```csharp
+public abstract partial class AppBase<T> : BusinessBase<T>
+  where T : AppBase<T>
+{
+  [Create, RunLocal]
+  protected virtual void Create(MyCriteria<T> criteria) { }
+
+  [InsertChild]
+  protected virtual void InsertChild() { }
+}
+
+public partial class Customer : AppBase<Customer>
+{
+  [Update]
+  private void Update() { }
+}
+```
+
+The generated code for `Customer` calls `Create`, `InsertChild` and `Update` directly, along with operation methods inherited from CSLA's base classes, such as `BusinessBase.Child_Create` and the `Child_UpdateAsync(params object[])` method of the editable list base classes. It chooses between methods the same way reflection-based dispatch does:
+
+* Private methods of a base class are not included.
+* A subclass of an operation attribute counts as that attribute.
+* An override is called virtually, even when it does not repeat the operation attribute.
+* If the class declares a member with the same name as an inherited operation method, the generated code calls the inherited method through `base`.
+* When several methods could take the criteria, the generated code uses the scores of reflection-based dispatch: 3 per criteria value of the exact parameter type, 2 for an assignable type and 1 for `object`, less one per level of inheritance, plus one per injected parameter. It calls a method only when no other method could tie or outscore it for those criteria, and otherwise leaves the call to reflection.
+
+The generated code cannot call some methods, but still takes them into account when it chooses between methods, and reflection-based dispatch calls them as before:
+
+* An inherited method hidden by another member with the same name in an intermediate base class.
+* An inherited method that is internal to another assembly.
+* A method, declared or inherited, that takes or returns a protected or private nested type, which the generated internal interface cannot name.
+
+When the class declares a generic operation method, or marks a method with a subclass of an operation attribute, the generator leaves every call of that kind of operation (for example all `[CreateChild]` calls) to reflection-based dispatch.
+
+When a method the class declares and an inherited method map to the same operation, analyzers CSLADP002 and CSLADP009 report it at the declared method. If they tie, the data portal reports an ambiguous match, as reflection-based dispatch does.
+
+Extension methods from the [data portal extensions generator](data-portal-extensions-generator.md) cover only the operation methods a class declares. An override of an inherited operation method is not a declared operation method, even though the data portal calls it.
+
 ## Operation methods that share a name
 
 Two operation methods map to the same operation when they have the same attribute and the same criteria parameter types, and differ only in their `[Inject]` parameters. As with reflection-based dispatch, the data portal calls the method with more injected parameters, and analyzer [CSLADP002](analyzers/CSLADP002-DuplicateOperationName.md) reports which method is used. If the methods have the same number of injected parameters, the data portal cannot choose between them, and analyzer [CSLADP009](analyzers/CSLADP009-AmbiguousOperationName.md) reports the ambiguity.

@@ -69,6 +69,41 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
+    [TestMethod("Inherited operation methods get no extensions")]
+    public async Task InheritedOperations()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public abstract class PersonBase<T> : BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected void Load(int id) { }
+
+            [Fetch]
+            protected virtual void Find(string name) { }
+          }
+
+          [DataPortalExtensions]
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Create]
+            private void New() { }
+
+            // Overrides without the attribute are still inherited operations.
+            protected override void Find(string name) { }
+
+            protected override void Child_Create() { }
+          }
+        }
+        """;
+
+      await Verify(source);
+    }
+
     [TestMethod("Execute operation on a command object")]
     public async Task ExecuteCommand()
     {

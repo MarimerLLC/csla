@@ -435,6 +435,371 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
+    [TestMethod("Derived class dispatches operation methods inherited from a generic base class")]
+    public async Task InheritedOperationsFromGenericBase()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public class MyCriteria<T> { }
+
+          public abstract partial class AppBase<T> : Csla.BusinessBase<T>
+            where T : AppBase<T>
+          {
+            [Create, RunLocal]
+            protected virtual void Create(MyCriteria<T> criteria) { }
+
+            [InsertChild]
+            protected virtual void InsertChild() { }
+
+            [UpdateChild]
+            protected virtual void UpdateChild() { }
+
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+
+          public partial class Customer : AppBase<Customer>
+          {
+            [Update]
+            protected void Update() { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Inherited method with the name of a method declared by the type is called through base")]
+    public async Task InheritedOverloadHiddenByDerived()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected void Fetch(int id) { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(string name) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Inherited method hidden by a member of an intermediate class is left to reflection")]
+    public async Task InheritedOverloadHiddenByIntermediate()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected void Fetch(int id) { }
+
+            // Ties with the hidden Fetch(int), so reflection reports an ambiguous match.
+            [Fetch]
+            protected void Load(int id) { }
+
+            [Delete]
+            protected void Delete(int id) { }
+          }
+
+          public abstract class PersonMiddle<T> : PersonBase<T>
+            where T : PersonMiddle<T>
+          {
+            protected void Fetch(System.Guid id) { }
+          }
+
+          public partial class PersonEdit : PersonMiddle<PersonEdit>
+          {
+            [Create]
+            private void Create() { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Inherited method overridden without the attribute is called virtually at the level of the override")]
+    public async Task InheritedOverriddenWithoutAttribute()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected virtual void Fetch(int id) { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            protected override void Fetch(int id) { }
+
+            protected override void Child_Create() { }
+
+            [Create]
+            private void Create() { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Inherited method with the criteria count of a method declared by the type is left to reflection")]
+    public async Task InheritedSameShapeAcrossLevels()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected void Load(int id) { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(object value) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Inherited and declared methods with the same operation name are scored like reflection")]
+    public async Task InheritedOperationNameScoring()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public interface IDal { }
+
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected void Load(int id, [Inject] IDal dal) { }
+
+            [Delete]
+            protected void Remove(int id) { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(int id) { }
+
+            [Delete]
+            private void Delete(int id) { }
+          }
+        }
+        """;
+
+      await DataPortalOperationsTestHelper<IncrementalDataPortalOperationsGenerator>.VerifyWithDiagnostics(source);
+    }
+
+    [TestMethod("Inherited method taking a protected nested type is left to reflection")]
+    public async Task InheritedProtectedNestedCriteria()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            protected class Criteria { }
+
+            [Fetch]
+            protected void Fetch(Criteria criteria) { }
+
+            [Delete]
+            protected void Delete(int id) { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Create]
+            private void Create() { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Declared method taking a private nested type is left to reflection")]
+    public async Task PrivateNestedCriteria()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public partial class PersonEdit : Csla.BusinessBase<PersonEdit>
+          {
+            private class Criteria { }
+
+            [Fetch]
+            private void Fetch(Criteria criteria) { }
+
+            // Must not capture a Criteria value, which reflection gives to Fetch(Criteria).
+            [Fetch]
+            private void Fetch(object value) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Injected parameters of a method further up the chain can outscore a closer method")]
+    public async Task InheritedInjectionScoring()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public interface IA { }
+          public interface IB { }
+          public interface IC { }
+          public interface ID { }
+
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            [Fetch]
+            protected void Load(object value, [Inject] IA a, [Inject] IB b, [Inject] IC c, [Inject] ID d) { }
+          }
+
+          public abstract class PersonMiddle<T> : PersonBase<T>
+            where T : PersonMiddle<T>
+          {
+            // For an int, reflection scores this 3 - 1 = 2 and Load 1 - 2 + 4 = 3.
+            [Fetch]
+            protected void Fetch(int id) { }
+          }
+
+          public partial class PersonEdit : PersonMiddle<PersonEdit>
+          {
+            [Create]
+            private void Create() { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Inherited method marked with a subclass of an operation attribute is dispatched")]
+    public async Task InheritedDerivedOperationAttribute()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public class InitializeChildAttribute : CreateChildAttribute { }
+
+          public abstract class PersonBase<T> : Csla.BusinessBase<T>
+            where T : PersonBase<T>
+          {
+            // Closer than BusinessBase.Child_Create, so reflection calls this.
+            [InitializeChild]
+            protected void Initialize() { }
+          }
+
+          public partial class PersonEdit : PersonBase<PersonEdit>
+          {
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Declared method marked with a subclass of an operation attribute leaves its kind to reflection")]
+    public async Task DeclaredDerivedOperationAttribute()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public class InitializeChildAttribute : CreateChildAttribute { }
+
+          public partial class PersonEdit : Csla.BusinessBase<PersonEdit>
+          {
+            [InitializeChild]
+            private void Initialize() { }
+
+            [Fetch]
+            private void Fetch(int id) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
+    [TestMethod("Child list dispatches the inherited params object array update")]
+    public async Task InheritedParamsArrayUpdateChild()
+    {
+      var source = """
+        using Csla;
+
+        namespace TestApp
+        {
+          public partial class LineItem : Csla.BusinessBase<LineItem>
+          {
+            [FetchChild]
+            private void FetchChild(int id) { }
+          }
+
+          public partial class LineItems : Csla.BusinessListBase<LineItems, LineItem>
+          {
+            [FetchChild]
+            private void FetchChild(int count) { }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
     [TestMethod("Generic business object excludes type parameter criteria from name dispatch")]
     public async Task GenericBusinessObject()
     {

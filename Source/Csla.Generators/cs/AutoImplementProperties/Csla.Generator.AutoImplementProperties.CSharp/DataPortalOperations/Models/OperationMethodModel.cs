@@ -48,6 +48,34 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
 
     public LocationInfo? Location { get; init; }
 
+    /// <summary>
+    /// How far up the inheritance chain the method is declared: 0 for a
+    /// method declared by the type, 1 for one inherited from its base type,
+    /// and so on. Like reflection-based dispatch, a method closer to the
+    /// type is preferred.
+    /// </summary>
+    public int InheritanceDepth { get; init; }
+
+    /// <summary>
+    /// The generated code calls the inherited method as <c>base.Method(...)</c>
+    /// because the type declares another member with the same name.
+    /// </summary>
+    public bool CallThroughBase { get; init; }
+
+    /// <summary>
+    /// The method is declared by a base type, not by the type itself. An
+    /// inherited method the type overrides without repeating the operation
+    /// attribute has an <see cref="InheritanceDepth"/> of 0 but is still
+    /// inherited.
+    /// </summary>
+    public bool IsInherited { get; init; }
+
+    /// <summary>
+    /// The method takes a single <c>object[]</c> parameter, which receives
+    /// the whole criteria array.
+    /// </summary>
+    public bool TakesCriteriaArray => Parameters.Count == 1 && Parameters[0].IsObjectArray;
+
     public IEnumerable<OperationParameterModel> CriteriaParameters => Parameters.Where(p => !p.IsInjected);
 
     public int CriteriaCount => Parameters.Count(p => !p.IsInjected);
@@ -61,7 +89,24 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
     /// </summary>
     public bool CanDispatch =>
       !Parameters.Any(p => p.RefKindPrefix is "ref " or "out ")
-      && !(Parameters.Count == 1 && Parameters[0].IsObjectArray);
+      && !TakesCriteriaArray;
+
+    /// <summary>
+    /// The generated code can call the method through the type's internal
+    /// IDataPortalOperations interface. A method taking a private or
+    /// protected nested type cannot be named by the interface, and an
+    /// inherited method may be inaccessible or hidden by another member of
+    /// the same name. Such a method is left out of the interface and of
+    /// generated dispatch, and is called through reflection, but it still
+    /// competes with the other methods when generated dispatch selects one.
+    /// </summary>
+    public bool CanCall { get; init; } = true;
+
+    /// <summary>
+    /// The generated code can name the criteria parameter types, for type
+    /// checks that keep another method from capturing a call.
+    /// </summary>
+    public bool CanNameCriteriaTypes { get; init; } = true;
 
     /// <summary>
     /// The method can take part in name-based dispatch. When criteria

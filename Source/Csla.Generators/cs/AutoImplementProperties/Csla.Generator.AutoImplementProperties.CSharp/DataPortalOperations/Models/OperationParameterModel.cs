@@ -20,6 +20,23 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
   }
 
   /// <summary>
+  /// The kind of a parameter type, used to decide whether one criteria value
+  /// can match two parameter types.
+  /// </summary>
+  internal enum CriteriaTypeCategory
+  {
+    /// <summary>object, dynamic, or a type the generator cannot reason about.</summary>
+    Unknown,
+    TypeParameter,
+    Interface,
+    Array,
+    /// <summary>A value type or a sealed class.</summary>
+    Sealed,
+    /// <summary>A class that can have subclasses.</summary>
+    Class
+  }
+
+  /// <summary>
   /// A parameter of a data portal operation method.
   /// </summary>
   internal sealed record OperationParameterModel
@@ -71,5 +88,17 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations.Mod
     public string? DefaultValueExpression { get; init; }
 
     public TypeVisibility Visibility { get; init; }
+
+    /// <summary>The kind of the pattern type.</summary>
+    public CriteriaTypeCategory Category { get; init; }
+
+    /// <summary>
+    /// The pattern types of the base classes and interfaces of the pattern
+    /// type, which a value of this type also matches.
+    /// </summary>
+    public EquatableArray<string> AssignableTo { get; init; }
+
+    /// <summary>For an array, its element type is a value type.</summary>
+    public bool HasValueTypeElements { get; init; }
   }
 }

@@ -130,7 +130,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         }
       }
 
-      return entries.Count == 0 ? null : GroupByType(entries, ct)[0];
+      return entries.Count == 0 ? null : AddInheritedMethods(GroupByType(entries, ct)[0], type, compilation);
     }
 
     /// <summary>
@@ -148,7 +148,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
 
     /// <summary>
     /// Groups discovered operation methods by type so a partial class
-    /// spread across several files yields one model.
+    /// spread across several files yields one model. Inherited methods are
+    /// added afterwards by <see cref="AddInheritedMethods(EquatableArray{OperationTypeModel}, Compilation, CancellationToken)"/>.
     /// </summary>
     public static EquatableArray<OperationTypeModel> GroupByType(IEnumerable<OperationMethodEntry> entries, CancellationToken ct)
     {
@@ -216,6 +217,241 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
     }
 
     /// <summary>
+    /// Adds the inherited operation methods to each type model. Runs once
+    /// per type, after the methods a type declares are grouped.
+    /// </summary>
+    public static EquatableArray<OperationTypeModel> AddInheritedMethods(EquatableArray<OperationTypeModel> models, Compilation compilation, CancellationToken ct)
+    {
+      var result = new List<OperationTypeModel>(models.Count);
+      foreach (var model in models)
+      {
+        ct.ThrowIfCancellationRequested();
+        var type = compilation.Assembly.GetTypeByMetadataName(model.Type.MetadataName);
+        result.Add(type is null ? model : AddInheritedMethods(model, type, compilation));
+      }
+      return new EquatableArray<OperationTypeModel>(result);
+    }
+
+    /// <summary>
+    /// Adds the inherited operation methods to the model of a type.
+    /// </summary>
+    public static OperationTypeModel AddInheritedMethods(OperationTypeModel model, INamedTypeSymbol type, Compilation compilation)
+    {
+      var unresolved = new List<string>();
+      var inherited = GetInheritedMethods(type, compilation, unresolved);
+
+      // Reflection-based dispatch also sees operation methods the type
+      // declares that the generator does not model: generic methods, and
+      // methods marked with a subclass of an operation attribute.
+      foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
+      {
+        if (method.MethodKind != MethodKind.Ordinary || method.IsStatic)
+          continue;
+        if (method.IsGenericMethod)
+          unresolved.AddRange(GetOperationKinds(method));
+        else
+          unresolved.AddRange(GetDerivedOperationAttributeKinds(method));
+      }
+
+      if (inherited.Count == 0 && unresolved.Count == 0)
+        return model;
+
+      return model with
+      {
+        Methods = new EquatableArray<OperationMethodModel>(model.Methods.Concat(inherited)),
+        UnresolvedKinds = new EquatableArray<string>(unresolved.Distinct().OrderBy(k => Array.IndexOf(OperationKinds, k)))
+      };
+    }
+
+    /// <summary>
+    /// The operation methods a concrete type inherits, nearest base type
+    /// first. Like reflection-based dispatch, private base methods are not
+    /// included, and a virtual method overridden without an operation
+    /// attribute is treated as declared at the level of its most derived
+    /// override, because the attribute is inherited. A method the generated
+    /// code cannot call (it would bind to another method of the same name,
+    /// it is not accessible, or the interface cannot name its types) is
+    /// still included with <see cref="OperationMethodModel.CanCall"/> false,
+    /// because it competes in reflection-based dispatch. The kinds of
+    /// generic methods, which cannot be modeled, are added to
+    /// <paramref name="unresolvedKinds"/>.
+    /// </summary>
+    private static List<OperationMethodModel> GetInheritedMethods(INamedTypeSymbol type, Compilation compilation, List<string> unresolvedKinds)
+    {
+      var result = new List<OperationMethodModel>();
+      if (type.TypeKind != TypeKind.Class || type.IsAbstract)
+        return result;
+
+      // The type and the base types already walked, nearest first; the index is the inheritance depth.
+      var chain = new List<INamedTypeSymbol> { type };
+      for (var baseType = type.BaseType; baseType is not null && baseType.SpecialType != SpecialType.System_Object; baseType = baseType.BaseType)
+      {
+        foreach (var method in baseType.GetMembers().OfType<IMethodSymbol>())
+        {
+          // Reflection-based dispatch ignores static and private base methods.
+          if (method.MethodKind != MethodKind.Ordinary || method.IsStatic || method.DeclaredAccessibility == Accessibility.Private)
+            continue;
+
+          var kinds = GetOperationKinds(method);
+          if (kinds.Count == 0)
+            continue;
+
+          // An override declaring the same operation attribute is discovered on its own.
+          var overrides = FindOverrides(chain, method);
+          kinds.RemoveAll(kind => overrides.Any(o => GetOperationKinds(o.Method).Contains(kind)));
+          if (kinds.Count == 0)
+            continue;
+
+          if (!IsCandidateMethod(method))
+          {
+            unresolvedKinds.AddRange(kinds);
+            continue;
+          }
+
+          var canCall = compilation.IsSymbolAccessibleWithin(method, type, type)
+            & CanNameSignature(method)
+            & TryGetCallForm(chain, method, out var callThroughBase);
+          var canNameCriteriaTypes = method.Parameters
+            .Where(p => !IsInjected(p))
+            .All(p => compilation.IsSymbolAccessibleWithin(p.Type, type));
+
+          var depth = overrides.Count > 0 ? overrides.Min(o => o.Depth) : chain.Count;
+          foreach (var kind in kinds)
+          {
+            result.Add(BuildMethod(method, kind) with
+            {
+              InheritanceDepth = depth,
+              CallThroughBase = callThroughBase,
+              IsInherited = true,
+              CanCall = canCall,
+              CanNameCriteriaTypes = canNameCriteriaTypes
+            });
+          }
+        }
+        chain.Add(baseType);
+      }
+
+      // Stable: methods at the same depth keep declaration order.
+      return result.OrderBy(m => m.InheritanceDepth).ToList();
+    }
+
+    /// <summary>
+    /// The parameter and return types of a method can be used in the type's
+    /// internal IDataPortalOperations interface. A private or protected
+    /// nested criteria type, for example, cannot: the interface member would
+    /// fail to compile (CS0051), so the method is left to reflection-based
+    /// dispatch.
+    /// </summary>
+    private static bool CanNameSignature(IMethodSymbol method)
+      => GetVisibility(method.ReturnType) != TypeVisibility.Private
+        && method.Parameters.All(p => GetVisibility(p.Type) != TypeVisibility.Private);
+
+    /// <summary>
+    /// The overrides of a base method declared by the types in the chain,
+    /// with the inheritance depth of each.
+    /// </summary>
+    private static List<(IMethodSymbol Method, int Depth)> FindOverrides(List<INamedTypeSymbol> chain, IMethodSymbol method)
+    {
+      var result = new List<(IMethodSymbol, int)>();
+      if (!method.IsVirtual && !method.IsAbstract && !method.IsOverride)
+        return result;
+
+      for (var depth = 0; depth < chain.Count; depth++)
+      {
+        foreach (var candidate in chain[depth].GetMembers(method.Name).OfType<IMethodSymbol>())
+        {
+          for (var overridden = candidate.OverriddenMethod; overridden is not null; overridden = overridden.OverriddenMethod)
+          {
+            if (SymbolEqualityComparer.Default.Equals(overridden.OriginalDefinition, method.OriginalDefinition))
+            {
+              result.Add((candidate, depth));
+              break;
+            }
+          }
+        }
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// Decides how the type calls an inherited method. C# prefers an
+    /// applicable method declared in a more derived type, so the method is
+    /// called by name only when no type between the type and the declaring
+    /// type declares another member of that name. When only the type itself
+    /// does, and does not override the method, the call goes through
+    /// <c>base</c>. Otherwise the method is left to reflection-based dispatch.
+    /// </summary>
+    private static bool TryGetCallForm(List<INamedTypeSymbol> chain, IMethodSymbol method, out bool callThroughBase)
+    {
+      callThroughBase = false;
+      var hidingDepths = new List<int>();
+      for (var depth = 0; depth < chain.Count; depth++)
+      {
+        if (chain[depth].GetMembers(method.Name).Any(m => m is not IMethodSymbol { IsOverride: true }))
+          hidingDepths.Add(depth);
+      }
+
+      if (hidingDepths.Count == 0)
+        return true;
+
+      if (hidingDepths.Count == 1 && hidingDepths[0] == 0 && FindOverrides([chain[0]], method).Count == 0)
+      {
+        callThroughBase = true;
+        return true;
+      }
+
+      return false;
+    }
+
+    /// <summary>
+    /// The operation kinds of the operation attributes on a method, in
+    /// attribute order. Like reflection-based dispatch, a subclass of an
+    /// operation attribute counts as that attribute.
+    /// </summary>
+    private static List<string> GetOperationKinds(IMethodSymbol method)
+    {
+      var result = new List<string>();
+      foreach (var attribute in method.GetAttributes())
+      {
+        if (GetOperationKind(attribute.AttributeClass) is { } kind && !result.Contains(kind))
+          result.Add(kind);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// The operation kinds a method has only through subclasses of operation
+    /// attributes. The generator discovers the methods a type declares by the
+    /// exact attribute, so it does not model these methods.
+    /// </summary>
+    private static List<string> GetDerivedOperationAttributeKinds(IMethodSymbol method)
+    {
+      var result = new List<string>();
+      foreach (var attribute in method.GetAttributes())
+      {
+        if (!IsOperationAttribute(attribute.AttributeClass) && GetOperationKind(attribute.AttributeClass) is { } kind && !result.Contains(kind))
+          result.Add(kind);
+      }
+      return result;
+    }
+
+    /// <summary>
+    /// The operation kind of an operation attribute or of a subclass of one, or null.
+    /// </summary>
+    private static string? GetOperationKind(INamedTypeSymbol? attributeClass)
+    {
+      for (var current = attributeClass; current is not null; current = current.BaseType)
+      {
+        if (IsOperationAttribute(current))
+          return current.Name.Substring(0, current.Name.Length - "Attribute".Length);
+      }
+      return null;
+    }
+
+    private static bool IsInjected(IParameterSymbol parameter)
+      => parameter.GetAttributes().Any(a => IsOrDerivesFrom(a.AttributeClass, InjectAttributeName));
+
+    /// <summary>
     /// The Prefix set by a DataPortalExtensions attribute, or null when it is not set.
     /// </summary>
     internal static string? GetPrefix(AttributeData? extensionsAttribute)
@@ -247,6 +483,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         OperationName = operationName,
         RunLocal = HasAttribute(method, RunLocalAttributeName),
         NoExtension = HasAttribute(method, NoDataPortalExtensionAttributeName),
+        CanCall = CanNameSignature(method),
         Location = LocationInfo.From(method.Locations.FirstOrDefault())
       };
     }
@@ -301,8 +538,37 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
         AllowNull = allowNull,
         ServiceKeyExpression = serviceKey,
         DefaultValueExpression = parameter.HasExplicitDefaultValue ? FormatDefaultValue(type, parameter.ExplicitDefaultValue) : null,
-        Visibility = GetVisibility(type)
+        Visibility = GetVisibility(type),
+        Category = GetCriteriaTypeCategory(patternType),
+        AssignableTo = new EquatableArray<string>(GetAssignableTypes(patternType)),
+        HasValueTypeElements = patternType is IArrayTypeSymbol { ElementType.IsValueType: true }
       };
+    }
+
+    private static CriteriaTypeCategory GetCriteriaTypeCategory(ITypeSymbol type) => type switch
+    {
+      { SpecialType: SpecialType.System_Object } => CriteriaTypeCategory.Unknown,
+      { TypeKind: TypeKind.Dynamic } => CriteriaTypeCategory.Unknown,
+      // Variance (IEnumerable<out T>, Func<out TResult>) lets a value match
+      // types that are not among its declared base types and interfaces.
+      INamedTypeSymbol { IsGenericType: true } named when named.OriginalDefinition.TypeParameters.Any(t => t.Variance != VarianceKind.None)
+        => CriteriaTypeCategory.Unknown,
+      ITypeParameterSymbol => CriteriaTypeCategory.TypeParameter,
+      IArrayTypeSymbol => CriteriaTypeCategory.Array,
+      { TypeKind: TypeKind.Interface } => CriteriaTypeCategory.Interface,
+      { IsValueType: true } => CriteriaTypeCategory.Sealed,
+      { TypeKind: TypeKind.Class, IsSealed: true } => CriteriaTypeCategory.Sealed,
+      { TypeKind: TypeKind.Class } => CriteriaTypeCategory.Class,
+      _ => CriteriaTypeCategory.Unknown
+    };
+
+    private static IEnumerable<string> GetAssignableTypes(ITypeSymbol type)
+    {
+      var result = new List<string>();
+      for (var baseType = type.BaseType; baseType is not null; baseType = baseType.BaseType)
+        result.Add(baseType.ToDisplayString(PatternFormat));
+      result.AddRange(type.AllInterfaces.Select(i => i.ToDisplayString(PatternFormat)));
+      return result.Distinct().OrderBy(n => n, StringComparer.Ordinal);
     }
 
     /// <summary>

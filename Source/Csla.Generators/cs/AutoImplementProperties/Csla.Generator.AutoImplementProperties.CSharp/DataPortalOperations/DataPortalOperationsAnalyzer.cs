@@ -63,9 +63,18 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations
       var (_, collisions) = DataPortalOperationsBuilder.SelectNamedDispatchMethods(model.Methods);
       foreach (var collision in collisions)
       {
+        // A collision between two inherited methods is reported on the type
+        // declaring them. One that involves a method the type declares is
+        // reported at that method, even when the other method wins.
+        var declared = !collision.Loser.IsInherited ? collision.Loser
+          : !collision.Winner.IsInherited ? collision.Winner
+          : null;
+        if (declared is null)
+          continue;
+
         context.ReportDiagnostic(Diagnostic.Create(
           collision.IsAmbiguous ? DataPortalOperationsDiagnostics.AmbiguousOperationName : DataPortalOperationsDiagnostics.DuplicateOperationName,
-          collision.Loser.Location?.ToLocation(context.Compilation),
+          declared.Location?.ToLocation(context.Compilation),
           collision.Winner.MethodDisplay, collision.Loser.MethodDisplay, model.Type.TypeName, collision.Winner.OperationName));
       }
     }

@@ -62,6 +62,55 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
     }
 
+    // The interface is bound with its own file's semantic model
+    [TestMethod]
+    public async Task InterfaceInAnotherFile()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementPropertiesInterface<IPerson>]
+        public partial class Person : Csla.BusinessBase<Person>
+        {
+        }
+        """;
+      var interfaceSource = """
+        namespace Test;
+
+        public interface IPerson
+        {
+          string Name { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source, [interfaceSource]);
+    }
+
+    // The generated partial declaration must repeat the type parameters of a generic class (#5042)
+    [TestMethod]
+    public async Task GenericClass()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class MyBusinessBase<T> : Csla.BusinessBase<T> where T : MyBusinessBase<T>
+        {
+        }
+
+        [Csla.CslaImplementPropertiesInterface<IPerson>]
+        public abstract partial class PersonBase<T> : MyBusinessBase<T> where T : PersonBase<T>
+        {
+        }
+
+        public interface IPerson
+        {
+          string Name { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementInterfacePartialsGenerator>.Verify(source);
+    }
+
     // The property methods come from the CSLA base class inherited through an intermediate base class
     [TestMethod]
     public async Task IntermediateBaseClass()

@@ -302,6 +302,156 @@ namespace Csla.Generator.Tests
       await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
     }
 
+    [TestMethod("A generic class keeps its type parameter in the generated partial declaration (#5042).")]
+    public async Task GenericClass()
+    {
+      var source = """
+        namespace Test;
+
+        public abstract class MyBusinessBase<T> : Csla.BusinessBase<T> where T : MyBusinessBase<T>
+        {
+        }
+
+        [Csla.CslaImplementProperties]
+        public abstract partial class PersonBase<T> : MyBusinessBase<T> where T : PersonBase<T>
+        {
+          public partial string PersonDisplayName { get; set; }
+          public partial T? Self { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("Generic classes with several type parameters, and generic and non-generic classes sharing a name, each get their own file.")]
+    public async Task GenericClassesWithSameName()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Pair : Csla.BusinessBase<Pair>
+        {
+          public partial string Name { get; set; }
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class Pair<TKey, TValue> : Csla.ReadOnlyBase<Pair<TKey, TValue>>
+        {
+          public partial TKey Key { get; private set; }
+          public partial TValue Value { get; private set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("Type parameter shapes: struct-constrained T?, arrays of T, jagged and multi-dimensional arrays, and an @-escaped type parameter.")]
+    public async Task TypeParameterShapes()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Measure<T, @class> : Csla.BusinessBase<Measure<T, @class>> where T : struct
+        {
+          public partial T? Amount { get; set; }
+          public partial T[] Items { get; set; }
+          public partial T[][] Jagged { get; set; }
+          public partial int[,] Grid { get; set; }
+          public partial string?[]? Tags { get; set; }
+          public partial @class Value { get; set; }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("A class nested in a generic class is generated inside its containing type.")]
+    public async Task NestedInGenericClass()
+    {
+      var source = """
+        namespace Test;
+
+        public partial class Outer<T>
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Line : Csla.BusinessBase<Line>
+          {
+            public partial T? Value { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("Classes with the same name in different namespaces each get their own file.")]
+    public async Task SameNameInDifferentNamespaces()
+    {
+      var source = """
+        namespace Sales
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Order : Csla.BusinessBase<Order>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+
+        namespace Purchasing
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Order : Csla.BusinessBase<Order>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
+    [TestMethod("A generic class's hint name doesn't collide with a class named like its arity, as the target or as a containing type.")]
+    public async Task ArityHintNamesDoNotCollide()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Foo<T> : Csla.BusinessBase<Foo<T>>
+        {
+          public partial T? Value { get; set; }
+        }
+
+        [Csla.CslaImplementProperties]
+        public partial class Foo_1 : Csla.BusinessBase<Foo_1>
+        {
+          public partial string Name { get; set; }
+        }
+
+        public partial class Outer<T>
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Line : Csla.BusinessBase<Line>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+
+        public partial class Outer_1
+        {
+          [Csla.CslaImplementProperties]
+          public partial class Line : Csla.BusinessBase<Line>
+          {
+            public partial string Name { get; set; }
+          }
+        }
+        """;
+
+      await TestHelper<IncrementalAutoImplementPropertiesPartialsGenerator>.Verify(source);
+    }
+
     [TestMethod("A class whose base class only has a CSLA base class's name gets no file generated.")]
     public void BaseClassOutsideCslaGeneratesNoProperties()
     {

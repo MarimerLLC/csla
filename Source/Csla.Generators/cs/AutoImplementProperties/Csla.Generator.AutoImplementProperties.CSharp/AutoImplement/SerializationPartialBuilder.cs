@@ -44,6 +44,11 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
       AppendBlockEnd(textWriter);
 
+      foreach (var _ in typeDefinition.ContainingTypeDeclarations)
+      {
+        AppendBlockEnd(textWriter);
+      }
+
       return new GenerationResults
       {
         FullyQualifiedName = typeDefinition.FullyQualifiedName,
@@ -116,11 +121,19 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
         textWriter.WriteLine();
       }
 
+      // Reopen the types a nested type is declared in
+      foreach (var containingTypeDeclaration in typeDefinition.ContainingTypeDeclarations)
+      {
+        textWriter.WriteLine(containingTypeDeclaration);
+        AppendBlockStart(textWriter);
+      }
+
       textWriter.Write(typeDefinition.Scope);
       textWriter.Write(" partial ");
       textWriter.Write(typeDefinition.TypeKind);
       textWriter.Write(' ');
       textWriter.Write(typeDefinition.TypeName);
+      textWriter.Write(typeDefinition.TypeParameters);
       textWriter.WriteLine();
     }
 

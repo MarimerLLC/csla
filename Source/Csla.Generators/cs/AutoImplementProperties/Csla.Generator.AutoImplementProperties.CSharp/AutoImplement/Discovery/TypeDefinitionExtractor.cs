@@ -78,16 +78,24 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     public static ExtractedTypeDefinition ExtractTypeDefinition(DefinitionExtractionContext extractionContext, TypeDeclarationSyntax targetTypeDeclaration)
     {
       var typeName = GetTypeName(targetTypeDeclaration);
+      var containingTypes = GetContainingTypes(targetTypeDeclaration);
+      var nameSpace = GetNamespace(targetTypeDeclaration);
       ExtractedTypeDefinition definition = new ExtractedTypeDefinition
       {
         TypeName = typeName,
+        TypeParameters = GetTypeParameters(targetTypeDeclaration),
         TypeKind = GetTypeKind(targetTypeDeclaration),
-        Namespace = GetNamespace(targetTypeDeclaration),
+        Namespace = nameSpace,
         Scope = GetScopeDefinition(targetTypeDeclaration),
         BaseClassTypeName = GetBaseClassTypeName(extractionContext, targetTypeDeclaration),
         DefaultPropertyModifiers = ["public"],
         DefaultPropertySetterModifiers = [],
-        FullyQualifiedName = typeName
+        ContainingTypeDeclarations = containingTypes.Select(GetPartialDeclaration).ToArray(),
+        // Used as the hint name, so it must be unique in the compilation: namespace, containing
+        // types and the type, each generic one with its arity (see GetHintSegment)
+        FullyQualifiedName = string.Join(".", new[] { nameSpace }
+          .Concat(containingTypes.Concat([targetTypeDeclaration]).Select(GetHintSegment))
+          .Where(s => !string.IsNullOrEmpty(s)))
       };
 
       foreach (ExtractedPropertyDefinition propertyDefinition in PropertyDefinitionsExtractor.ExtractPropertyDefinitions(extractionContext, targetTypeDeclaration))
@@ -122,6 +130,48 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
       }
 
       return string.Empty;
+    }
+
+    /// <summary>
+    /// Get the types that contain a nested type, outermost first
+    /// </summary>
+    /// <param name="targetTypeDeclaration">The declaration of the possibly nested type</param>
+    /// <returns>The declarations of the containing types; empty for a top-level type</returns>
+    private static List<TypeDeclarationSyntax> GetContainingTypes(TypeDeclarationSyntax targetTypeDeclaration)
+    {
+      var containingTypes = new List<TypeDeclarationSyntax>();
+      for (var parent = targetTypeDeclaration.Parent as TypeDeclarationSyntax; parent is not null; parent = parent.Parent as TypeDeclarationSyntax)
+      {
+        containingTypes.Insert(0, parent);
+      }
+
+      return containingTypes;
+    }
+
+    /// <summary>
+    /// Build the partial declaration that reopens a containing type, such as <c>partial class Outer&lt;T&gt;</c>
+    /// </summary>
+    /// <param name="typeDeclaration">The declaration of the containing type</param>
+    /// <returns>The partial declaration, without accessibility, base list or constraints, which a partial declaration may omit</returns>
+    private static string GetPartialDeclaration(TypeDeclarationSyntax typeDeclaration)
+    {
+      var keyword = typeDeclaration is RecordDeclarationSyntax { ClassOrStructKeyword.RawKind: not 0 } record
+        ? $"record {record.ClassOrStructKeyword}"
+        : typeDeclaration.Keyword.ToString();
+      return $"partial {keyword} {typeDeclaration.Identifier}{GetTypeParameters(typeDeclaration)}";
+    }
+
+    /// <summary>
+    /// Get the hint name segment of a type: its name, with its arity if it is generic.
+    /// '&lt;' and '&gt;' aren't allowed in hint names, and the arity follows a '-', which can't occur in an
+    /// identifier, so Foo&lt;T&gt; (Foo-1) collides neither with Foo nor with a class named Foo_1
+    /// </summary>
+    /// <param name="typeDeclaration">The declaration of the type</param>
+    /// <returns>The hint name segment, such as <c>Foo</c> or <c>Foo-1</c></returns>
+    private static string GetHintSegment(TypeDeclarationSyntax typeDeclaration)
+    {
+      var arity = typeDeclaration.TypeParameterList?.Parameters.Count ?? 0;
+      return arity > 0 ? $"{typeDeclaration.Identifier}-{arity}" : typeDeclaration.Identifier.ToString();
     }
 
     #endregion
@@ -235,6 +285,22 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     private static string GetTypeName(TypeDeclarationSyntax targetTypeDeclaration)
     {
       return targetTypeDeclaration.Identifier.ToString();
+    }
+
+    /// <summary>
+    /// Build the type parameter list the generated partial declaration must repeat
+    /// </summary>
+    /// <param name="typeDeclaration">The declaration of the type</param>
+    /// <returns>The type parameter names in angle brackets, such as <c>&lt;T&gt;</c>, without
+    /// attributes or constraints (which a partial declaration may omit); empty for a non-generic type</returns>
+    private static string GetTypeParameters(TypeDeclarationSyntax typeDeclaration)
+    {
+      if (typeDeclaration.TypeParameterList is not { Parameters.Count: > 0 } typeParameterList)
+      {
+        return string.Empty;
+      }
+
+      return $"<{string.Join(", ", typeParameterList.Parameters.Select(p => p.Identifier.ToString()))}>";
     }
 
     /// <summary>

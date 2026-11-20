@@ -53,7 +53,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
         definition.Fields.Add(fieldDefinition);
       }
 
-      fullyQualifiedNameBuilder.Append(definition.TypeName);
+      fullyQualifiedNameBuilder.Append(GetHintSegment(targetTypeDeclaration));
       definition.FullyQualifiedName = fullyQualifiedNameBuilder.ToString();
 
       return definition;
@@ -164,10 +164,40 @@ namespace Csla.Generator.AutoSerialization.CSharp.AutoSerialization.Discovery
     /// Extract the name of the type for which we will be generating code
     /// </summary>
     /// <param name="targetTypeDeclaration">The TypeDeclarationSyntax from which to extract the necessary information</param>
-    /// <returns>The name of the type for which generation is being performed</returns>
+    /// <returns>The name of the type for which generation is being performed, with its
+    /// type parameters if it is generic, such as <c>Wrapper&lt;T&gt;</c></returns>
     private static string GetTypeName(TypeDeclarationSyntax targetTypeDeclaration)
     {
-      return targetTypeDeclaration.Identifier.ToString();
+      return targetTypeDeclaration.Identifier.ToString() + GetTypeParameters(targetTypeDeclaration);
+    }
+
+    /// <summary>
+    /// Build the type parameter list a partial declaration of a generic type must repeat
+    /// </summary>
+    /// <param name="typeDeclaration">The declaration of the type</param>
+    /// <returns>The type parameter names in angle brackets, such as <c>&lt;T&gt;</c>, without
+    /// attributes or constraints (which a partial declaration may omit); empty for a non-generic type</returns>
+    internal static string GetTypeParameters(TypeDeclarationSyntax typeDeclaration)
+    {
+      if (typeDeclaration.TypeParameterList is not { Parameters.Count: > 0 } typeParameterList)
+      {
+        return string.Empty;
+      }
+
+      return $"<{string.Join(", ", typeParameterList.Parameters.Select(p => p.Identifier.ToString()))}>";
+    }
+
+    /// <summary>
+    /// Get the hint name segment of a type: its name, with its arity if it is generic.
+    /// '&lt;' and '&gt;' aren't allowed in hint names, and the arity follows a '-', which can't occur in an
+    /// identifier, so Foo&lt;T&gt; (Foo-1) collides neither with Foo nor with a class named Foo_1
+    /// </summary>
+    /// <param name="typeDeclaration">The declaration of the type</param>
+    /// <returns>The hint name segment, such as <c>Foo</c> or <c>Foo-1</c></returns>
+    internal static string GetHintSegment(TypeDeclarationSyntax typeDeclaration)
+    {
+      var arity = typeDeclaration.TypeParameterList?.Parameters.Count ?? 0;
+      return arity > 0 ? $"{typeDeclaration.Identifier}-{arity}" : typeDeclaration.Identifier.ToString();
     }
 
     /// <summary>

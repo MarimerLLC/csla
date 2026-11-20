@@ -47,6 +47,50 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       await TestHelperVerify(source);
     }
 
+    [TestMethod("A generic class, and a class nested in a generic class, keep their type parameters (#5042).")]
+    public async Task GenericTypes()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.Serialization.AutoSerializable]
+        public partial class Wrapper<T>
+        {
+          public string Name { get; set; } = "";
+          public T? Value { get; set; }
+          public T[] Items { get; set; } = [];
+        }
+
+        // Shares the hint name of Wrapper<T> unless the arity separator can't occur in an identifier
+        [Csla.Serialization.AutoSerializable]
+        public partial class Wrapper_1
+        {
+          public string Name { get; set; } = "";
+        }
+
+        public partial class Outer<TKey, TValue>
+        {
+          [Csla.Serialization.AutoSerializable]
+          public partial class Inner
+          {
+            public int Count { get; set; }
+            public TKey? Key { get; set; }
+          }
+        }
+
+        public partial class Outer_2
+        {
+          [Csla.Serialization.AutoSerializable]
+          public partial class Inner
+          {
+            public int Count { get; set; }
+          }
+        }
+        """;
+
+      await TestHelperVerify(source);
+    }
+
     [TestMethod("Property with a type containing generics must be generated correctly to be used.")]
     public async Task Case03()
     {

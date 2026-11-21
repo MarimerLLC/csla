@@ -325,6 +325,28 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// Gets a not-null property's value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// An unloaded property reads as its default value, which is stored
+    /// unless it is null. For a command, the value is non-null after the
+    /// data portal has run Execute and verified the object.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P ReadProperty<P>(NotNullPropertyInfo<P> propertyInfo) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      return NotNullGuard.Read(FieldManager, propertyInfo);
+    }
+
+    /// <summary>
     /// Gets a property's value as a specified type.
     /// </summary>
     /// <param name="propertyInfo">
@@ -396,7 +418,13 @@ namespace Csla.Core
           else
             oldValue = (P?)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
+        var convertedValue = Utilities.CoerceValue<P>(typeof(F), oldValue, newValue);
+        NotNullGuard.ThrowIfNullInsideTry(propertyInfo, convertedValue);
+        LoadPropertyValue<P>(propertyInfo, oldValue, convertedValue);
+      }
+      catch (NotNullPropertyViolationException)
+      {
+        throw;
       }
       catch (Exception ex)
       {
@@ -429,6 +457,7 @@ namespace Csla.Core
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
+      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
       try
       {
         P? oldValue = default(P);
@@ -453,8 +482,34 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Loads a not-null property's managed field with the
+    /// supplied value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> or <paramref name="newValue"/> is <see langword="null"/>.</exception>
+    /// <exception cref="PropertyLoadException"></exception>
+    protected void LoadProperty<P>(NotNullPropertyInfo<P> propertyInfo, P newValue) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      LoadProperty<P>((PropertyInfo<P>)propertyInfo, newValue);
+    }
+
     private bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
+      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
       try
       {
         P? oldValue;

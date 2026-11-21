@@ -1410,6 +1410,71 @@ namespace Csla
     }
 
     /// <summary>
+    /// Gets a not-null property's managed field value,
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// <para>
+    /// If the user is not authorized to read the property
+    /// value, the default value is returned as a result. For a
+    /// property without a default value that is null: authorization
+    /// takes precedence over nullability.
+    /// </para>
+    /// <para>
+    /// The value is non-null on an object the data portal has completed
+    /// and verified.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P GetProperty<P>(NotNullPropertyInfo<P> propertyInfo) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      return GetProperty(propertyInfo, NoAccessBehavior.SuppressException);
+    }
+
+    /// <summary>
+    /// Gets a not-null property's managed field value,
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// <para>
+    /// If the user is not authorized to read the property
+    /// value and <paramref name="noAccess"/> is <see cref="NoAccessBehavior.SuppressException"/>,
+    /// the default value is returned as a result. For a property without
+    /// a default value that is null: authorization takes precedence over nullability.
+    /// </para>
+    /// <para>
+    /// The value is non-null on an object the data portal has completed
+    /// and verified.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P GetProperty<P>(NotNullPropertyInfo<P> propertyInfo, NoAccessBehavior noAccess) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      if (CanReadProperty(propertyInfo, noAccess == NoAccessBehavior.ThrowException))
+        return ReadProperty(propertyInfo);
+      return propertyInfo.DefaultValue!;
+    }
+
+    /// <summary>
     /// Gets a property's value as a specified type.
     /// </summary>
     /// <param name="propertyInfo">
@@ -1500,6 +1565,28 @@ namespace Csla
         FieldManager.LoadFieldData<P>(propertyInfo, result);
       }
       return result;
+    }
+
+    /// <summary>
+    /// Gets a not-null property's value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// An unloaded property reads as its default value, which is stored
+    /// unless it is null. The value is non-null on an object the data
+    /// portal has completed and verified.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P ReadProperty<P>(NotNullPropertyInfo<P> propertyInfo) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      return NotNullGuard.Read(FieldManager, propertyInfo);
     }
 
     /// <summary>
@@ -1652,8 +1739,19 @@ namespace Csla
         }
 
         if (ValueComparer.AreNotEqual(oldValue, newValue))
-          FieldManager.LoadFieldData(propertyInfo, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
-
+        {
+          var convertedValue = Utilities.CoerceValue<P>(typeof(F), oldValue, newValue);
+          NotNullGuard.ThrowIfNullInsideTry(propertyInfo, convertedValue);
+          FieldManager.LoadFieldData(propertyInfo, convertedValue);
+        }
+        else
+        {
+          NotNullGuard.ThrowIfNullInsideTry(propertyInfo, newValue);
+        }
+      }
+      catch (NotNullPropertyViolationException)
+      {
+        throw;
       }
       catch (Exception ex)
       {
@@ -1701,6 +1799,7 @@ namespace Csla
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
+      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
       try
       {
         P? oldValue;
@@ -1717,12 +1816,37 @@ namespace Csla
 
         if (ValueComparer.AreNotEqual(oldValue, newValue))
           FieldManager.LoadFieldData(propertyInfo, newValue);
-        
+
       }
       catch (Exception ex)
       {
         throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
       }
+    }
+
+    /// <summary>
+    /// Loads a not-null property's managed field with the
+    /// supplied value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> or <paramref name="newValue"/> is <see langword="null"/>.</exception>
+    /// <exception cref="PropertyLoadException"></exception>
+    protected void LoadProperty<P>(NotNullPropertyInfo<P> propertyInfo, P newValue) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      LoadProperty<P>((PropertyInfo<P>)propertyInfo, newValue);
     }
 
     /// <summary>

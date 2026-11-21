@@ -815,7 +815,61 @@ namespace Csla.Properties {
                 return ResourceManager.GetString("NoSuchValueExistsException", resourceCulture);
             }
         }
-        
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} on {1} was not started because these not-null properties are null: {2}..
+        /// </summary>
+        public static string NotNullInvariantViolatedOnEntry {
+            get {
+                return ResourceManager.GetString("NotNullInvariantViolatedOnEntry", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to {0} on {1} has already run, but left these not-null properties null: {2}. Load them in every operation that completes the object, give them a default value, or declare them nullable and register them with RegisterProperty..
+        /// </summary>
+        public static string NotNullInvariantViolatedOnExit {
+            get {
+                return ResourceManager.GetString("NotNullInvariantViolatedOnExit", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Property {0} is a not-null property; delayed loading (LazyGetProperty, LazyReadProperty, their async forms and LoadPropertyAsync) is not supported for it. Declare the property nullable and register it with RegisterProperty..
+        /// </summary>
+        public static string NotNullPropertyDelayedLoadNotSupported {
+            get {
+                return ResourceManager.GetString("NotNullPropertyDelayedLoadNotSupported", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Property {1} of {0} is a not-null property without a default value, but it is not serialized; it would be null after serialization. Give it a default value, or declare it nullable and register it with RegisterProperty..
+        /// </summary>
+        public static string NotNullPropertyNotSerializedWithoutDefault {
+            get {
+                return ResourceManager.GetString("NotNullPropertyNotSerializedWithoutDefault", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Rule {0} returned null for the not-null property {1}; the value was not stored..
+        /// </summary>
+        public static string NotNullPropertyRuleOutputNull {
+            get {
+                return ResourceManager.GetString("NotNullPropertyRuleOutputNull", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Property {0} is a not-null property; null cannot be stored in it..
+        /// </summary>
+        public static string NotNullPropertyValueNull {
+            get {
+                return ResourceManager.GetString("NotNullPropertyValueNull", resourceCulture);
+            }
+        }
+
         /// <summary>
         ///   Looks up a localized string similar to Argument must not be Nothing.
         /// </summary>

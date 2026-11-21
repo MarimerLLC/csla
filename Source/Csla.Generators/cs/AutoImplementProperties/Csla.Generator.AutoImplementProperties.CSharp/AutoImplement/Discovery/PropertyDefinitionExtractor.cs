@@ -6,6 +6,7 @@
 // <summary>Extract the definition of a single property of a type for source generation</summary>
 //-----------------------------------------------------------------------
 
+using Csla.Analyzers;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;
@@ -28,6 +29,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     /// <returns>A readonly list of ExtractedPropertyDefinition containing the data extracted from the syntax tree</returns>
     public static ExtractedPropertyDefinition ExtractPropertyDefinition(DefinitionExtractionContext extractionContext, PropertyDeclarationSyntax propertyDeclaration)
     {
+      var notNullRegistration = GetNotNullRegistration(extractionContext.SemanticModel, propertyDeclaration);
       ExtractedPropertyDefinition propertyDefinition = new ExtractedPropertyDefinition
       {
         PropertyName = GetPropertyName(propertyDeclaration),
@@ -36,6 +38,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         SetterModifiers = GetSetterModifiers(propertyDeclaration),
         Modifiers = GetPropertyModifiers(propertyDeclaration),
         Partial = IsPartial(propertyDeclaration),
+        NotNullRegistration = notNullRegistration,
         TypeDefinition = new ExtractedMemberTypeDefinition
         {
           Nullable = GetFieldTypeNullable(propertyDeclaration),
@@ -49,6 +52,21 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
     }
 
     #region Private Helper Methods
+
+    /// <summary>
+    /// Decide how the property is registered when not-null properties are generated:
+    /// from the declared type in the semantic model, and only where nullable
+    /// annotations are enabled at the declaration.
+    /// </summary>
+    private static NotNullRegistration GetNotNullRegistration(SemanticModel semanticModel, PropertyDeclarationSyntax propertyDeclaration)
+    {
+      if (!NotNullPropertyRules.IsAnnotationsEnabled(semanticModel, propertyDeclaration.Type.SpanStart))
+        return NotNullRegistration.None;
+
+      var type = (semanticModel.GetDeclaredSymbol(propertyDeclaration) as IPropertySymbol)?.Type
+        ?? semanticModel.GetTypeInfo(propertyDeclaration.Type).Type;
+      return NotNullPropertyRules.GetRegistration(type);
+    }
     /// <summary>
     /// Determines whether the field type is nullable.
     /// </summary>

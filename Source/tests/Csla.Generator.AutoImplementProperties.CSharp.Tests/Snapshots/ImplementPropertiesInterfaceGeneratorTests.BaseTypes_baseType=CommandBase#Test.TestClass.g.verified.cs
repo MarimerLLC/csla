@@ -8,17 +8,17 @@ namespace Test;
 
 public partial class TestClass
 {
-	public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+	public static readonly NotNullPropertyInfo<int> IdProperty = RegisterNotNullProperty<int>(nameof(Id));
 	public int Id
 	{
 		get => ReadProperty(IdProperty);
 		private set => LoadProperty(IdProperty, value);
 	}
-	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+	public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);
 	[global::System.ComponentModel.DescriptionAttribute("The name" )]
 	public string Name
 	{
-		get => ReadProperty(NameProperty)!;
+		get => ReadProperty(NameProperty);
 		set => LoadProperty(NameProperty, value);
 	}
 	public static readonly PropertyInfo<string?> DescriptionProperty = RegisterProperty<string?>(nameof(Description));

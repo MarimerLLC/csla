@@ -8,10 +8,10 @@ namespace Test;
 
 public partial class BusinessBaseTestClass
 {
-	public static readonly PropertyInfo<global::Test2.GenericType<string>> NameProperty = RegisterProperty<global::Test2.GenericType<string>>(nameof(Name));
+	public static readonly NotNullPropertyInfo<global::Test2.GenericType<string>> NameProperty = RegisterNotNullProperty<global::Test2.GenericType<string>>(nameof(Name));
 	public partial global::Test2.GenericType<string> Name
 	{
-		get => GetProperty(NameProperty)!;
+		get => GetProperty(NameProperty);
 		private set => SetProperty(NameProperty, value);
 	}
 }

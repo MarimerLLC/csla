@@ -8,7 +8,7 @@ namespace Test;
 
 public partial class BusinessBaseTestClass
 {
-	public static readonly PropertyInfo<uint> NameProperty = RegisterProperty<uint>(nameof(Name));
+	public static readonly NotNullPropertyInfo<uint> NameProperty = RegisterNotNullProperty<uint>(nameof(Name));
 	public partial uint Name
 	{
 		get => GetProperty(NameProperty);

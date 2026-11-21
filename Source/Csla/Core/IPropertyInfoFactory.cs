@@ -165,5 +165,44 @@ namespace Csla.Core
     /// <param name="isSerializable">If property is serializable</param>
     /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
     PropertyInfo<T> Create<T>(Type containingType, string name, string? friendlyName, T? defaultValue, RelationshipTypes relationship, bool isSerializable);
+    /// <summary>
+    /// Creates a new instance of NotNullPropertyInfo without a default value.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    NotNullPropertyInfo<T> CreateNotNull<T>(Type containingType, string name) where T : notnull;
+    /// <summary>
+    /// Creates a new instance of NotNullPropertyInfo without a default value.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/> or <paramref name="name"/> is <see langword="null"/>.</exception>
+    NotNullPropertyInfo<T> CreateNotNull<T>(Type containingType, string name, string? friendlyName) where T : notnull;
+    /// <summary>
+    /// Creates a new instance of NotNullPropertyInfo with a default value.
+    /// </summary>
+    /// <param name="containingType">
+    /// Type of business class that contains the property
+    /// declaration.
+    /// </param>
+    /// <param name="name">Name of the property.</param>
+    /// <param name="friendlyName">
+    /// Friendly display name for the property.
+    /// </param>
+    /// <param name="defaultValue">
+    /// Default value for the property.
+    /// </param>
+    /// <exception cref="ArgumentNullException"><paramref name="containingType"/>, <paramref name="name"/> or <paramref name="defaultValue"/> is <see langword="null"/>.</exception>
+    NotNullPropertyInfo<T> CreateNotNull<T>(Type containingType, string name, string? friendlyName, T defaultValue) where T : notnull;
   }
 }

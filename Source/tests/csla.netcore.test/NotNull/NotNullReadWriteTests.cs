@@ -197,6 +197,39 @@ namespace Csla.Test.NotNull
     }
 
     [TestMethod]
+    public void BusinessBase_UntypedSetProperty_ValueConvertingToNull_ThrowsArgumentNullException()
+    {
+      var obj = New<NotNullEditRoot>();
+
+      Assert.Throws<ArgumentNullException>(() => obj.SetUntyped(NotNullEditRoot.NameProperty, new NullToString()));
+      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.NameProperty));
+    }
+
+    [TestMethod]
+    public void CommandBase_ManagePropertiesSetProperty_ValueConvertingToNull_ThrowsArgumentNullException()
+    {
+      var obj = New<NotNullCommand>();
+
+      Assert.ThrowsExactly<ArgumentNullException>(() => ((IManageProperties)obj).SetProperty(NotNullCommand.ResultProperty, new NullToString()));
+      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullCommand.ResultProperty));
+    }
+
+    [TestMethod]
+    public void BusinessBase_UntypedSetProperty_ConvertedValue_IsStored()
+    {
+      var obj = New<NotNullEditRoot>();
+
+      obj.SetUntyped(NotNullEditRoot.NameProperty, 42);
+
+      Assert.AreEqual("42", obj.Name);
+    }
+
+    private sealed class NullToString
+    {
+      public override string ToString() => null!;
+    }
+
+    [TestMethod]
     public void BusinessBase_UntypedSetProperty_DeniedNullWrite_ThrowsSecurityException()
     {
       var obj = New<NotNullEditRoot>();

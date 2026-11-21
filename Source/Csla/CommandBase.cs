@@ -561,6 +561,7 @@ namespace Csla
 
     void IManageProperties.SetProperty(IPropertyInfo propertyInfo, object? newValue)
     {
+      newValue = NotNullGuard.CoerceUntyped(propertyInfo, newValue);
       NotNullGuard.ThrowIfNull(propertyInfo, newValue);
       FieldManager.SetFieldData(propertyInfo, newValue);
     }

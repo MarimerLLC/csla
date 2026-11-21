@@ -45,6 +45,19 @@ namespace Csla.Core
     }
 
     /// <summary>
+    /// For a not-null reference-type property, converts an untyped value to the
+    /// property type as <see cref="FieldManager.FieldDataManager"/> would when
+    /// storing it, so the guard sees the value that is stored: a non-null input
+    /// can convert to null. Other properties get the value unchanged.
+    /// </summary>
+    internal static object? CoerceUntyped(IPropertyInfo propertyInfo, object? value)
+    {
+      if (value is null || !IsNotNullReference(propertyInfo))
+        return value;
+      return Utilities.CoerceValue(propertyInfo.Type, value.GetType(), null, value);
+    }
+
+    /// <summary>
     /// Throws <see cref="NotSupportedException"/> when the property is a
     /// not-null property: delayed loading is not supported for them.
     /// </summary>

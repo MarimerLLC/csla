@@ -3027,6 +3027,7 @@ namespace Csla.Core
       {
         if (_bypassPropertyChecks || CanWriteProperty(propertyInfo, true))
         {
+          newValue = NotNullGuard.CoerceUntyped(propertyInfo, newValue);
           NotNullGuard.ThrowIfNullInsideTry(propertyInfo, newValue);
           if (!_bypassPropertyChecks)
             OnPropertyChanging(propertyInfo);

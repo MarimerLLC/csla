@@ -1,4 +1,4 @@
 ﻿using BenchmarkDotNet.Running;
-using Csla.Benchmarks.PerformanceCloner;
+using Csla.Benchmarks.NotNullInvariant;
 
-var summary = BenchmarkRunner.Run<PerformanceClonerBenchmark>();
+var summary = BenchmarkRunner.Run<SaveGraphBenchmark>();

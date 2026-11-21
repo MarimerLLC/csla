@@ -747,6 +747,164 @@ namespace Csla
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);
     }
+
+    /// <summary>
+    /// Indicates that the specified not-null property belongs
+    /// to the type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of property.
+    /// </typeparam>
+    /// <param name="objectType">
+    /// Type of object to which the property belongs.
+    /// </param>
+    /// <param name="info">
+    /// NotNullPropertyInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided NotNullPropertyInfo object.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Type objectType, NotNullPropertyInfo<P> info) where P : notnull
+    {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
+      PropertyInfoManager.RegisterProperty<P>(objectType, info);
+      return info;
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of property.
+    /// </typeparam>
+    /// <param name="info">
+    /// NotNullPropertyInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided NotNullPropertyInfo object.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(NotNullPropertyInfo<P> info) where P : notnull
+    {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
+      PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
+      return info;
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName) where P : notnull
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
+      return RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Expression<Func<T, object>> propertyLambdaExpression) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterNotNullProperty<P>(reflectedPropertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName) where P : notnull
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
+      return RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterNotNullProperty<P>(reflectedPropertyInfo.Name, friendlyName);
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property with a default value
+    /// belongs to the business object type. An unloaded property reads as
+    /// the default value.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="defaultValue"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName, P defaultValue) where P : notnull
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
+      return RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName, defaultValue));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property with a default value
+    /// belongs to the business object type. An unloaded property reads as
+    /// the default value.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> or <paramref name="defaultValue"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterNotNullProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue);
+    }
     #endregion
 
     #region Register Methods

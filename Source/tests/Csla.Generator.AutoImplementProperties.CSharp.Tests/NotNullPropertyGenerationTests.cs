@@ -270,33 +270,64 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests
     }
 
     [TestMethod]
-    public void InterfaceGenerator_NotNullProperty_DropsNullabilityAttributesOnly()
+    public void InterfaceGenerator_AllowNullOrMaybeNull_KeepsRegisterPropertyAndTheAttribute()
     {
+      // the class implements the interface, so a generated setter stricter than
+      // the interface member would warn CS8767 (Generate fails on that warning)
       var source = """
         namespace Test;
 
+        public class Address { }
+
         [Csla.CslaImplementPropertiesInterface<IPerson>]
-        public partial class Person : Csla.BusinessBase<Person>
+        public partial class Person : Csla.BusinessBase<Person>, IPerson
         {
         }
 
         public interface IPerson
         {
           [System.Diagnostics.CodeAnalysis.AllowNull]
-          [System.ComponentModel.Description("The name")]
           string Name { get; set; }
 
           [System.Diagnostics.CodeAnalysis.MaybeNull]
-          string? Note { get; set; }
+          Address Home { get; set; }
+
+          [System.Diagnostics.CodeAnalysis.DisallowNull]
+          [System.ComponentModel.Description("The code")]
+          string Code { get; set; }
         }
         """;
 
       var generated = Generate<IncrementalAutoImplementInterfacePartialsGenerator>(source);
 
-      generated.Should().Contain("RegisterNotNullProperty<string>(nameof(Name), null, string.Empty)")
-        .And.Contain("[global::System.ComponentModel.DescriptionAttribute(\"The name\"")
-        .And.NotContain("AllowNull")
-        .And.Contain("[global::System.Diagnostics.CodeAnalysis.MaybeNullAttribute(", "a nullable property keeps its attributes");
+      generated.Should().Contain("PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));")
+        .And.Contain("[global::System.Diagnostics.CodeAnalysis.AllowNullAttribute(")
+        .And.Contain("PropertyInfo<global::Test.Address> HomeProperty = RegisterProperty<global::Test.Address>(nameof(Home));")
+        .And.Contain("[global::System.Diagnostics.CodeAnalysis.MaybeNullAttribute(")
+        .And.Contain("NotNullPropertyInfo<string> CodeProperty = RegisterNotNullProperty<string>(nameof(Code), null, string.Empty);")
+        .And.Contain("[global::System.Diagnostics.CodeAnalysis.DisallowNullAttribute(", "attributes that agree with not-null are kept")
+        .And.Contain("[global::System.ComponentModel.DescriptionAttribute(\"The code\"");
+    }
+
+    [TestMethod]
+    public void Generator_AllowNullOnPartialProperty_KeepsRegisterProperty()
+    {
+      // the generated setter passes value (maybe null under [AllowNull]) on; the
+      // not-null overload would warn CS8604 in the generated code
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Person : Csla.BusinessBase<Person>
+        {
+          [System.Diagnostics.CodeAnalysis.AllowNull]
+          public partial string Name { get; set; }
+        }
+        """;
+
+      var generated = Generate(source);
+
+      generated.Should().Contain("PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));");
     }
 
     [TestMethod]

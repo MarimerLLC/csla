@@ -6,8 +6,9 @@
 // <summary>Which managed properties are registered as not-null properties</summary>
 //-----------------------------------------------------------------------
 // This file is compiled into Csla.Analyzers and, as a linked file, into the
-// bundled source generator, so generated registrations and the not-null
-// analyzers and migration fixes use exactly the same rule (#5047).
+// bundled source generator. The generator uses it today; it lives here so the
+// not-null analyzers and migration fixes planned in #5047 can share the same
+// rule rather than a copy of it.
 //-----------------------------------------------------------------------
 
 using Microsoft.CodeAnalysis;
@@ -38,6 +39,24 @@ namespace Csla.Analyzers
     /// </summary>
     public static bool IsAnnotationsEnabled(SemanticModel semanticModel, int position)
       => (semanticModel.GetNullableContext(position) & NullableContext.AnnotationsEnabled) == NullableContext.AnnotationsEnabled;
+
+    /// <summary>
+    /// Gets how a property is registered, when it is declared in a context
+    /// with nullable annotations enabled. A property marked <c>[AllowNull]</c>
+    /// or <c>[MaybeNull]</c> lets null in or out, so it is not a not-null
+    /// property whatever its type: a not-null registration would make its
+    /// setter stricter than the declaration (and than an interface it implements).
+    /// </summary>
+    public static NotNullRegistration GetRegistration(IPropertySymbol property)
+    {
+      foreach (var attribute in property.GetAttributes())
+      {
+        if (attribute.AttributeClass is { Name: "AllowNullAttribute" or "MaybeNullAttribute" } attributeClass
+          && attributeClass.ContainingNamespace?.ToDisplayString() == "System.Diagnostics.CodeAnalysis")
+          return NotNullRegistration.None;
+      }
+      return GetRegistration(property.Type);
+    }
 
     /// <summary>
     /// Gets how a property of the given declared type is registered, when it

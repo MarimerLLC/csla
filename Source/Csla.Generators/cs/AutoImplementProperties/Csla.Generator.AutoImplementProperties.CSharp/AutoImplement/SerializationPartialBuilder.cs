@@ -187,7 +187,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       switch (registration)
       {
         case NotNullRegistration.NotNullString:
-          // string keeps its pre-CSLA 11 behaviour: it reads as string.Empty until loaded
+          // string reads as string.Empty until loaded, as before CSLA 11, and its typed
+          // setter still stores null as string.Empty; LoadProperty of null now throws
           textWriter.WriteLine($"public static readonly NotNullPropertyInfo<{type}> {name}Property = RegisterNotNullProperty<{type}>(nameof({name}), null, string.Empty);");
           break;
         case NotNullRegistration.NotNull:
@@ -200,10 +201,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
       foreach (ExtractedAttributeDefinition attributeDefinition in propertyDefinition.AttributeDefinitions)
       {
-        // nullability attributes copied from an interface contradict a not-null registration
-        if (registration != NotNullRegistration.None && IsNullabilityAttribute(attributeDefinition.AttributeName))
-          continue;
-
         var constructorArguments = string.Join(", ", attributeDefinition.ConstructorArguments);
         var separator = attributeDefinition.ConstructorArguments.Any() && attributeDefinition.NamedProperties.Any() ? "," : "";
         var namedProperties = string.Join(", ", attributeDefinition.NamedProperties.Select(kv => $"{kv.Key}={kv.Value}"));
@@ -233,28 +230,6 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
       AppendBlockEnd(textWriter);
     }
-
-    /// <summary>
-    /// Gets a value indicating whether an attribute is one of the nullability
-    /// attributes in System.Diagnostics.CodeAnalysis
-    /// </summary>
-    private static bool IsNullabilityAttribute(string fullyQualifiedAttributeName)
-    {
-      const string prefix = "global::System.Diagnostics.CodeAnalysis.";
-      return fullyQualifiedAttributeName.StartsWith(prefix, StringComparison.Ordinal)
-        && _nullabilityAttributeNames.Contains(fullyQualifiedAttributeName.Substring(prefix.Length));
-    }
-
-    private static readonly HashSet<string> _nullabilityAttributeNames =
-    [
-      "AllowNullAttribute",
-      "DisallowNullAttribute",
-      "MaybeNullAttribute",
-      "MaybeNullWhenAttribute",
-      "NotNullAttribute",
-      "NotNullWhenAttribute",
-      "NotNullIfNotNullAttribute"
-    ];
 
     #endregion
 

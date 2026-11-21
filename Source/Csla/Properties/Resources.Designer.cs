@@ -817,6 +817,15 @@ namespace Csla.Properties {
         }
 
         /// <summary>
+        ///   Looks up a localized string similar to {0} does not satisfy the not-null invariant; these not-null properties are null: {1}..
+        /// </summary>
+        public static string NotNullInvariantViolated {
+            get {
+                return ResourceManager.GetString("NotNullInvariantViolated", resourceCulture);
+            }
+        }
+
+        /// <summary>
         ///   Looks up a localized string similar to {0} on {1} was not started because these not-null properties are null: {2}..
         /// </summary>
         public static string NotNullInvariantViolatedOnEntry {

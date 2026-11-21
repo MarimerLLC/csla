@@ -140,6 +140,8 @@ namespace Csla.Server
         obj.MarkNew();
         await obj.CreateChildAsync(operationName, parameters).ConfigureAwait(false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
+        if (obj.Instance is not Core.ICommandObject)
+          Core.NotNullInvariant.Check(obj.Instance, "CreateChild", isEntry: false);
         return obj.Instance;
 
       }
@@ -274,6 +276,7 @@ namespace Csla.Server
         obj.MarkOld();
         await obj.FetchChildAsync(operationName, parameters).ConfigureAwait(false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
+        Core.NotNullInvariant.Check(obj.Instance, "FetchChild", isEntry: false);
         return obj.Instance;
       }
       catch (Exception ex)
@@ -437,9 +440,13 @@ namespace Csla.Server
 
       try
       {
+        // a command run through ExecuteChild is not checked on entry
+        if (obj is not Core.ICommandObject)
+          Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: true);
         lb.Child_OnDataPortalInvoke(new DataPortalEventArgs(null, objectType, obj, operation));
         await lb.UpdateChildAsync(parameters).ConfigureAwait(false);
         lb.Child_OnDataPortalInvokeComplete(new DataPortalEventArgs(null, objectType, obj, operation));
+        Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: false);
       }
       catch (Exception ex)
       {

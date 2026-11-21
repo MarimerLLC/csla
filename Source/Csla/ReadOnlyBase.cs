@@ -43,6 +43,7 @@ namespace Csla
     IReadOnlyBase,
     IUseApplicationContext,
     IUseFieldManager,
+    IFieldManagerAccess,
     IUseBusinessRules
     where T : ReadOnlyBase<T>
   {
@@ -1934,6 +1935,8 @@ namespace Csla
     protected FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(ApplicationContext, GetType());
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
+
+    FieldDataManager? IFieldManagerAccess.FieldManagerIfCreated => _fieldManager;
 
     #endregion
 

@@ -52,6 +52,7 @@ namespace Csla.Core
     IDataErrorInfo,
     INotifyDataErrorInfo,
     IUseFieldManager,
+    IFieldManagerAccess,
     IUseBusinessRules
   {
 
@@ -3840,6 +3841,8 @@ namespace Csla.Core
     }
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
+
+    FieldDataManager? IFieldManagerAccess.FieldManagerIfCreated => _fieldManager;
 
     private void FieldDataDeserialized()
     {

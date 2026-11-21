@@ -26,7 +26,8 @@ namespace Csla.Core
     INotifyPropertyChanged,
     IManageProperties,
     IUseApplicationContext,
-    IUseFieldManager
+    IUseFieldManager,
+    IFieldManagerAccess
   {
     /// <summary>
     /// Gets the current ApplicationContext.
@@ -46,6 +47,8 @@ namespace Csla.Core
     protected FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(ApplicationContext, GetType());
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
+
+    FieldDataManager? IFieldManagerAccess.FieldManagerIfCreated => _fieldManager;
 
     #endregion
 

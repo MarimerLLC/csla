@@ -51,7 +51,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
         var ((nullable, notNull), classes) = source;
-        SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable, notNull);
+        var builder = new SerializationPartialBuilder(nullable, notNull);
         foreach (var typeDefinition in classes)
         {
           // Build the text for the generated type using the builder

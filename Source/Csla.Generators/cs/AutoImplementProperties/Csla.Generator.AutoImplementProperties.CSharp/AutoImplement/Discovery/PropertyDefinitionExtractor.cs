@@ -55,18 +55,20 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
 
     /// <summary>
     /// Decide how the property is registered when not-null properties are generated:
-    /// from the declared type in the semantic model, and only where nullable
-    /// annotations are enabled at the declaration.
+    /// from the declared property in the semantic model (its type and its
+    /// nullability attributes), and only where nullable annotations are
+    /// enabled at the declaration.
     /// </summary>
     private static NotNullRegistration GetNotNullRegistration(SemanticModel semanticModel, PropertyDeclarationSyntax propertyDeclaration)
     {
       if (!NotNullPropertyRules.IsAnnotationsEnabled(semanticModel, propertyDeclaration.Type.SpanStart))
         return NotNullRegistration.None;
 
-      var type = (semanticModel.GetDeclaredSymbol(propertyDeclaration) as IPropertySymbol)?.Type
-        ?? semanticModel.GetTypeInfo(propertyDeclaration.Type).Type;
-      return NotNullPropertyRules.GetRegistration(type);
+      if (semanticModel.GetDeclaredSymbol(propertyDeclaration) is IPropertySymbol property)
+        return NotNullPropertyRules.GetRegistration(property);
+      return NotNullPropertyRules.GetRegistration(semanticModel.GetTypeInfo(propertyDeclaration.Type).Type);
     }
+
     /// <summary>
     /// Determines whether the field type is nullable.
     /// </summary>

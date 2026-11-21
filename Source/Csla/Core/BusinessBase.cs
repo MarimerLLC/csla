@@ -3844,6 +3844,11 @@ namespace Csla.Core
 
     FieldDataManager? IFieldManagerAccess.FieldManagerIfCreated => _fieldManager;
 
+    IReadOnlyList<IPropertyInfo> IFieldManagerAccess.GetUnsatisfiedNotNullProperties()
+      => _fieldManager is { } fieldManager
+        ? fieldManager.GetUnsatisfiedNotNullProperties()
+        : FieldDataManager.GetUnsatisfiedNotNullProperties(GetType());
+
     private void FieldDataDeserialized()
     {
       foreach (object item in FieldManager.GetChildren())

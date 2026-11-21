@@ -253,6 +253,8 @@ namespace Csla.Test.NotNull
       Assert.IsFalse(IsEntryViolation(FindViolation(createEx)));
       var fetchEx = await Assert.ThrowsAsync<DataPortalException>(() => portal.FetchChildAsync(false));
       Assert.IsFalse(IsEntryViolation(FindViolation(fetchEx)));
+      Assert.IsTrue(NotNullPortalLog.Contains("Child.Exception"), "A failed exit check is reported as an exception");
+      Assert.IsFalse(NotNullPortalLog.Contains("Child.InvokeComplete"), "and not as a completed operation");
 
       Assert.AreEqual("child", (await portal.CreateChildAsync(true)).Name);
       Assert.AreEqual("child", (await portal.FetchChildAsync(true)).Name);
@@ -264,11 +266,14 @@ namespace Csla.Test.NotNull
       var portal = _testHost.GetChildDataPortal<NotNullPortalChild>();
       var child = await portal.CreateChildAsync(true);
       child.PlantNull(NotNullPortalChild.NameProperty);
+      NotNullPortalLog.Clear();
 
       var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateChildAsync(child));
 
       Assert.IsTrue(IsEntryViolation(FindViolation(ex)));
       Assert.IsFalse(NotNullPortalLog.Contains("InsertChild"));
+      Assert.IsFalse(NotNullPortalLog.Contains("Child.Invoke"), "The operation did not start");
+      Assert.IsFalse(NotNullPortalLog.Contains("Child.Exception"), "so no exception notification is raised");
     }
 
     [TestMethod]
@@ -585,6 +590,24 @@ namespace Csla.Test.NotNull
     public void PlantNull(IPropertyInfo property) => FieldManager.LoadFieldData(property, null);
     public void MarkCleanForTest() => MarkClean();
     public void DeleteForTest() => MarkDeleted();
+
+    protected override void Child_OnDataPortalInvoke(DataPortalEventArgs e)
+    {
+      NotNullPortalLog.Add("Child.Invoke");
+      base.Child_OnDataPortalInvoke(e);
+    }
+
+    protected override void Child_OnDataPortalInvokeComplete(DataPortalEventArgs e)
+    {
+      NotNullPortalLog.Add("Child.InvokeComplete");
+      base.Child_OnDataPortalInvokeComplete(e);
+    }
+
+    protected override void Child_OnDataPortalException(DataPortalEventArgs e, Exception ex)
+    {
+      NotNullPortalLog.Add("Child.Exception");
+      base.Child_OnDataPortalException(e, ex);
+    }
 
     [CreateChild]
     private void CreateChild(bool load)

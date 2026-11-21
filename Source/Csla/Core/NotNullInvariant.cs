@@ -6,7 +6,6 @@
 // <summary>Verifies the not-null property invariant of a business object.</summary>
 //-----------------------------------------------------------------------
 
-using System.Diagnostics.CodeAnalysis;
 using Csla.Core.FieldManager;
 using Csla.Properties;
 
@@ -80,14 +79,13 @@ namespace Csla.Core
     /// An object without a field manager (a list) gives an empty list.
     /// The object is not changed, and no field manager is created.
     /// </summary>
-    [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = TrimmingMessages.BusinessTypeJustification)]
     internal static IReadOnlyList<IPropertyInfo> GetUnsatisfied(object obj)
     {
-      if (obj is not IUseFieldManager target)
-        return [];
-      if (obj is IFieldManagerAccess access && access.FieldManagerIfCreated is null)
-        return FieldDataManager.GetUnsatisfiedNotNullProperties(obj.GetType());
-      return target.FieldManager.GetUnsatisfiedNotNullProperties();
+      if (obj is IFieldManagerAccess access)
+        return access.GetUnsatisfiedNotNullProperties();
+      if (obj is IUseFieldManager target)
+        return target.FieldManager.GetUnsatisfiedNotNullProperties();
+      return [];
     }
 
     /// <summary>
@@ -124,5 +122,12 @@ namespace Csla.Core
     /// Gets the field manager, or null if it has not been created.
     /// </summary>
     FieldDataManager? FieldManagerIfCreated { get; }
+
+    /// <summary>
+    /// Gets the unsatisfied not-null properties; without a field manager,
+    /// from the type's cached property list. Implemented by the base classes,
+    /// which carry DynamicallyAccessedMembers.All, so GetType() is preserved.
+    /// </summary>
+    IReadOnlyList<IPropertyInfo> GetUnsatisfiedNotNullProperties();
   }
 }

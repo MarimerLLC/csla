@@ -61,7 +61,7 @@ namespace Csla.Server
         result = await _dataPortalSelector.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
       }
 
-      if (!typeof(ICommandObject).IsAssignableFrom(objectType))
+      if (result.ReturnObject is not ICommandObject)
         NotNullInvariant.Check(result.ReturnObject, nameof(Create), isEntry: false);
       return result;
     }

@@ -1938,6 +1938,11 @@ namespace Csla
 
     FieldDataManager? IFieldManagerAccess.FieldManagerIfCreated => _fieldManager;
 
+    IReadOnlyList<IPropertyInfo> IFieldManagerAccess.GetUnsatisfiedNotNullProperties()
+      => _fieldManager is { } fieldManager
+        ? fieldManager.GetUnsatisfiedNotNullProperties()
+        : FieldDataManager.GetUnsatisfiedNotNullProperties(GetType());
+
     #endregion
 
     #region IsBusy / IsIdle

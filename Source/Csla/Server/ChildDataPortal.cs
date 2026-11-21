@@ -139,9 +139,9 @@ namespace Csla.Server
         obj.MarkAsChild();
         obj.MarkNew();
         await obj.CreateChildAsync(operationName, parameters).ConfigureAwait(false);
-        obj.Child_OnDataPortalInvokeComplete(eventArgs);
         if (obj.Instance is not Core.ICommandObject)
           Core.NotNullInvariant.Check(obj.Instance, "CreateChild", isEntry: false);
+        obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
       }
@@ -275,8 +275,8 @@ namespace Csla.Server
         obj.MarkAsChild();
         obj.MarkOld();
         await obj.FetchChildAsync(operationName, parameters).ConfigureAwait(false);
-        obj.Child_OnDataPortalInvokeComplete(eventArgs);
         Core.NotNullInvariant.Check(obj.Instance, "FetchChild", isEntry: false);
+        obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
       }
       catch (Exception ex)
@@ -438,15 +438,27 @@ namespace Csla.Server
       DataPortalTarget lb = _applicationContext.CreateInstanceDI<DataPortalTarget>(obj);
       //ApplicationContext.DataPortalActivator.InitializeInstance(lb.Instance);
 
+      // checked before the operation starts, so no invoke or exception
+      // notification is raised for it; a command run through ExecuteChild
+      // is not checked on entry
+      if (obj is not Core.ICommandObject)
+      {
+        try
+        {
+          Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: true);
+        }
+        catch (InvalidOperationException ex)
+        {
+          throw new Csla.DataPortalException("ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
+        }
+      }
+
       try
       {
-        // a command run through ExecuteChild is not checked on entry
-        if (obj is not Core.ICommandObject)
-          Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: true);
         lb.Child_OnDataPortalInvoke(new DataPortalEventArgs(null, objectType, obj, operation));
         await lb.UpdateChildAsync(parameters).ConfigureAwait(false);
-        lb.Child_OnDataPortalInvokeComplete(new DataPortalEventArgs(null, objectType, obj, operation));
         Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: false);
+        lb.Child_OnDataPortalInvokeComplete(new DataPortalEventArgs(null, objectType, obj, operation));
       }
       catch (Exception ex)
       {

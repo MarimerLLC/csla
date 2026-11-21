@@ -42,14 +42,16 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
           .Where(static m => m is not null).WithTrackingName(TrackingNames.ExtractClasses);
 
       var compilation = context.CompilationProvider.Select((c, _) => c.Options.NullableContextOptions.AnnotationsEnabled()).WithTrackingName(TrackingNames.SelectCompilation);
+      // CslaGenerateNotNullProperties build property (#5047)
+      var generateNotNull = context.AnalyzerConfigOptionsProvider.Select(static (o, _) => SerializationPartialBuilder.ReadGenerateNotNull(o.GlobalOptions)).WithTrackingName(TrackingNames.SelectOptions);
       // Combine the collected syntax nodes with the semantic model
-      var compilationAndClasses = compilation.Combine(classDeclarations.Collect()).WithTrackingName(TrackingNames.Combine);
+      var compilationAndClasses = compilation.Combine(generateNotNull).Combine(classDeclarations.Collect()).WithTrackingName(TrackingNames.Combine);
 
       // Set up the generation phase
       context.RegisterSourceOutput(compilationAndClasses, static (spc, source) =>
       {
-        var (nullable, classes) = source;
-        SerializationPartialBuilder builder = new SerializationPartialBuilder(nullable);
+        var ((nullable, notNull), classes) = source;
+        var builder = new SerializationPartialBuilder(nullable, notNull);
         foreach (var typeDefinition in classes)
         {
           // Build the text for the generated type using the builder

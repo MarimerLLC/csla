@@ -21,6 +21,10 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// </summary>
     public const string SelectCompilation = nameof(SelectCompilation);
     /// <summary>
+    /// The step that reads the CslaGenerateNotNullProperties build property
+    /// </summary>
+    public const string SelectOptions = nameof(SelectOptions);
+    /// <summary>
     /// 
     /// </summary>
     public const string Combine = nameof(Combine);

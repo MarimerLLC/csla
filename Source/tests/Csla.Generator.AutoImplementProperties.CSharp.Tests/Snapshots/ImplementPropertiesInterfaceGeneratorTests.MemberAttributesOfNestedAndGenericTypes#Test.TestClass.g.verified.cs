@@ -8,14 +8,14 @@ namespace Test;
 
 public partial class TestClass
 {
-	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+	public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);
 	[global::Test.Outer.MarkerAttribute( )]
 	public string Name
 	{
-		get => GetProperty(NameProperty)!;
+		get => GetProperty(NameProperty);
 		set => SetProperty(NameProperty, value);
 	}
-	public static readonly PropertyInfo<int> CountProperty = RegisterProperty<int>(nameof(Count));
+	public static readonly NotNullPropertyInfo<int> CountProperty = RegisterNotNullProperty<int>(nameof(Count));
 	[global::Test.TagAttribute<int>( Label="count")]
 	public int Count
 	{

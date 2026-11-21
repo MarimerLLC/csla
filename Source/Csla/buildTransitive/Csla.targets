@@ -5,10 +5,14 @@
     async [DataPortalExtensions] methods (default true).
     CslaDataPortalExtensionsAsyncSuffix - suffix of the async [DataPortalExtensions]
     method names (default Async); set to none for no suffix.
+    CslaGenerateNotNullProperties - set to false to register every generated
+    [CslaImplementProperties] property with RegisterProperty, as before CSLA 11,
+    instead of registering non-nullable ones with RegisterNotNullProperty (default true).
   -->
   <ItemGroup>
     <CompilerVisibleProperty Include="CslaGenerateSyncDataPortalExtensions" />
     <CompilerVisibleProperty Include="CslaDataPortalExtensionsAsyncSuffix" />
+    <CompilerVisibleProperty Include="CslaGenerateNotNullProperties" />
   </ItemGroup>
 
   <!--

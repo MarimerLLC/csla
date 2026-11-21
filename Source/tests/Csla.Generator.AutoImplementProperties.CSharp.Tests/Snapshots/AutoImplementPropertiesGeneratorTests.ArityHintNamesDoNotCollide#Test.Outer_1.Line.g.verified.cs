@@ -10,10 +10,10 @@ partial class Outer_1
 {
 	public partial class Line
 	{
-		public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+		public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);
 		public partial string Name
 		{
-			get => GetProperty(NameProperty)!;
+			get => GetProperty(NameProperty);
 			set => SetProperty(NameProperty, value);
 		}
 	}

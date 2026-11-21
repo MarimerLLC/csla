@@ -8,10 +8,10 @@ namespace Test;
 
 public partial class BusinessBaseTestClass
 {
-	public static readonly PropertyInfo<decimal[]> NameProperty = RegisterProperty<decimal[]>(nameof(Name));
+	public static readonly NotNullPropertyInfo<decimal[]> NameProperty = RegisterNotNullProperty<decimal[]>(nameof(Name));
 	public partial decimal[] Name
 	{
-		get => GetProperty(NameProperty)!;
+		get => GetProperty(NameProperty);
 		private set => SetProperty(NameProperty, value);
 	}
 }

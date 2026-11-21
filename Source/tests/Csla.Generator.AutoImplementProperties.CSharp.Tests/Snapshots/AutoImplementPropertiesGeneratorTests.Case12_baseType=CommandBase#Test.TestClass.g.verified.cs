@@ -8,10 +8,10 @@ namespace Test;
 
 public partial class TestClass
 {
-	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+	public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);
 	public partial string Name
 	{
-		get => ReadProperty(NameProperty)!;
+		get => ReadProperty(NameProperty);
 		private set => LoadProperty(NameProperty, value);
 	}
 }

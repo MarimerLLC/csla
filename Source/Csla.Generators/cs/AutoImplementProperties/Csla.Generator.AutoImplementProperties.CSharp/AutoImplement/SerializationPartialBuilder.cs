@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.CodeDom.Compiler;
+using Csla.Analyzers;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 {
@@ -14,8 +15,26 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
   /// <summary>
   /// Builds the text of a partial type to implement the properties
   /// </summary>
-  internal class SerializationPartialBuilder(bool nullable)
+  /// <param name="nullable">The compilation has nullable annotations enabled.</param>
+  /// <param name="generateNotNull">Not-null properties are generated (the
+  /// <c>CslaGenerateNotNullProperties</c> build property is not <c>false</c>).</param>
+  internal class SerializationPartialBuilder(bool nullable, bool generateNotNull = true)
   {
+    /// <summary>
+    /// MSBuild property that controls whether non-nullable properties are
+    /// registered as not-null properties (#5047). Set it to <c>false</c> to
+    /// register every property with <c>RegisterProperty</c>, as before CSLA 11.
+    /// </summary>
+    public const string GenerateNotNullProperty = "build_property.CslaGenerateNotNullProperties";
+
+    /// <summary>
+    /// Reads the <c>CslaGenerateNotNullProperties</c> build property: anything
+    /// but <c>false</c> generates not-null properties.
+    /// </summary>
+    public static bool ReadGenerateNotNull(Microsoft.CodeAnalysis.Diagnostics.AnalyzerConfigOptions globalOptions)
+      => !(globalOptions.TryGetValue(GenerateNotNullProperty, out var value)
+        && string.Equals(value?.Trim(), "false", StringComparison.OrdinalIgnoreCase));
+
     /// <summary>
     /// Build the text of a partial type that implements the properties of the target type
     /// </summary>
@@ -161,11 +180,30 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     private void AppendSerializeChildFragment(IndentedTextWriter textWriter, ExtractedPropertyDefinition propertyDefinition, (string Getter, string Setter) methods)
     {
       var (getter, setter) = methods;
+      var type = propertyDefinition.TypeDefinition.FullyQualifiedType;
+      var name = propertyDefinition.PropertyName;
+      var registration = generateNotNull ? propertyDefinition.NotNullRegistration : NotNullRegistration.None;
 
-      textWriter.WriteLine($"public static readonly PropertyInfo<{propertyDefinition.TypeDefinition.FullyQualifiedType}> {propertyDefinition.PropertyName}Property = RegisterProperty<{propertyDefinition.TypeDefinition.FullyQualifiedType}>(nameof({propertyDefinition.PropertyName}));");
+      switch (registration)
+      {
+        case NotNullRegistration.NotNullString:
+          // string keeps its pre-CSLA 11 behaviour: it reads as string.Empty until loaded
+          textWriter.WriteLine($"public static readonly NotNullPropertyInfo<{type}> {name}Property = RegisterNotNullProperty<{type}>(nameof({name}), null, string.Empty);");
+          break;
+        case NotNullRegistration.NotNull:
+          textWriter.WriteLine($"public static readonly NotNullPropertyInfo<{type}> {name}Property = RegisterNotNullProperty<{type}>(nameof({name}));");
+          break;
+        default:
+          textWriter.WriteLine($"public static readonly PropertyInfo<{type}> {name}Property = RegisterProperty<{type}>(nameof({name}));");
+          break;
+      }
 
       foreach (ExtractedAttributeDefinition attributeDefinition in propertyDefinition.AttributeDefinitions)
       {
+        // nullability attributes copied from an interface contradict a not-null registration
+        if (registration != NotNullRegistration.None && IsNullabilityAttribute(attributeDefinition.AttributeName))
+          continue;
+
         var constructorArguments = string.Join(", ", attributeDefinition.ConstructorArguments);
         var separator = attributeDefinition.ConstructorArguments.Any() && attributeDefinition.NamedProperties.Any() ? "," : "";
         var namedProperties = string.Join(", ", attributeDefinition.NamedProperties.Select(kv => $"{kv.Key}={kv.Value}"));
@@ -178,8 +216,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       {
         textWriter.Write($"get => {getter}({propertyDefinition.PropertyName}Property)");
         // GetProperty and ReadProperty return T? for reference types; the null-forgiving
-        // operator has no meaning on a value type
-        if (!propertyDefinition.TypeDefinition.Nullable && !propertyDefinition.TypeDefinition.IsValueType)
+        // operator has no meaning on a value type, and the not-null overloads return T
+        if (registration == NotNullRegistration.None && !propertyDefinition.TypeDefinition.Nullable && !propertyDefinition.TypeDefinition.IsValueType)
         {
           textWriter.Write('!');
         }
@@ -195,6 +233,28 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
 
       AppendBlockEnd(textWriter);
     }
+
+    /// <summary>
+    /// Gets a value indicating whether an attribute is one of the nullability
+    /// attributes in System.Diagnostics.CodeAnalysis
+    /// </summary>
+    private static bool IsNullabilityAttribute(string fullyQualifiedAttributeName)
+    {
+      const string prefix = "global::System.Diagnostics.CodeAnalysis.";
+      return fullyQualifiedAttributeName.StartsWith(prefix, StringComparison.Ordinal)
+        && _nullabilityAttributeNames.Contains(fullyQualifiedAttributeName.Substring(prefix.Length));
+    }
+
+    private static readonly HashSet<string> _nullabilityAttributeNames =
+    [
+      "AllowNullAttribute",
+      "DisallowNullAttribute",
+      "MaybeNullAttribute",
+      "MaybeNullWhenAttribute",
+      "NotNullAttribute",
+      "NotNullWhenAttribute",
+      "NotNullIfNotNullAttribute"
+    ];
 
     #endregion
 

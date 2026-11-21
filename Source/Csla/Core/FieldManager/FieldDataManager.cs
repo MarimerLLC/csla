@@ -36,6 +36,8 @@ namespace Csla.Core.FieldManager
     BusinessBase? _parent;
     [NonSerialized]
     private List<IPropertyInfo> _propertyList;
+    [NonSerialized]
+    private IPropertyInfo[] _notNullProperties;
     private IFieldData?[] _fieldData;
 
     private ApplicationContext _applicationContext;
@@ -65,11 +67,59 @@ namespace Csla.Core.FieldManager
     /// restore property list.
     /// </summary>
     /// <exception cref="ArgumentNullException"><paramref name="businessObjectType"/> is <see langword="null"/>.</exception>
-    [MemberNotNull(nameof(_propertyList))]
+    [MemberNotNull(nameof(_propertyList), nameof(_notNullProperties))]
     internal void SetPropertyList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type businessObjectType)
     {
       _businessObjectType = businessObjectType.AssemblyQualifiedName;
-      _propertyList = GetConsolidatedList(businessObjectType);
+      var consolidated = GetConsolidatedList(businessObjectType);
+      _propertyList = consolidated.Properties;
+      _notNullProperties = consolidated.NotNullProperties;
+    }
+
+    /// <summary>
+    /// Gets the not-null reference-type properties (<see cref="INotNullPropertyInfo"/>)
+    /// that are not satisfied: their field holds null, or they were never
+    /// loaded and have no non-null default value. Nothing is materialised.
+    /// </summary>
+    /// <returns>The failing properties, or an empty list when all pass.</returns>
+    internal IReadOnlyList<IPropertyInfo> GetUnsatisfiedNotNullProperties()
+    {
+      var notNull = _notNullProperties;
+      if (notNull.Length == 0)
+        return [];
+
+      List<IPropertyInfo>? result = null;
+      foreach (var propertyInfo in notNull)
+      {
+        var satisfied = _fieldData[propertyInfo.Index] is { } fieldData
+          ? fieldData.Value is not null
+          : propertyInfo.DefaultValue is not null;
+        if (!satisfied)
+          (result ??= []).Add(propertyInfo);
+      }
+      return result ?? (IReadOnlyList<IPropertyInfo>)[];
+    }
+
+    /// <summary>
+    /// Gets the not-null reference-type properties of a business object type
+    /// that an instance without a field manager fails: nothing has been
+    /// loaded, so every one without a non-null default value fails.
+    /// </summary>
+    /// <param name="businessObjectType">The business object type.</param>
+    /// <returns>The failing properties, or an empty list when all pass.</returns>
+    internal static IReadOnlyList<IPropertyInfo> GetUnsatisfiedNotNullProperties([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type businessObjectType)
+    {
+      var notNull = GetConsolidatedList(businessObjectType).NotNullProperties;
+      if (notNull.Length == 0)
+        return [];
+
+      List<IPropertyInfo>? result = null;
+      foreach (var propertyInfo in notNull)
+      {
+        if (propertyInfo.DefaultValue is null)
+          (result ??= []).Add(propertyInfo);
+      }
+      return result ?? (IReadOnlyList<IPropertyInfo>)[];
     }
 
     /// <summary>
@@ -113,15 +163,25 @@ namespace Csla.Core.FieldManager
 
     #region ConsolidatedPropertyList
 
+    /// <summary>
+    /// Cached property metadata for a business object type: the consolidated
+    /// property list and its not-null reference-type properties.
+    /// </summary>
+    private sealed class ConsolidatedPropertyList(List<IPropertyInfo> properties, IPropertyInfo[] notNullProperties)
+    {
+      public List<IPropertyInfo> Properties { get; } = properties;
+      public IPropertyInfo[] NotNullProperties { get; } = notNullProperties;
+    }
+
 #if NET8_0_OR_GREATER
-    private static readonly Dictionary<Type, Tuple<string?, List<IPropertyInfo>>> _consolidatedLists = new();
+    private static readonly Dictionary<Type, Tuple<string?, ConsolidatedPropertyList>> _consolidatedLists = new();
 #else
-    private static readonly Dictionary<Type, List<IPropertyInfo>> _consolidatedLists = new();
+    private static readonly Dictionary<Type, ConsolidatedPropertyList> _consolidatedLists = new();
 #endif
 
-    private static List<IPropertyInfo> GetConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
+    private static ConsolidatedPropertyList GetConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
-      List<IPropertyInfo> result = []; // Only initialized to make the compiler happy
+      ConsolidatedPropertyList result = null!; // assigned on every path below
 
       var found = false;
 
@@ -181,7 +241,7 @@ namespace Csla.Core.FieldManager
     }
 
     [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Csla.Core.TrimmingMessages.BaseTypeWalkJustification)]
-    private static List<IPropertyInfo> CreateConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
+    private static ConsolidatedPropertyList CreateConsolidatedList([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] Type type)
     {
       ForceStaticFieldInit(type);
       List<IPropertyInfo> result = [];
@@ -217,8 +277,22 @@ namespace Csla.Core.FieldManager
           max = item.Index;
         }
       }
+
+      // collect the not-null reference-type properties; one that has no
+      // default and isn't serialized would be null after serialization,
+      // so the type is rejected (and nothing is cached)
+      List<IPropertyInfo>? notNull = null;
+      foreach (var item in result)
+      {
+        if (!NotNullGuard.IsNotNullReference(item))
+          continue;
+        if (item.DefaultValue is null && !item.IsSerializable)
+          throw new InvalidOperationException(string.Format(Resources.NotNullPropertyNotSerializedWithoutDefault, type.FullName, item.Name));
+        (notNull ??= []).Add(item);
+      }
+
       // return consolidated list
-      return result;
+      return new ConsolidatedPropertyList(result, notNull?.ToArray() ?? []);
     }
 
     #endregion
@@ -891,7 +965,7 @@ namespace Csla.Core.FieldManager
     private static void OnAssemblyLoadContextUnload(AssemblyLoadContext context)
     {
       lock (_consolidatedLists)
-        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, List<IPropertyInfo>>?>)_consolidatedLists, context);
+        AssemblyLoadContextManager.RemoveFromCache((IDictionary<Type, Tuple<string?, ConsolidatedPropertyList>?>)_consolidatedLists, context);
     }
 #endif
   }

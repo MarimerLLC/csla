@@ -234,12 +234,19 @@ namespace Csla.Web.Mvc
         }
         catch
         {
+          object? loadValue;
           if (item.Type.Equals(typeof(string)))
-            LoadProperty(result, item, value);
+            loadValue = value;
           else if (value != null)
-            LoadProperty(result, item, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
+            loadValue = Utilities.CoerceValue(item.Type, value.GetType(), null, value);
           else
-            LoadProperty(result, item, null);
+            loadValue = null;
+
+          // a not-null property can't hold null: leave it as it is, so
+          // validation or the data portal check reports it
+          if (loadValue is null && Core.NotNullGuard.IsNotNullReference(item))
+            return;
+          LoadProperty(result, item, loadValue);
         }
       }
       catch (Exception ex)

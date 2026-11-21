@@ -43,6 +43,7 @@ namespace Csla
     IReadOnlyBase,
     IUseApplicationContext,
     IUseFieldManager,
+    IFieldManagerAccess,
     IUseBusinessRules
     where T : ReadOnlyBase<T>
   {
@@ -747,6 +748,164 @@ namespace Csla
       PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
       return RegisterProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue, relationship);
     }
+
+    /// <summary>
+    /// Indicates that the specified not-null property belongs
+    /// to the type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of property.
+    /// </typeparam>
+    /// <param name="objectType">
+    /// Type of object to which the property belongs.
+    /// </param>
+    /// <param name="info">
+    /// NotNullPropertyInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided NotNullPropertyInfo object.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Type objectType, NotNullPropertyInfo<P> info) where P : notnull
+    {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
+      PropertyInfoManager.RegisterProperty<P>(objectType, info);
+      return info;
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property belongs
+    /// to the business object type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of property.
+    /// </typeparam>
+    /// <param name="info">
+    /// NotNullPropertyInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided NotNullPropertyInfo object.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(NotNullPropertyInfo<P> info) where P : notnull
+    {
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
+      PropertyInfoManager.RegisterProperty<P>(typeof(T), info);
+      return info;
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName) where P : notnull
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
+      return RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Expression<Func<T, object>> propertyLambdaExpression) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterNotNullProperty<P>(reflectedPropertyInfo.Name);
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName) where P : notnull
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
+      return RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type. It must be loaded by every
+    /// operation that completes the object.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterNotNullProperty<P>(reflectedPropertyInfo.Name, friendlyName);
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property with a default value
+    /// belongs to the business object type. An unloaded property reads as
+    /// the default value.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyName">Property name from nameof()</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="defaultValue"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName, P defaultValue) where P : notnull
+    {
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
+
+      return RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName, defaultValue));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property with a default value
+    /// belongs to the business object type. An unloaded property reads as
+    /// the default value.
+    /// </summary>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> or <paramref name="defaultValue"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+      return RegisterNotNullProperty<P>(reflectedPropertyInfo.Name, friendlyName, defaultValue);
+    }
     #endregion
 
     #region Register Methods
@@ -968,6 +1127,7 @@ namespace Csla
         throw new ArgumentNullException(nameof(property));
       if (valueGenerator is null)
         throw new ArgumentNullException(nameof(valueGenerator));
+      NotNullGuard.ThrowIfDelayedLoad(property);
 
       if (!FieldManager.FieldExists(property))
       {
@@ -1066,6 +1226,7 @@ namespace Csla
     /// </summary>
     private bool StartLazyLoad<P>(PropertyInfo<P> property, Func<Task<P>> factory)
     {
+      NotNullGuard.ThrowIfDelayedLoad(property);
       if (FieldManager.FieldExists(property) || PropertyIsLoading(property))
         return true;
 
@@ -1252,6 +1413,71 @@ namespace Csla
     }
 
     /// <summary>
+    /// Gets a not-null property's managed field value,
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// <para>
+    /// If the user is not authorized to read the property
+    /// value, the default value is returned as a result. For a
+    /// property without a default value that is null: authorization
+    /// takes precedence over nullability.
+    /// </para>
+    /// <para>
+    /// The value is non-null on an object the data portal has completed
+    /// and verified.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P GetProperty<P>(NotNullPropertyInfo<P> propertyInfo) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      return GetProperty(propertyInfo, NoAccessBehavior.SuppressException);
+    }
+
+    /// <summary>
+    /// Gets a not-null property's managed field value,
+    /// first checking authorization.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <param name="noAccess">
+    /// True if an exception should be thrown when the
+    /// user is not authorized to read this property.</param>
+    /// <remarks>
+    /// <para>
+    /// If the user is not authorized to read the property
+    /// value and <paramref name="noAccess"/> is <see cref="NoAccessBehavior.SuppressException"/>,
+    /// the default value is returned as a result. For a property without
+    /// a default value that is null: authorization takes precedence over nullability.
+    /// </para>
+    /// <para>
+    /// The value is non-null on an object the data portal has completed
+    /// and verified.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P GetProperty<P>(NotNullPropertyInfo<P> propertyInfo, NoAccessBehavior noAccess) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      if (CanReadProperty(propertyInfo, noAccess == NoAccessBehavior.ThrowException))
+        return ReadProperty(propertyInfo);
+      return propertyInfo.DefaultValue!;
+    }
+
+    /// <summary>
     /// Gets a property's value as a specified type.
     /// </summary>
     /// <param name="propertyInfo">
@@ -1345,6 +1571,28 @@ namespace Csla
     }
 
     /// <summary>
+    /// Gets a not-null property's value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// An unloaded property reads as its default value, which is stored
+    /// unless it is null. The value is non-null on an object the data
+    /// portal has completed and verified.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P ReadProperty<P>(NotNullPropertyInfo<P> propertyInfo) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      return NotNullGuard.Read(FieldManager, propertyInfo);
+    }
+
+    /// <summary>
     /// Gets a property's value as a specified type.
     /// </summary>
     /// <param name="propertyInfo">
@@ -1390,6 +1638,7 @@ namespace Csla
         throw new ArgumentNullException(nameof(property));
       if (valueGenerator is null)
         throw new ArgumentNullException(nameof(valueGenerator));
+      NotNullGuard.ThrowIfDelayedLoad(property);
 
       if (!FieldManager.FieldExists(property))
       {
@@ -1494,8 +1743,19 @@ namespace Csla
         }
 
         if (ValueComparer.AreNotEqual(oldValue, newValue))
-          FieldManager.LoadFieldData(propertyInfo, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
-
+        {
+          var convertedValue = Utilities.CoerceValue<P>(typeof(F), oldValue, newValue);
+          NotNullGuard.ThrowIfNullInsideTry(propertyInfo, convertedValue);
+          FieldManager.LoadFieldData(propertyInfo, convertedValue);
+        }
+        else
+        {
+          NotNullGuard.ThrowIfNullInsideTry(propertyInfo, newValue);
+        }
+      }
+      catch (NotNullPropertyViolationException)
+      {
+        throw;
       }
       catch (Exception ex)
       {
@@ -1543,6 +1803,7 @@ namespace Csla
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
+      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
       try
       {
         P? oldValue;
@@ -1559,12 +1820,37 @@ namespace Csla
 
         if (ValueComparer.AreNotEqual(oldValue, newValue))
           FieldManager.LoadFieldData(propertyInfo, newValue);
-        
+
       }
       catch (Exception ex)
       {
         throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
       }
+    }
+
+    /// <summary>
+    /// Loads a not-null property's managed field with the
+    /// supplied value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> or <paramref name="newValue"/> is <see langword="null"/>.</exception>
+    /// <exception cref="PropertyLoadException"></exception>
+    protected void LoadProperty<P>(NotNullPropertyInfo<P> propertyInfo, P newValue) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      LoadProperty<P>((PropertyInfo<P>)propertyInfo, newValue);
     }
 
     /// <summary>
@@ -1631,6 +1917,7 @@ namespace Csla
         throw new ArgumentNullException(nameof(property));
       if (factory is null)
         throw new ArgumentNullException(nameof(factory));
+      NotNullGuard.ThrowIfDelayedLoad(property);
 
       LoadManager.BeginLoad(new TaskLoader<R>(property, factory));
     }
@@ -1648,6 +1935,13 @@ namespace Csla
     protected FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(ApplicationContext, GetType());
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
+
+    FieldDataManager? IFieldManagerAccess.FieldManagerIfCreated => _fieldManager;
+
+    IReadOnlyList<IPropertyInfo> IFieldManagerAccess.GetUnsatisfiedNotNullProperties()
+      => _fieldManager is { } fieldManager
+        ? fieldManager.GetUnsatisfiedNotNullProperties()
+        : FieldDataManager.GetUnsatisfiedNotNullProperties(GetType());
 
     #endregion
 

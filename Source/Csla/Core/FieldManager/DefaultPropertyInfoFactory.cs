@@ -85,5 +85,35 @@ namespace Csla.Core.FieldManager
 
       return new PropertyInfo<T>(name, friendlyName, containingType, defaultValue, relationship, isSerializable);
     }
+
+    /// <inheritdoc />
+    public NotNullPropertyInfo<T> CreateNotNull<T>(Type containingType, string name) where T : notnull
+    {
+      return CreateNotNull<T>(containingType, name, friendlyName: null);
+    }
+
+    /// <inheritdoc />
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = TrimmingMessages.BusinessTypeJustification)]
+    public NotNullPropertyInfo<T> CreateNotNull<T>(Type containingType, string name, string? friendlyName) where T : notnull
+    {
+      if (containingType is null)
+        throw new ArgumentNullException(nameof(containingType));
+      if (name is null)
+        throw new ArgumentNullException(nameof(name));
+
+      return new NotNullPropertyInfo<T>(name, friendlyName, containingType);
+    }
+
+    /// <inheritdoc />
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = TrimmingMessages.BusinessTypeJustification)]
+    public NotNullPropertyInfo<T> CreateNotNull<T>(Type containingType, string name, string? friendlyName, T defaultValue) where T : notnull
+    {
+      if (containingType is null)
+        throw new ArgumentNullException(nameof(containingType));
+      if (name is null)
+        throw new ArgumentNullException(nameof(name));
+
+      return new NotNullPropertyInfo<T>(name, friendlyName, containingType, defaultValue);
+    }
   }
 }

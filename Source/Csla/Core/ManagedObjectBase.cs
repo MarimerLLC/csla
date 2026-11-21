@@ -26,7 +26,8 @@ namespace Csla.Core
     INotifyPropertyChanged,
     IManageProperties,
     IUseApplicationContext,
-    IUseFieldManager
+    IUseFieldManager,
+    IFieldManagerAccess
   {
     /// <summary>
     /// Gets the current ApplicationContext.
@@ -46,6 +47,13 @@ namespace Csla.Core
     protected FieldDataManager FieldManager => _fieldManager ??= new FieldDataManager(ApplicationContext, GetType());
 
     FieldDataManager IUseFieldManager.FieldManager => FieldManager;
+
+    FieldDataManager? IFieldManagerAccess.FieldManagerIfCreated => _fieldManager;
+
+    IReadOnlyList<IPropertyInfo> IFieldManagerAccess.GetUnsatisfiedNotNullProperties()
+      => _fieldManager is { } fieldManager
+        ? fieldManager.GetUnsatisfiedNotNullProperties()
+        : FieldDataManager.GetUnsatisfiedNotNullProperties(GetType());
 
     #endregion
 
@@ -158,6 +166,115 @@ namespace Csla.Core
       return RegisterProperty(typeof(T), PropertyInfoFactory.Factory.Create<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
     }
 
+    /// <summary>
+    /// Indicates that the specified not-null property belongs
+    /// to the type.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of property.
+    /// </typeparam>
+    /// <param name="objectType">
+    /// Type of object to which the property belongs.
+    /// </param>
+    /// <param name="info">
+    /// NotNullPropertyInfo object for the property.
+    /// </param>
+    /// <returns>
+    /// The provided NotNullPropertyInfo object.
+    /// </returns>
+    /// <remarks>
+    /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
+    /// travel into a data portal operation and are never verified, so a not-null
+    /// criteria property is checked on writes only.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
+    [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(Type objectType, NotNullPropertyInfo<P> info) where P : notnull
+    {
+      if (objectType is null)
+        throw new ArgumentNullException(nameof(objectType));
+      if (info is null)
+        throw new ArgumentNullException(nameof(info));
+
+      PropertyInfoManager.RegisterProperty<P>(objectType, info);
+      return info;
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type.
+    /// </summary>
+    /// <typeparam name="T">Type of object to which the property belongs.</typeparam>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <returns>The provided NotNullPropertyInfo object.</returns>
+    /// <remarks>
+    /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
+    /// travel into a data portal operation and are never verified, so a not-null
+    /// criteria property is checked on writes only.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, P>(Expression<Func<T, object>> propertyLambdaExpression) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterNotNullProperty(typeof(T), PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), reflectedPropertyInfo.Name));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property without a default value
+    /// belongs to the business object type.
+    /// </summary>
+    /// <typeparam name="T">Type of object to which the property belongs.</typeparam>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <returns>The provided NotNullPropertyInfo object.</returns>
+    /// <remarks>
+    /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
+    /// travel into a data portal operation and are never verified, so a not-null
+    /// criteria property is checked on writes only.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterNotNullProperty(typeof(T), PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName));
+    }
+
+    /// <summary>
+    /// Indicates that the specified not-null property with a default value
+    /// belongs to the business object type.
+    /// </summary>
+    /// <typeparam name="T">Type of object to which the property belongs.</typeparam>
+    /// <typeparam name="P">Type of property</typeparam>
+    /// <param name="propertyLambdaExpression">Property Expression</param>
+    /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
+    /// <param name="defaultValue">Default Value for the property</param>
+    /// <returns>The provided NotNullPropertyInfo object.</returns>
+    /// <remarks>
+    /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
+    /// travel into a data portal operation and are never verified, so a not-null
+    /// criteria property is checked on writes only.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyLambdaExpression"/> or <paramref name="defaultValue"/> is <see langword="null"/>.</exception>
+    protected static NotNullPropertyInfo<P> RegisterNotNullProperty<[DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.All)] T, P>(Expression<Func<T, object>> propertyLambdaExpression, string? friendlyName, P defaultValue) where P : notnull
+    {
+      if (propertyLambdaExpression is null)
+        throw new ArgumentNullException(nameof(propertyLambdaExpression));
+
+      PropertyInfo reflectedPropertyInfo = Reflect<T>.GetProperty(propertyLambdaExpression);
+
+      return RegisterNotNullProperty(typeof(T), PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), reflectedPropertyInfo.Name, friendlyName, defaultValue));
+    }
+
     #endregion
 
     #region  Read Properties
@@ -213,6 +330,28 @@ namespace Csla.Core
         FieldManager.LoadFieldData<P>(propertyInfo, result);
       }
       return result;
+    }
+
+    /// <summary>
+    /// Gets a not-null property's value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <remarks>
+    /// An unloaded property reads as its default value, which is stored
+    /// unless it is null. For a command, the value is non-null after the
+    /// data portal has run Execute and verified the object.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    protected P ReadProperty<P>(NotNullPropertyInfo<P> propertyInfo) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      return NotNullGuard.Read(FieldManager, propertyInfo);
     }
 
     /// <summary>
@@ -287,7 +426,13 @@ namespace Csla.Core
           else
             oldValue = (P?)fieldData.Value;
         }
-        LoadPropertyValue<P>(propertyInfo, oldValue, Utilities.CoerceValue<P>(typeof(F), oldValue, newValue));
+        var convertedValue = Utilities.CoerceValue<P>(typeof(F), oldValue, newValue);
+        NotNullGuard.ThrowIfNullInsideTry(propertyInfo, convertedValue);
+        LoadPropertyValue<P>(propertyInfo, oldValue, convertedValue);
+      }
+      catch (NotNullPropertyViolationException)
+      {
+        throw;
       }
       catch (Exception ex)
       {
@@ -320,6 +465,7 @@ namespace Csla.Core
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
+      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
       try
       {
         P? oldValue = default(P);
@@ -344,8 +490,34 @@ namespace Csla.Core
       }
     }
 
+    /// <summary>
+    /// Loads a not-null property's managed field with the
+    /// supplied value.
+    /// </summary>
+    /// <typeparam name="P">
+    /// Type of the property.
+    /// </typeparam>
+    /// <param name="propertyInfo">
+    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <param name="newValue">
+    /// The new value for the property.</param>
+    /// <remarks>
+    /// No authorization checks occur when this method is called,
+    /// and no PropertyChanging or PropertyChanged events are raised.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> or <paramref name="newValue"/> is <see langword="null"/>.</exception>
+    /// <exception cref="PropertyLoadException"></exception>
+    protected void LoadProperty<P>(NotNullPropertyInfo<P> propertyInfo, P newValue) where P : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      LoadProperty<P>((PropertyInfo<P>)propertyInfo, newValue);
+    }
+
     private bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
+      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
       try
       {
         P? oldValue;

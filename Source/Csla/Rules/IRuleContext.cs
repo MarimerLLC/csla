@@ -189,6 +189,7 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="value">New property value.</param>
     /// <exception cref="InvalidOperationException"><see cref="Rule"/>.<see cref="IBusinessRuleBase.PrimaryProperty"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="value"/> is <see langword="null"/> and the primary property is a not-null reference-type property.</exception>
     void AddOutValue(object? value);
     /// <summary>
     /// Add an outbound value to update a property on the business
@@ -196,8 +197,10 @@ namespace Csla.Rules
     /// </summary>
     /// <param name="property">Property to update.</param>
     /// <param name="value">New property value.</param>
-    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>.</exception>
-    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>   
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>,
+    /// or <paramref name="value"/> is <see langword="null"/> and <paramref name="property"/> is a not-null
+    /// reference-type property without a default value.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>
     void AddOutValue(IPropertyInfo property, object? value);
     /// <summary>
     /// Adds a property name as a dirty field (changed value).

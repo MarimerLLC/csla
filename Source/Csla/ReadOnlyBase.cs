@@ -1126,6 +1126,7 @@ namespace Csla
         throw new ArgumentNullException(nameof(property));
       if (valueGenerator is null)
         throw new ArgumentNullException(nameof(valueGenerator));
+      NotNullGuard.ThrowIfDelayedLoad(property);
 
       if (!FieldManager.FieldExists(property))
       {
@@ -1224,6 +1225,7 @@ namespace Csla
     /// </summary>
     private bool StartLazyLoad<P>(PropertyInfo<P> property, Func<Task<P>> factory)
     {
+      NotNullGuard.ThrowIfDelayedLoad(property);
       if (FieldManager.FieldExists(property) || PropertyIsLoading(property))
         return true;
 
@@ -1635,6 +1637,7 @@ namespace Csla
         throw new ArgumentNullException(nameof(property));
       if (valueGenerator is null)
         throw new ArgumentNullException(nameof(valueGenerator));
+      NotNullGuard.ThrowIfDelayedLoad(property);
 
       if (!FieldManager.FieldExists(property))
       {
@@ -1913,6 +1916,7 @@ namespace Csla
         throw new ArgumentNullException(nameof(property));
       if (factory is null)
         throw new ArgumentNullException(nameof(factory));
+      NotNullGuard.ThrowIfDelayedLoad(property);
 
       LoadManager.BeginLoad(new TaskLoader<R>(property, factory));
     }

@@ -290,7 +290,8 @@ namespace Csla.Rules
     {
       if (Rule.PrimaryProperty is null)
         throw new InvalidOperationException($"{nameof(Rule)}.{nameof(Rule.PrimaryProperty)} == null");
-      
+      ThrowIfNotNullOutputNull(Rule.PrimaryProperty, value);
+
       OutputPropertyValues.Add(Rule.PrimaryProperty, value);
     }
 
@@ -300,7 +301,15 @@ namespace Csla.Rules
       if (property is null)
         throw new ArgumentNullException(nameof(property));
 
-      OutputPropertyValues[property] = (value is null) ? property.DefaultValue : Utilities.CoerceValue(property.Type, value.GetType(), null, value);
+      var outValue = (value is null) ? property.DefaultValue : Utilities.CoerceValue(property.Type, value.GetType(), null, value);
+      ThrowIfNotNullOutputNull(property, outValue);
+      OutputPropertyValues[property] = outValue;
+    }
+
+    private static void ThrowIfNotNullOutputNull(IPropertyInfo property, object? value)
+    {
+      if (value is null && NotNullGuard.IsNotNullReference(property))
+        throw new ArgumentNullException(nameof(value), string.Format(Resources.NotNullPropertyValueNull, property.Name));
     }
 
 

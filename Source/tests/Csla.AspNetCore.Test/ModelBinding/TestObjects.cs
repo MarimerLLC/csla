@@ -239,3 +239,23 @@ public class GrandChild : BusinessBase<GrandChild>
     }
   }
 }
+
+[Serializable]
+public class NotNullBindTarget : BusinessBase<NotNullBindTarget>
+{
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set => SetProperty(NameProperty, value);
+  }
+
+  public static readonly NotNullPropertyInfo<byte[]> DataProperty = RegisterNotNullProperty<byte[]>(nameof(Data));
+  public byte[] Data
+  {
+    get => GetProperty(DataProperty);
+    set => SetProperty(DataProperty, value);
+  }
+
+  public bool DataIsLoaded => FieldManager.FieldExists(DataProperty);
+}

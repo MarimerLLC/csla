@@ -1,4 +1,4 @@
-﻿//-----------------------------------------------------------------------
+//-----------------------------------------------------------------------
 // <copyright file="BusinessRules.cs" company="Marimer LLC">
 //     Copyright (c) Marimer LLC. All rights reserved.
 //     Website: https://cslanet.com
@@ -969,13 +969,7 @@ namespace Csla.Rules
             }
 
             // update output values
-            if (r.OutputPropertyValues != null)
-              foreach (var item in r.OutputPropertyValues)
-              {
-                // value is changed add to dirtyValues
-                if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
-                  r.AddDirtyProperty(item.Key);
-              }
+            StoreOutputValues(r);
             // update broken rules list
             BrokenRules.SetBrokenRules(r.Results, r.OriginPropertyName, rule.Priority);
 
@@ -994,13 +988,7 @@ namespace Csla.Rules
         else  // Rule is Sync
         {
           // update output values
-          if (r.OutputPropertyValues != null)
-            foreach (var item in r.OutputPropertyValues)
-            {
-              // value is changed add to dirtyValues
-              if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
-                r.AddDirtyProperty(item.Key);
-            }
+          StoreOutputValues(r);
 
           // update broken rules list
           if (r.Results != null)
@@ -1503,6 +1491,35 @@ namespace Csla.Rules
     }
 
     #endregion
+
+    /// <summary>
+    /// Writes a completed rule's output values to the target. A null output
+    /// for a not-null reference-type property is not written; the rule gets
+    /// an Error result instead, so no exception escapes an async rule's
+    /// completion.
+    /// </summary>
+    private void StoreOutputValues(IRuleContext r)
+    {
+      if (r.OutputPropertyValues == null)
+        return;
+
+      foreach (var item in r.OutputPropertyValues)
+      {
+        if (item.Value is null && NotNullGuard.IsNotNullReference(item.Key))
+        {
+          r.Results.Add(new RuleResult(
+            r.Rule.RuleName,
+            item.Key,
+            string.Format(Properties.Resources.NotNullPropertyRuleOutputNull, r.Rule.RuleName, item.Key.Name),
+            r.Rule.DisplayIndex));
+          continue;
+        }
+
+        // value is changed add to dirtyValues
+        if (((IManageProperties)_target).LoadPropertyMarkDirty(item.Key, item.Value))
+          r.AddDirtyProperty(item.Key);
+      }
+    }
 
     /// <summary>
     /// Raises the notifications for a completed async rule, then clears

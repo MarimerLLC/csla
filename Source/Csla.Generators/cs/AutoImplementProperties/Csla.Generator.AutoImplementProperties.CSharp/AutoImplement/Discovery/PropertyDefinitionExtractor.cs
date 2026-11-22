@@ -39,6 +39,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement.Discovery
         Modifiers = GetPropertyModifiers(propertyDeclaration),
         Partial = IsPartial(propertyDeclaration),
         NotNullRegistration = notNullRegistration,
+        AnnotationsEnabled = NotNullPropertyRules.IsAnnotationsEnabled(extractionContext.SemanticModel, propertyDeclaration.Type.SpanStart),
         TypeDefinition = new ExtractedMemberTypeDefinition
         {
           Nullable = GetFieldTypeNullable(propertyDeclaration),

@@ -49,13 +49,25 @@ namespace Csla.Analyzers
     /// </summary>
     public static NotNullRegistration GetRegistration(IPropertySymbol property)
     {
-      foreach (var attribute in property.GetAttributes())
-      {
-        if (attribute.AttributeClass is { Name: "AllowNullAttribute" or "MaybeNullAttribute" } attributeClass
-          && attributeClass.ContainingNamespace?.ToDisplayString() == "System.Diagnostics.CodeAnalysis")
-          return NotNullRegistration.None;
-      }
+      // on the property itself, or on its accessors: get; [param: AllowNull] set;
+      // and [return: MaybeNull] get;
+      if (HasNullabilityAttribute(property.GetAttributes(), "AllowNullAttribute", "MaybeNullAttribute")
+        || property.SetMethod is { Parameters.Length: > 0 } setter && HasNullabilityAttribute(setter.Parameters[0].GetAttributes(), "AllowNullAttribute")
+        || property.GetMethod is { } getter && HasNullabilityAttribute(getter.GetReturnTypeAttributes(), "MaybeNullAttribute"))
+        return NotNullRegistration.None;
       return GetRegistration(property.Type);
+    }
+
+    private static bool HasNullabilityAttribute(System.Collections.Immutable.ImmutableArray<AttributeData> attributes, params string[] names)
+    {
+      foreach (var attribute in attributes)
+      {
+        if (attribute.AttributeClass is { } attributeClass
+          && System.Array.IndexOf(names, attributeClass.Name) >= 0
+          && attributeClass.ContainingNamespace?.ToDisplayString() == "System.Diagnostics.CodeAnalysis")
+          return true;
+      }
+      return false;
     }
 
     /// <summary>

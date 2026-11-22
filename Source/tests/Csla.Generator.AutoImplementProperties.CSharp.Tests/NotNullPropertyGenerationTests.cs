@@ -119,12 +119,81 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests
         public partial class Person : Csla.BusinessBase<Person>
         {
           public partial string Name { get; set; }
+          public partial string? Note { get; set; }
+        }
+        """;
+
+      // Generate fails on any warning in the generated file, such as CS8632 for string?
+      var generated = Generate(source, nullable: NullableContextOptions.Disable);
+
+      generated.Should().Contain("#nullable enable", "the declaration enables nullable annotations")
+        .And.Contain("public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);")
+        .And.Contain("public static readonly PropertyInfo<string?> NoteProperty = RegisterProperty<string?>(nameof(Note));");
+    }
+
+    [TestMethod]
+    public void Generator_NullableDisabledProject_HasNoNullableDirective()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementProperties]
+        public partial class Person : Csla.BusinessBase<Person>
+        {
+          public partial string Name { get; set; }
         }
         """;
 
       var generated = Generate(source, nullable: NullableContextOptions.Disable);
 
-      generated.Should().Contain("public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);");
+      generated.Should().NotContain("#nullable")
+        .And.Contain("RegisterProperty<string>(nameof(Name))");
+    }
+
+    [TestMethod]
+    public void Generator_AccessorNullabilityAttributes_KeepRegisterProperty()
+    {
+      var source = """
+        namespace Test;
+
+        public class Address { }
+
+        [Csla.CslaImplementProperties]
+        public partial class Person : Csla.BusinessBase<Person>
+        {
+          public partial string Name { get; [param: System.Diagnostics.CodeAnalysis.AllowNull] set; }
+          public partial Address Home { [return: System.Diagnostics.CodeAnalysis.MaybeNull] get; set; }
+          public partial string Code { get; set; }
+        }
+        """;
+
+      var generated = Generate(source);
+
+      generated.Should().Contain("PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));")
+        .And.Contain("PropertyInfo<global::Test.Address> HomeProperty = RegisterProperty<global::Test.Address>(nameof(Home));")
+        .And.Contain("NotNullPropertyInfo<string> CodeProperty = RegisterNotNullProperty<string>(nameof(Code), null, string.Empty);");
+    }
+
+    [TestMethod]
+    public void InterfaceGenerator_AccessorAllowNull_KeepsRegisterProperty()
+    {
+      var source = """
+        namespace Test;
+
+        [Csla.CslaImplementPropertiesInterface<IPerson>]
+        public partial class Person : Csla.BusinessBase<Person>
+        {
+        }
+
+        public interface IPerson
+        {
+          string Name { get; [param: System.Diagnostics.CodeAnalysis.AllowNull] set; }
+        }
+        """;
+
+      var generated = Generate<IncrementalAutoImplementInterfacePartialsGenerator>(source);
+
+      generated.Should().Contain("PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));");
     }
 
     [TestMethod]

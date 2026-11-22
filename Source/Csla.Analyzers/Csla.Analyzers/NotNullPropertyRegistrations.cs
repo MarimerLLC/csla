@@ -35,6 +35,10 @@ namespace Csla.Analyzers
     private const string CreateNotNullName = "CreateNotNull";
     private const string DefaultValueParameterName = "defaultValue";
     private const string PropertySuffix = "Property";
+    // RegisterNotNullProperty(string propertyName, ...) and (Expression propertyLambdaExpression, ...)
+    private static readonly string[] RegisterNameParameterNames = ["propertyName", "propertyLambdaExpression"];
+    // new NotNullPropertyInfo<T>(string name, ...) and CreateNotNull<T>(Type containingType, string name, ...)
+    private static readonly string[] InfoNameParameterNames = ["name"];
 
     /// <summary>
     /// Gets whether a type is <c>Csla.NotNullPropertyInfo&lt;T&gt;</c> or derives from it.
@@ -154,9 +158,10 @@ namespace Csla.Analyzers
               hasDefault = true;
               return true;
             }
-            // (name) and (name, friendlyName): only when the first argument is
+            // (name) and (name, friendlyName): only when the name argument is
             // clearly a name, not a variable holding a property info.
-            return arguments.Count > 0 && IsNameArgument(Unwrap(arguments[0].Expression));
+            return GetNameArgument(arguments, 0, RegisterNameParameterNames) is { } nameArgument &&
+              IsNameArgument(Unwrap(nameArgument));
           }
         case InvocationExpressionSyntax invocation when GetMethodName(invocation.Expression) == CreateNotNullName:
           hasDefault = HasNamedArgument(invocation.ArgumentList.Arguments, DefaultValueParameterName) ||
@@ -173,28 +178,48 @@ namespace Csla.Analyzers
 
     private static string? TryGetRegisteredName(ExpressionSyntax expression)
     {
-      var unwrapped = Unwrap(expression);
-      SeparatedSyntaxList<ArgumentSyntax> arguments;
-      switch (unwrapped)
+      ExpressionSyntax? nameArgument;
+      switch (Unwrap(expression))
       {
         case InvocationExpressionSyntax invocation when GetMethodName(invocation.Expression) == RegisterNotNullPropertyName:
-          arguments = invocation.ArgumentList.Arguments;
+          var arguments = invocation.ArgumentList.Arguments;
           if (GetInfoArgument(arguments) is { } info)
           {
             return TryGetRegisteredName(info);
           }
+          nameArgument = GetNameArgument(arguments, 0, RegisterNameParameterNames);
           break;
         case InvocationExpressionSyntax invocation when GetMethodName(invocation.Expression) == CreateNotNullName:
           // CreateNotNull(containingType, name, ...)
-          arguments = invocation.ArgumentList.Arguments;
-          return arguments.Count > 1 ? GetName(Unwrap(arguments[1].Expression)) : null;
+          nameArgument = GetNameArgument(invocation.ArgumentList.Arguments, 1, InfoNameParameterNames);
+          break;
         case BaseObjectCreationExpressionSyntax creation when IsNotNullPropertyInfoCreation(creation):
-          arguments = creation.ArgumentList?.Arguments ?? default;
+          nameArgument = GetNameArgument(creation.ArgumentList?.Arguments ?? default, 0, InfoNameParameterNames);
           break;
         default:
           return null;
       }
-      return arguments.Count > 0 ? GetName(Unwrap(arguments[0].Expression)) : null;
+      return nameArgument is null ? null : GetName(Unwrap(nameArgument));
+    }
+
+    /// <summary>
+    /// Gets the argument that holds the property name: the one named after the
+    /// name parameter when named arguments are used (they can come in any
+    /// order), or else the one at the name parameter's position.
+    /// </summary>
+    private static ExpressionSyntax? GetNameArgument(SeparatedSyntaxList<ArgumentSyntax> arguments, int position, string[] parameterNames)
+    {
+      foreach (var argument in arguments)
+      {
+        if (argument.NameColon is { } nameColon && Array.IndexOf(parameterNames, nameColon.Name.Identifier.ValueText) >= 0)
+        {
+          return argument.Expression;
+        }
+      }
+      // positional arguments come before named ones
+      return position < arguments.Count && arguments[position].NameColon is null
+        ? arguments[position].Expression
+        : null;
     }
 
     private static string? GetName(ExpressionSyntax expression)

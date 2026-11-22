@@ -249,6 +249,69 @@ namespace Csla.Analyzers.Tests
       await AssertSilentAsync(code);
     }
 
+    [DataTestMethod]
+    [DataRow("[Create] private void Create() => throw new NotSupportedException();")]
+    [DataRow("[Create] private void Create() { throw new NotSupportedException(); }")]
+    [DataRow("[Fetch] private System.Threading.Tasks.Task Fetch() => throw new NotSupportedException();")]
+    public async Task SilentForOperationThatOnlyThrows(string operation)
+    {
+      await AssertSilentAsync(RootWith(operation));
+    }
+
+    [TestMethod]
+    public async Task ReportsOperationThatThrowsOnlyOnOneBranch()
+    {
+      var code = RootWith("[Fetch] private void Fetch(int id) { if (id < 0) throw new ArgumentException(); }");
+      await AssertReportedAsync(code, "Fetch", ": Item");
+    }
+
+    [TestMethod]
+    public async Task ReportsCommandExecuteWhenCreateOnlyThrows()
+    {
+      var code = Usings +
+        """
+        public class Cmd : CommandBase<Cmd>
+        {
+          public static readonly NotNullPropertyInfo<Child> ResultProperty = RegisterNotNullProperty<Child>(nameof(Result));
+          public Child Result { get => ReadProperty(ResultProperty); private set => LoadProperty(ResultProperty, value); }
+          [Create] private void Create() => throw new NotSupportedException();
+          [Execute] private void Execute() { }
+        }
+        """;
+      await AssertReportedAsync(code, "Execute", ": Result");
+    }
+
+    [TestMethod]
+    public async Task ReportsWhenOnlyAnotherInstanceIsInitialized()
+    {
+      var code = RootWith("[Fetch] private void Fetch(IDal dal) { var other = new A { Item = dal.GetChild() }; }");
+      await AssertReportedAsync(code, "Fetch", ": Item");
+    }
+
+    [TestMethod]
+    public async Task SilentWhenLoadedByDeconstruction()
+    {
+      var code = RootWith("[Fetch] private void Fetch(IDal dal) => (Item, Name) = (dal.GetChild(), dal.GetName());",
+        """
+        public static readonly NotNullPropertyInfo<Child> ItemProperty = RegisterNotNullProperty<Child>(nameof(Item));
+        public Child Item { get => GetProperty(ItemProperty); set => SetProperty(ItemProperty, value); }
+        public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name));
+        public string Name { get => GetProperty(NameProperty); set => SetProperty(NameProperty, value); }
+        """);
+      await AssertSilentAsync(code);
+    }
+
+    [TestMethod]
+    public async Task SilentWhenLoadedThroughPropertyRegisteredWithReorderedNamedArguments()
+    {
+      var code = RootWith("[Fetch] private void Fetch(IDal dal) { Item = dal.GetChild(); }",
+        """
+        public static readonly NotNullPropertyInfo<Child> ItemProperty = RegisterNotNullProperty<Child>(friendlyName: "Customer", propertyName: nameof(Item));
+        public Child Item { get => GetProperty(ItemProperty); set => SetProperty(ItemProperty, value); }
+        """);
+      await AssertSilentAsync(code);
+    }
+
     [TestMethod]
     public async Task SilentForObjectFactory()
     {

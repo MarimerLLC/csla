@@ -22,6 +22,8 @@ namespace Csla.Analyzers.Tests
         public static readonly NotNullPropertyInfo<Child> FriendlyName = RegisterNotNullProperty<Child>(nameof(FriendlyNameName), "Friendly");
         public static readonly NotNullPropertyInfo<Child> WithDefault = RegisterNotNullProperty<Child>(nameof(WithDefaultName), null, new Child());
         public static readonly NotNullPropertyInfo<Child> ImplicitNewDefault = RegisterNotNullProperty<Child>(nameof(ImplicitNewDefaultName), null, new());
+        public static readonly NotNullPropertyInfo<Child> Reordered = RegisterNotNullProperty<Child>(friendlyName: "Friendly", propertyName: nameof(ReorderedName));
+        public static readonly NotNullPropertyInfo<Child> InfoReordered = RegisterNotNullProperty(new NotNullPropertyInfo<Child>(friendlyName: "Friendly", name: nameof(InfoReorderedName)));
         public static readonly NotNullPropertyInfo<Child> NamedDefault = RegisterNotNullProperty<Child>(nameof(NamedDefaultName), defaultValue: new Child());
         public static readonly NotNullPropertyInfo<Child> LambdaDefault = RegisterNotNullProperty<Child>(_ => _.LambdaTarget, null, new Child());
         public static readonly NotNullPropertyInfo<string> StringEmpty = RegisterNotNullProperty<string>(nameof(StringEmptyName), null, string.Empty);
@@ -58,6 +60,8 @@ namespace Csla.Analyzers.Tests
     [DataRow("FriendlyName", false)]
     [DataRow("WithDefault", true)]
     [DataRow("ImplicitNewDefault", true)]
+    [DataRow("Reordered", false)]
+    [DataRow("InfoReordered", false)]
     [DataRow("NamedDefault", true)]
     [DataRow("LambdaDefault", true)]
     [DataRow("StringEmpty", true)]
@@ -96,6 +100,8 @@ namespace Csla.Analyzers.Tests
     [DataRow("InfoImplicit", "InfoImplicitName")]
     [DataRow("TypeAndInfo", "TypeAndInfoName")]
     [DataRow("Factory", "FactoryName")]
+    [DataRow("Reordered", "ReorderedName")]
+    [DataRow("InfoReordered", "InfoReorderedName")]
     [DataRow("FromMethod", "FromMethod")]
     [DataRow("NoInitializer", "NoInitializer")]
     public async Task GetRegisteredNameReadsTheNameArgument(string fieldName, string expected)

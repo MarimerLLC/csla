@@ -32,7 +32,7 @@ The analyzer is also tripped by a `BusinessBase` child type that has these prope
 These count as loading the property anywhere in the operation, including in lambdas and local functions:
 
 * a call to `LoadProperty`, `LoadPropertyMarkDirty`, `LoadPropertyConvert`, `SetProperty` or `SetPropertyConvert` with the property's field, typed or untyped;
-* an assignment to the property.
+* an assignment to the property of this object, including as part of a deconstruction such as `(Customer, Name) = ...`. Setting it in an object initializer of another instance (`new Order { Customer = ... }`) doesn't count.
 
 The analyzer doesn't follow paths, so a load on only one branch still counts.
 
@@ -41,6 +41,7 @@ The analyzer doesn't follow paths, so a load on only one branch still counts.
 The check is best-effort, and it stays silent whenever it can't tell. The data portal check is the safety net. The analyzer stays silent for:
 
 * types with `[ObjectFactory]`;
+* operations whose body only throws, such as `=> throw new NotSupportedException()`, because they never complete an object;
 * operations that pass `this` to a method or constructor;
 * operations that call a method of their own type hierarchy declared in source, because a helper may load the property;
 * operations that load through a property info that isn't a field;

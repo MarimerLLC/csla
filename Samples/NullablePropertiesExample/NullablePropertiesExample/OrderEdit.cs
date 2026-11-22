@@ -8,44 +8,59 @@ namespace NullablePropertiesExample
   /// Shows how to declare CSLA properties with nullable reference types enabled.
   /// </summary>
   /// <remarks>
-  /// GetProperty, ReadProperty, LazyGetProperty and LazyGetPropertyAsync all
-  /// return P?, because each of them can return the property's default value:
-  /// when the user isn't allowed to read the property, while an async lazy load
-  /// is still running, or when nothing has been loaded. Decide per property:
-  /// if it can't be null in practice, keep it non-nullable and use ! in the
-  /// getter; otherwise declare the property type nullable.
+  /// Decide per property whether it can be null. A property that always has a
+  /// value once the object is complete is a not-null property
+  /// (NotNullPropertyInfo, RegisterNotNullProperty): its getter returns T, and
+  /// CSLA rejects null writes and checks the property when the data portal
+  /// completes the object. A property that can be null (a read authorization
+  /// rule, an async lazy load, an optional value) uses PropertyInfo and is
+  /// declared T?. Code that doesn't migrate yet keeps PropertyInfo and uses !.
   /// </remarks>
   public partial class OrderEdit : BusinessBase<OrderEdit>
   {
-    public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+    // Value type: a not-null property is never null, so there is nothing to load.
+    public static readonly NotNullPropertyInfo<int> IdProperty = RegisterNotNullProperty<int>(nameof(Id));
     public int Id
     {
       get => GetProperty(IdProperty);
       private set => LoadProperty(IdProperty, value);
     }
 
-    // Non-nullable string: use !.
-    // A string property defaults to string.Empty, and GetProperty returns that
-    // default when the user can't read the property, so it is only null if
-    // code sets it to null.
-    public static readonly PropertyInfo<string> CustomerNameProperty = RegisterProperty<string>(nameof(CustomerName));
+    // Not-null string with a string.Empty default: no ! in the getter.
+    // It reads string.Empty until something is loaded, and a null write
+    // (for example from a data-bound control) is stored as string.Empty.
+    public static readonly NotNullPropertyInfo<string> CustomerNameProperty =
+      RegisterNotNullProperty<string>(nameof(CustomerName), null, string.Empty);
     public string CustomerName
     {
-      get => GetProperty(CustomerNameProperty)!;
+      get => GetProperty(CustomerNameProperty);
       set => SetProperty(CustomerNameProperty, value);
     }
 
-    // Lazy-loaded child, synchronous: use !.
-    // LazyGetProperty runs the value generator on first access and returns its
-    // result, so the getter never returns null as long as the generator
-    // doesn't. (Add a read authorization rule and that changes: see Credit.)
-    public static readonly PropertyInfo<LineItemList> LineItemsProperty =
-      RegisterProperty<LineItemList>(nameof(LineItems), RelationshipTypes.LazyLoad);
+    // Not-null child without a default value: every operation that completes
+    // the object (Create and Fetch here) must load it, or the data portal
+    // throws when the operation ends. Analyzer CSLA0033 points out an
+    // operation that doesn't load it.
+    public static readonly NotNullPropertyInfo<LineItemList> LineItemsProperty =
+      RegisterNotNullProperty<LineItemList>(nameof(LineItems));
     public LineItemList LineItems
     {
-      get => LazyGetProperty(LineItemsProperty,
-        () => ApplicationContext.GetRequiredService<IChildDataPortal<LineItemList>>().FetchChild(Id))!;
+      get => GetProperty(LineItemsProperty);
       private set => LoadProperty(LineItemsProperty, value);
+    }
+
+    // Lazy-loaded child, synchronous: not-null properties can't be lazy
+    // loaded (CSLA0036), so keep PropertyInfo and use !.
+    // LazyGetProperty runs the value generator on first access and returns its
+    // result, so the getter never returns null as long as the generator
+    // doesn't. CSLA doesn't check that for you.
+    public static readonly PropertyInfo<OrderHistory> HistoryProperty =
+      RegisterProperty<OrderHistory>(nameof(History), RelationshipTypes.LazyLoad);
+    public OrderHistory History
+    {
+      get => LazyGetProperty(HistoryProperty,
+        () => ApplicationContext.GetRequiredService<IChildDataPortal<OrderHistory>>().FetchChild(Id))!;
+      private set => LoadProperty(HistoryProperty, value);
     }
 
     // Lazy-loaded child, asynchronous: declare it nullable.
@@ -64,7 +79,8 @@ namespace NullablePropertiesExample
 
     // Child with a read authorization rule: declare it nullable.
     // Fetch always loads a value, but GetProperty returns the default (null)
-    // to a user who isn't in the Manager role.
+    // to a user who isn't in the Manager role. As a not-null property without
+    // a default value it would break its promise, so CSLA0034 warns about that.
     public static readonly PropertyInfo<CreditSummary> CreditProperty = RegisterProperty<CreditSummary>(nameof(Credit));
     public CreditSummary? Credit
     {
@@ -78,13 +94,21 @@ namespace NullablePropertiesExample
       BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, CreditProperty, "Manager"));
     }
 
+    [Create]
+    private void Create([Inject] IChildDataPortal<LineItemList> lineItemsPortal)
+    {
+      LoadProperty(LineItemsProperty, lineItemsPortal.CreateChild());
+      BusinessRules.CheckRules();
+    }
+
     [Fetch]
-    private void Fetch(int id, [Inject] IChildDataPortal<CreditSummary> creditPortal)
+    private void Fetch(int id, [Inject] IChildDataPortal<LineItemList> lineItemsPortal, [Inject] IChildDataPortal<CreditSummary> creditPortal)
     {
       using (BypassPropertyChecks)
       {
         Id = id;
         CustomerName = "Contoso";
+        LineItems = lineItemsPortal.FetchChild(id);
         Credit = creditPortal.FetchChild(id);
       }
     }

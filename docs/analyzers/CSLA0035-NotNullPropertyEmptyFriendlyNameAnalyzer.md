@@ -21,3 +21,5 @@ This is the registration the source generator emits for a not-null `string` prop
 ## Code Fix
 
 There is no code fix for this analyzer.
+
+See [Nullable reference types and CSLA properties](../Nullable-Reference-Types.md#cases-that-need-a-default-value-or-a-nullable-property) for why a not-null `string` should have the `string.Empty` default.

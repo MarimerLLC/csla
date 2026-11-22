@@ -4,7 +4,7 @@ namespace NullablePropertiesExample
 {
   public partial class CreditSummary : ReadOnlyBase<CreditSummary>
   {
-    public static readonly PropertyInfo<decimal> LimitProperty = RegisterProperty<decimal>(nameof(Limit));
+    public static readonly NotNullPropertyInfo<decimal> LimitProperty = RegisterNotNullProperty<decimal>(nameof(Limit));
     public decimal Limit
     {
       get => GetProperty(LimitProperty);

@@ -51,6 +51,48 @@ Because the data portal now calls operation methods through generated code, stac
 
 You can mark a class (or an assembly) with `[DataPortalExtensions]` to generate strongly typed extension methods on `IDataPortal<T>` and `IChildDataPortal<T>`. See the [release notes](../releasenotes.md) for details. This is opt-in. Once you use it, the `CSLA0025` analyzer warns when code calls the untyped `params object[]` data portal methods for that type when a generated method could be used instead. See [CSLA0025](analyzers/CSLA0025-UseGeneratedDataPortalExtensionAnalyzer.md).
 
+## Not-null managed properties
+
+CSLA 11 adds not-null properties: a `NotNullPropertyInfo<T>` registered with `RegisterNotNullProperty`, whose typed `GetProperty` and `ReadProperty` return `T` instead of `T?`, so getters need no `!` ([#5047](https://github.com/MarimerLLC/csla/issues/5047)). CSLA makes sure such a property holds a value: null writes are rejected, and the data portal checks the property when it completes an object. See [Nullable reference types and CSLA properties](Nullable-Reference-Types.md) for the full rules, the guarantee and its scope, and when to declare a property nullable instead.
+
+```csharp
+public static readonly NotNullPropertyInfo<LineItemList> LineItemsProperty =
+  RegisterNotNullProperty<LineItemList>(nameof(LineItems));
+public LineItemList LineItems
+{
+  get => GetProperty(LineItemsProperty);
+  private set => LoadProperty(LineItemsProperty, value);
+}
+
+[Create]
+private void Create([Inject] IChildDataPortal<LineItemList> itemsPortal)
+{
+  LoadProperty(LineItemsProperty, itemsPortal.CreateChild());
+  BusinessRules.CheckRules();
+}
+```
+
+Hand-written `RegisterProperty` code keeps working as before. What to check when you upgrade:
+
+* **Generated properties change.** In a project with nullable annotations enabled, `[CslaImplementProperties]` and `[CslaImplementPropertiesInterface<T>]` now register each non-nullable property with `RegisterNotNullProperty`. A `string` gets `string.Empty` as its default value, so it behaves as before, and value types are never null. **Any other non-nullable reference type, typically a child object, must now be loaded in every `[Create]`, `[Fetch]`, `[CreateChild]` and `[FetchChild]` (and `[Execute]` for a command), or the data portal throws.** For each such property, do one of these:
+  * load it on every path;
+  * declare it nullable (`T?`), which keeps `RegisterProperty`;
+  * set `<CslaGenerateNotNullProperties>false</CslaGenerateNotNullProperties>` in the project file, which restores the CSLA 10 output for every generated property.
+
+  A generated property used with `LazyGetProperty`, `LazyGetPropertyAsync`, `LazyReadProperty`, `LazyReadPropertyAsync` or `LoadPropertyAsync`, value types included, now gets the build error [CSLA0036](analyzers/CSLA0036-NotNullPropertyDelayedLoadAnalyzer.md). Declare it `T?`.
+* **The data portal check.** At the end of Create, Fetch, Execute and Update, and at the start of Update, the data portal throws `InvalidOperationException` for an object, root or child, whose not-null property without a default value is null. The message names the type and every failing property. A command's `[Create]` isn't checked, and the inputs of a command sent with `ExecuteAsync(command)` aren't checked before `[Execute]`. In `Manual` transaction mode (the default) an Update or Execute failure is reported after your code's own commit. With `TransactionScope` it rolls the transaction back.
+* **New exceptions.** Writing null to a not-null property of a non-`string` type throws `ArgumentNullException`. That covers `SetProperty`, `LoadProperty`, their untyped and `*Convert` forms, and `RuleContext.AddOutValue`. A business rule that outputs null for such a property gets an Error result. The delayed-load methods above throw `NotSupportedException` for any not-null property.
+* **`string` never throws.** A not-null `string` stores null as `string.Empty` on every write path. A hand-written `RegisterNotNullProperty<string>(nameof(Name))` has no default value, though, so it reads null until it's loaded and must be loaded like a child object. Register it with `RegisterNotNullProperty<string>(nameof(Name), null, string.Empty)`.
+* **Several fetch shapes.** A type whose fetch operations don't all load a not-null property no longer works for that property. Load it anyway, declare it nullable, or split the type.
+* **Object factories.** Objects an `ObjectFactory` builds by hand, and the items of a list it builds, are only checked if the factory calls `VerifyNotNullInvariant` on each one. `NotNullInvariant.GetUnsatisfiedProperties` and `NotNullInvariant.Verify` check any object.
+* **Model binding.** The ASP.NET Core `CslaModelBinder` no longer stores a posted null in a not-null property of a non-`string` type.
+* **`IPropertyInfoFactory` has three new members.** A custom property info factory must implement the three `CreateNotNull<T>` overloads, `(containingType, name)`, `(containingType, name, friendlyName)` and `(containingType, name, friendlyName, defaultValue)`, which return `NotNullPropertyInfo<T>`. Without a custom factory there's nothing to do.
+
+Analyzers help with the upgrade:
+
+* [CSLA0032](analyzers/CSLA0032-NotNullPropertyNotSerializedAnalyzer.md) to [CSLA0036](analyzers/CSLA0036-NotNullPropertyDelayedLoadAnalyzer.md) report mistakes with not-null properties at build time. Examples are an operation that doesn't load one ([CSLA0033](analyzers/CSLA0033-NotNullPropertyNotLoadedAnalyzer.md)), and a property that isn't serialized or has a read authorization rule but has no default value.
+* [CSLA0037](analyzers/CSLA0037-MigrateToNotNullPropertyAnalyzer.md) and [CSLA0038](analyzers/CSLA0038-MigrateToNotNullPropertyAnalyzer.md) suggest moving hand-written `PropertyInfo<T>` registrations to `RegisterNotNullProperty`, with code fixes. CSLA0037 covers value types, `string` and properties with a default value, and offers Fix All. CSLA0038 covers child objects and other reference types without a default value, one at a time after review.
+
 ## Legacy Data Portal Operation Method Names Removed
 
 In earlier versions, if the data portal couldn't find a method with an operation attribute (such as `[Fetch]`), it fell back to looking for a method by name (such as `DataPortal_Fetch` or `Child_Update`). This fallback was controlled by the `DataPortalOptions.UseLegacyOperationMethods` option.

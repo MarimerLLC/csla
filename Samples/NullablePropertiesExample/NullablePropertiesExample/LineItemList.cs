@@ -4,6 +4,11 @@ namespace NullablePropertiesExample
 {
   public partial class LineItemList : BusinessListBase<LineItemList, LineItemEdit>
   {
+    [CreateChild]
+    private void CreateChild()
+    {
+    }
+
     [FetchChild]
     private void FetchChild(int orderId, [Inject] IChildDataPortal<LineItemEdit> itemPortal)
     {

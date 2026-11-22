@@ -4,10 +4,11 @@ namespace NullablePropertiesExample
 {
   public partial class ShipmentInfo : ReadOnlyBase<ShipmentInfo>
   {
-    public static readonly PropertyInfo<string> CarrierProperty = RegisterProperty<string>(nameof(Carrier));
+    public static readonly NotNullPropertyInfo<string> CarrierProperty =
+      RegisterNotNullProperty<string>(nameof(Carrier), null, string.Empty);
     public string Carrier
     {
-      get => GetProperty(CarrierProperty)!;
+      get => GetProperty(CarrierProperty);
       private set => LoadProperty(CarrierProperty, value);
     }
 

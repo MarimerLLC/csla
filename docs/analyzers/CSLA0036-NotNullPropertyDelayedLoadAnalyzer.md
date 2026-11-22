@@ -24,3 +24,5 @@ Fix it in one of these ways:
 ## Code Fix
 
 There is no code fix for this analyzer.
+
+See [Nullable reference types and CSLA properties](../Nullable-Reference-Types.md#the-property-can-be-null-declare-it-nullable) for how to declare a lazy-loaded property.

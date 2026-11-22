@@ -30,6 +30,14 @@ namespace Csla.Core
   /// builds by hand.
   /// </para>
   /// <para>
+  /// The data portal's check runs inside the operation's transaction only with
+  /// <c>[Transactional(TransactionalTypes.TransactionScope)]</c>: a failing
+  /// exit check leaves the scope without completing it, so the work is rolled
+  /// back. In <c>TransactionalTypes.Manual</c> mode (the default) the check runs
+  /// after the operation's code returns, so a transaction that code committed
+  /// stays committed and the failure is reported afterwards.
+  /// </para>
+  /// <para>
   /// Each call checks one object and does not recurse into its children.
   /// Objects without managed properties, such as lists, always satisfy it.
   /// </para>

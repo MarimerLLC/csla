@@ -39,3 +39,5 @@ CSLA0033 | Usage | Warning | NotNullPropertyNotLoadedAnalyzer
 CSLA0034 | Usage | Warning | NotNullPropertyReadAuthorizationAnalyzer
 CSLA0035 | Usage | Warning | NotNullPropertyEmptyFriendlyNameAnalyzer
 CSLA0036 | Usage | Error | NotNullPropertyDelayedLoadAnalyzer
+CSLA0037 | Refactoring | Info | MigrateToNotNullPropertyAnalyzer
+CSLA0038 | Refactoring | Info | MigrateToNotNullPropertyAnalyzer

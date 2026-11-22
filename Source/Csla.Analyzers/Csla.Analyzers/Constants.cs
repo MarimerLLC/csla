@@ -160,6 +160,17 @@
       /// A not-null property is used with a delayed-load method, which not-null properties don't support.
       /// </summary>
       public const string NotNullPropertyDelayedLoad = "CSLA0036";
+      /// <summary>
+      /// A <c>PropertyInfo&lt;T&gt;</c> registration can be migrated to <c>RegisterNotNullProperty</c>
+      /// with compile-time consequences only: a value type, a <c>string</c>, or an explicit non-null default.
+      /// </summary>
+      public const string MigrateToNotNullProperty = "CSLA0037";
+      /// <summary>
+      /// A <c>PropertyInfo&lt;T&gt;</c> registration of a non-nullable reference type without a
+      /// default can be migrated to <c>RegisterNotNullProperty</c>, after checking that every
+      /// Create and Fetch loads it.
+      /// </summary>
+      public const string MigrateToNotNullPropertyWithReview = "CSLA0038";
 
     }
 

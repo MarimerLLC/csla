@@ -17,7 +17,10 @@ namespace Csla.Analyzers
   public sealed class NotNullPropertyDelayedLoadAnalyzer
     : DiagnosticAnalyzer
   {
-    private static readonly ImmutableHashSet<string> delayedLoadMethods =
+    /// <summary>
+    /// The delayed-load methods, which not-null properties don't support.
+    /// </summary>
+    internal static readonly ImmutableHashSet<string> delayedLoadMethods =
     [
       CslaMemberConstants.Properties.LazyGetProperty,
       CslaMemberConstants.Properties.LazyGetPropertyAsync,

@@ -51,6 +51,28 @@ namespace Csla.Analyzers.Tests
       return (await compilation.GetAnalyzerDiagnosticsAsync()).ToList();
     }
 
+    /// <summary>
+    /// Like <see cref="GetDiagnosticsAsync{T}(string, string[])"/>, but first asserts that the
+    /// code compiles without errors, so a test can't pass on code that doesn't bind to CSLA's API.
+    /// </summary>
+    internal static async Task<List<Diagnostic>> GetDiagnosticsOfValidCodeAsync<T>(string code, params string[] additionalSources)
+      where T : DiagnosticAnalyzer, new()
+    {
+      var document = Create(code, additionalSources: additionalSources);
+      var compilation = await document.Project.GetCompilationAsync();
+      AssertNoCompilerErrors(compilation);
+      return (await compilation.WithAnalyzers([new T()], new AnalyzerOptions([])).GetAnalyzerDiagnosticsAsync()).ToList();
+    }
+
+    /// <summary>
+    /// Asserts that <paramref name="compilation"/> has no compiler errors; warnings are allowed.
+    /// </summary>
+    internal static void AssertNoCompilerErrors(Compilation compilation)
+    {
+      var errors = compilation.GetDiagnostics().Where(_ => _.Severity == DiagnosticSeverity.Error).ToList();
+      Assert.AreEqual(0, errors.Count, string.Join(Environment.NewLine, errors));
+    }
+
     internal static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, DiagnosticAnalyzer analyzer,
       Dictionary<string, string> globalOptions = null, MetadataReference[] additionalReferences = null)
     {

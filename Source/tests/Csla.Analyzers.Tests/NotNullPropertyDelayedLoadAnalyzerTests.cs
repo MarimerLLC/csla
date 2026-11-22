@@ -48,7 +48,7 @@ namespace Csla.Analyzers.Tests
     public async Task ReportsEachDelayedLoadMethod(string baseType, string member, string method)
     {
       var code = BusinessObjectWith(baseType, "NotNullPropertyInfo<Child>", member);
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
       Assert.AreEqual(1, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
       var location = diagnostics[0].Location;
       Assert.AreEqual("ItemProperty", location.SourceTree.ToString().Substring(location.SourceSpan.Start, location.SourceSpan.Length));
@@ -61,7 +61,7 @@ namespace Csla.Analyzers.Tests
     {
       var code = BusinessObjectWith("BusinessBase", "NotNullPropertyInfo<int>",
         "public int Item => LazyGetProperty(ItemProperty, () => 42);");
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
       Assert.AreEqual(1, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
 
@@ -90,7 +90,7 @@ namespace Csla.Analyzers.Tests
           public static readonly NotNullPropertyInfo<Child> ItemProperty = RegisterNotNullProperty<Child>(nameof(Item));
         }
         """;
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyDelayedLoadAnalyzer>(code, generated);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyDelayedLoadAnalyzer>(code, generated);
       Assert.AreEqual(1, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
 
@@ -99,7 +99,7 @@ namespace Csla.Analyzers.Tests
     {
       var code = BusinessObjectWith("BusinessBase", "PropertyInfo<Child>",
         "public Child Item => LazyGetProperty(ItemProperty, () => new Child())!;");
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
       Assert.AreEqual(0, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
 
@@ -108,7 +108,7 @@ namespace Csla.Analyzers.Tests
     {
       var code = BusinessObjectWith("BusinessBase", "NotNullPropertyInfo<Child>",
         "public Child Item => GetProperty(ItemProperty); public void Load(Child value) => LoadProperty(ItemProperty, value);");
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyDelayedLoadAnalyzer>(code);
       Assert.AreEqual(0, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
   }

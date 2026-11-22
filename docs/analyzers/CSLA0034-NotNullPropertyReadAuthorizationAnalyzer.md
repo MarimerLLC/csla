@@ -2,7 +2,7 @@
 
 ## Issue
 
-This analyzer is tripped if a not-null property of a reference type without a default value has a read authorization rule. A rule counts when it is created or added with `AuthorizationActions.ReadProperty` and the property's field as arguments. For example:
+This analyzer is tripped if a not-null property of a reference type without a default value has a read authorization rule. A rule counts when an authorization rule (a type that implements `IAuthorizationRule` or `IAuthorizationRuleAsync`) is created with `AuthorizationActions.ReadProperty` and the property's field as arguments, either by its constructor or by a method that returns the rule. Permission checks such as `BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, SalaryBandProperty)` create no rule, so they aren't reported. For example:
 
 ```
 using Csla;
@@ -29,7 +29,7 @@ Fix it in one of these ways:
 * Give the registration a default value, which a denied read returns: `RegisterNotNullProperty<string>(nameof(SalaryBand), null, string.Empty)`.
 * Declare the property as nullable (`string?`), so callers handle null.
 
-The check is best-effort: a rule built in a helper method, or stored in a variable first, isn't detected. The warning is reported on the rule.
+The check is best-effort: a rule built inside a helper method from arguments it doesn't receive (for example a helper that takes only the property), or stored in a variable first, isn't detected. The warning is reported on the rule.
 
 ## Code Fix
 

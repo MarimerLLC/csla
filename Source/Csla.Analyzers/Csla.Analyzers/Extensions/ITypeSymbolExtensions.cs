@@ -16,6 +16,15 @@ namespace Csla.Analyzers.Extensions
           (@this.BaseType.IsBusinessRule() || @this.Interfaces.Any(_ => _.IsBusinessRule())));
     }
 
+    internal static bool IsAuthorizationRule([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.IAuthorizationRuleBase &&
+          @this.ContainingAssembly?.Name == CslaMemberConstants.AssemblyName) ||
+          @this.AllInterfaces.Any(_ => _.Name == CslaMemberConstants.Types.IAuthorizationRuleBase &&
+            _.ContainingAssembly?.Name == CslaMemberConstants.AssemblyName));
+    }
+
     internal static bool IsObjectFactory([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&

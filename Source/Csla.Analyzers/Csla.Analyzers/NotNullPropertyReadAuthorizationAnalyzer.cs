@@ -8,9 +8,11 @@ namespace Csla.Analyzers
 {
   /// <summary>
   /// Reports a read authorization rule for a not-null reference-type property
-  /// without a default value: a rule created or added with
+  /// without a default value: an authorization rule created with
   /// <c>AuthorizationActions.ReadProperty</c> and the property's field as
-  /// arguments. A denied read with <c>NoAccessBehavior.SuppressException</c>
+  /// arguments, by a constructor or by a method that returns the rule.
+  /// Permission queries such as <c>BusinessRules.HasPermission</c> aren't
+  /// reported, because they create no rule. A denied read with <c>NoAccessBehavior.SuppressException</c>
   /// returns the default value, which is null, through a non-nullable getter.
   /// Best-effort: a rule built elsewhere (a helper, a variable) isn't detected.
   /// </summary>
@@ -40,10 +42,20 @@ namespace Csla.Analyzers
     {
       context.ConfigureGeneratedCodeAnalysis(GeneratedCodeAnalysisFlags.None);
       context.EnableConcurrentExecution();
-      context.RegisterOperationAction(
-        c => Analyze(c, ((IObjectCreationOperation)c.Operation).Arguments), OperationKind.ObjectCreation);
-      context.RegisterOperationAction(
-        c => Analyze(c, ((IInvocationOperation)c.Operation).Arguments), OperationKind.Invocation);
+      context.RegisterOperationAction(c =>
+      {
+        var creation = (IObjectCreationOperation)c.Operation;
+        if (creation.Type.IsAuthorizationRule())
+          Analyze(c, creation.Arguments);
+      }, OperationKind.ObjectCreation);
+      context.RegisterOperationAction(c =>
+      {
+        // a method that returns a rule (a factory); permission queries such
+        // as HasPermission return bool and create no rule
+        var invocation = (IInvocationOperation)c.Operation;
+        if (invocation.TargetMethod.ReturnType.IsAuthorizationRule())
+          Analyze(c, invocation.Arguments);
+      }, OperationKind.Invocation);
     }
 
     private static void Analyze(OperationAnalysisContext context, ImmutableArray<IArgumentOperation> arguments)

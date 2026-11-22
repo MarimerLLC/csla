@@ -11,6 +11,7 @@ namespace Csla.Analyzers.Tests
       #nullable enable
       using Csla;
       using Csla.Core;
+      using Csla.Core.FieldManager;
 
       public class Child : BusinessBase<Child> { }
 
@@ -24,14 +25,13 @@ namespace Csla.Analyzers.Tests
         public static readonly NotNullPropertyInfo<Child> ImplicitNewDefault = RegisterNotNullProperty<Child>(nameof(ImplicitNewDefaultName), null, new());
         public static readonly NotNullPropertyInfo<Child> Reordered = RegisterNotNullProperty<Child>(friendlyName: "Friendly", propertyName: nameof(ReorderedName));
         public static readonly NotNullPropertyInfo<Child> InfoReordered = RegisterNotNullProperty(new NotNullPropertyInfo<Child>(friendlyName: "Friendly", name: nameof(InfoReorderedName)));
-        public static readonly NotNullPropertyInfo<Child> NamedDefault = RegisterNotNullProperty<Child>(nameof(NamedDefaultName), defaultValue: new Child());
+        public static readonly NotNullPropertyInfo<Child> NamedDefault = RegisterNotNullProperty<Child>(nameof(NamedDefaultName), friendlyName: null, defaultValue: new Child());
         public static readonly NotNullPropertyInfo<Child> LambdaDefault = RegisterNotNullProperty<Child>(_ => _.LambdaTarget, null, new Child());
         public static readonly NotNullPropertyInfo<string> StringEmpty = RegisterNotNullProperty<string>(nameof(StringEmptyName), null, string.Empty);
         public static readonly NotNullPropertyInfo<Child> InfoNoDefault = RegisterNotNullProperty(new NotNullPropertyInfo<Child>(nameof(InfoNoDefaultName)));
         public static readonly NotNullPropertyInfo<Child> InfoFriendly = RegisterNotNullProperty(new NotNullPropertyInfo<Child>(nameof(InfoFriendlyName), "Friendly", typeof(A)));
         public static readonly NotNullPropertyInfo<Child> InfoDefault = RegisterNotNullProperty(new NotNullPropertyInfo<Child>(nameof(InfoDefaultName), null, typeof(A), new Child()));
-        public static readonly NotNullPropertyInfo<Child> InfoImplicit = RegisterNotNullProperty<Child>(new(nameof(InfoImplicitName)));
-        public static readonly NotNullPropertyInfo<Child> TypeAndInfo = RegisterNotNullProperty(typeof(A), new NotNullPropertyInfo<Child>(nameof(TypeAndInfoName), null, typeof(A), new Child()));
+        public static readonly NotNullPropertyInfo<Child> InfoImplicit = RegisterNotNullProperty<Child>(info: new(nameof(InfoImplicitName)));
         public static readonly NotNullPropertyInfo<Child> Factory = RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<Child>(typeof(A), nameof(FactoryName)));
         public static readonly NotNullPropertyInfo<Child> FactoryDefault = RegisterNotNullProperty(PropertyInfoFactory.Factory.CreateNotNull<Child>(typeof(A), nameof(FactoryDefaultName), null, new Child()));
         public static readonly NotNullPropertyInfo<Child> Suppressed = RegisterNotNullProperty<Child>(nameof(SuppressedName))!;
@@ -44,13 +44,47 @@ namespace Csla.Analyzers.Tests
         private static NotNullPropertyInfo<Child> Make() => Existing;
 
         public Child LambdaTarget => GetProperty(LambdaName);
+
+        // nameof targets, so every registration shape above binds to CSLA's API
+        public int NameOnlyName => 0;
+        public int FriendlyNameName => 0;
+        public int WithDefaultName => 0;
+        public int ImplicitNewDefaultName => 0;
+        public int ReorderedName => 0;
+        public int InfoReorderedName => 0;
+        public int NamedDefaultName => 0;
+        public int StringEmptyName => 0;
+        public int InfoNoDefaultName => 0;
+        public int InfoFriendlyName => 0;
+        public int InfoDefaultName => 0;
+        public int InfoImplicitName => 0;
+        public int FactoryName => 0;
+        public int FactoryDefaultName => 0;
+        public int SuppressedName => 0;
+        public int ValueTypeName => 0;
+        public int PlainName => 0;
+        public int ExistingName => 0;
+      }
+
+      // RegisterNotNullProperty(Type, info) is declared on ReadOnlyBase and ManagedObjectBase
+      public class R : ReadOnlyBase<R>
+      {
+        public static readonly NotNullPropertyInfo<Child> TypeAndInfo = RegisterNotNullProperty(typeof(R), new NotNullPropertyInfo<Child>(nameof(TypeAndInfoName), null, typeof(R), new Child()));
+        public static readonly NotNullPropertyInfo<Child> TypeAndImplicitInfo = RegisterNotNullProperty<Child>(typeof(R), new(nameof(TypeAndImplicitInfoName)));
+
+        public int TypeAndInfoName => 0;
+        public int TypeAndImplicitInfoName => 0;
       }
       """;
 
     private static async Task<IFieldSymbol> GetFieldAsync(string name)
     {
       var compilation = await TestHelpers.Create(Code).Project.GetCompilationAsync();
-      return compilation.GetTypeByMetadataName("A").GetMembers(name).OfType<IFieldSymbol>().Single();
+      TestHelpers.AssertNoCompilerErrors(compilation);
+      return new[] { "A", "R" }
+        .SelectMany(_ => compilation.GetTypeByMetadataName(_).GetMembers(name))
+        .OfType<IFieldSymbol>()
+        .Single();
     }
 
     [DataTestMethod]
@@ -70,6 +104,7 @@ namespace Csla.Analyzers.Tests
     [DataRow("InfoDefault", true)]
     [DataRow("InfoImplicit", false)]
     [DataRow("TypeAndInfo", true)]
+    [DataRow("TypeAndImplicitInfo", false)]
     [DataRow("Factory", false)]
     [DataRow("FactoryDefault", true)]
     [DataRow("Suppressed", false)]
@@ -99,6 +134,7 @@ namespace Csla.Analyzers.Tests
     [DataRow("InfoNoDefault", "InfoNoDefaultName")]
     [DataRow("InfoImplicit", "InfoImplicitName")]
     [DataRow("TypeAndInfo", "TypeAndInfoName")]
+    [DataRow("TypeAndImplicitInfo", "TypeAndImplicitInfoName")]
     [DataRow("Factory", "FactoryName")]
     [DataRow("Reordered", "ReorderedName")]
     [DataRow("InfoReordered", "InfoReorderedName")]

@@ -19,13 +19,16 @@ namespace Csla.Analyzers
   /// Best-effort, and silent when in doubt: the data portal check is the safety net.
   /// A load is a call to <c>LoadProperty</c>, <c>LoadPropertyMarkDirty</c>,
   /// <c>LoadPropertyConvert</c>, <c>SetProperty</c> or <c>SetPropertyConvert</c>
-  /// with the property's field, or an assignment to the property, anywhere in the
-  /// operation (no path analysis). An operation that passes <c>this</c> to a method,
-  /// calls a method of its own type hierarchy declared in source, or loads through
-  /// a property info that isn't a field, isn't reported. Types with
-  /// <c>[ObjectFactory]</c> aren't analyzed. A command's <c>[Create]</c> isn't checked
-  /// by the data portal; a property its <c>[Create]</c> loads, or that has a
-  /// non-private setter the caller can use before Execute, counts as loaded.
+  /// with the property's field on this object, or an assignment to the property,
+  /// anywhere in the operation (no path analysis); a call on a newly created object
+  /// loads nothing. An operation that passes <c>this</c> to a method, calls a method
+  /// of its own type hierarchy declared in source, loads through a receiver that
+  /// isn't this object or a new one, or loads through a property info that isn't a
+  /// field, isn't reported. Types with <c>[ObjectFactory]</c> aren't analyzed.
+  /// A command's <c>[Create]</c> isn't checked by the data portal; a property its
+  /// <c>[Create]</c> loads, or that has a non-private setter the caller can use
+  /// before Execute, counts as loaded, and a command that inherits a <c>[Create]</c>
+  /// isn't reported.
   /// </remarks>
   [DiagnosticAnalyzer(LanguageNames.CSharp)]
   public sealed class NotNullPropertyNotLoadedAnalyzer
@@ -94,6 +97,13 @@ namespace Csla.Analyzers
       }
 
       var isCommand = type.IsCommandBase();
+      if (isCommand && InheritsCommandCreate(type))
+      {
+        // a base type's [Create] isn't in this type's operation blocks, so
+        // what it loads for [Execute] can't be read
+        return;
+      }
+
       var operations = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
       var commandCreates = new HashSet<IMethodSymbol>(SymbolEqualityComparer.Default);
       foreach (var method in type.GetMembers().OfType<IMethodSymbol>())
@@ -201,6 +211,17 @@ namespace Csla.Analyzers
 
       if (loadMethods.Contains(method.Name) && method.ContainingType.IsDeclaredInCsla())
       {
+        switch (NotNullPropertyRegistrations.Unwrap(invocation.Instance))
+        {
+          case null:
+          case IInstanceReferenceOperation { ReferenceKind: InstanceReferenceKind.ContainingTypeInstance }:
+            break;
+          case IObjectCreationOperation:
+            return; // loads a new object, not the one this operation completes
+          default:
+            state.Silence(); // a receiver we can't follow could be this object
+            return;
+        }
         foreach (var argument in invocation.Arguments)
         {
           if (argument.Parameter?.Type.IsIPropertyInfo() != true)
@@ -309,13 +330,15 @@ namespace Csla.Analyzers
     /// <summary>
     /// Gets the checked fields of a type and its base types declared in source,
     /// keyed by their original definition, with the names they register.
+    /// The members of the constructed base types are read, so a generic base's
+    /// <c>NotNullPropertyInfo&lt;P&gt;</c> is checked with its type argument.
     /// </summary>
     private static Dictionary<IFieldSymbol, string> GetCheckedFields(INamedTypeSymbol type, CancellationToken cancellationToken)
     {
       var result = new Dictionary<IFieldSymbol, string>(SymbolEqualityComparer.Default);
       for (var current = type; current is not null && !current.IsDeclaredInCsla(); current = current.BaseType)
       {
-        foreach (var member in current.OriginalDefinition.GetMembers())
+        foreach (var member in current.GetMembers())
         {
           if (member is IFieldSymbol { IsStatic: true } field &&
             NotNullPropertyRegistrations.IsNoDefaultReference(field, cancellationToken))
@@ -325,6 +348,18 @@ namespace Csla.Analyzers
         }
       }
       return result;
+    }
+
+    private static bool InheritsCommandCreate(INamedTypeSymbol type)
+    {
+      for (var current = type.BaseType; current is not null && !current.IsDeclaredInCsla(); current = current.BaseType)
+      {
+        if (current.GetMembers().OfType<IMethodSymbol>().Any(_ => HasAttribute(_, CslaMemberConstants.Types.CreateAttribute)))
+        {
+          return true;
+        }
+      }
+      return false;
     }
 
     private static bool HasSourceCreateChild(INamedTypeSymbol type)

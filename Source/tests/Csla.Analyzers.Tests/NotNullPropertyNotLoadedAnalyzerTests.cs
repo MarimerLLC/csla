@@ -49,7 +49,7 @@ namespace Csla.Analyzers.Tests
       """;
 
     private static Task<List<Diagnostic>> GetDiagnosticsAsync(string code, params string[] additionalSources) =>
-      TestHelpers.GetDiagnosticsAsync<NotNullPropertyNotLoadedAnalyzer>(code, additionalSources);
+      TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyNotLoadedAnalyzer>(code, additionalSources);
 
     private static async Task AssertReportedAsync(string code, string locationText, string propertyNames, params string[] additionalSources)
     {
@@ -286,6 +286,100 @@ namespace Csla.Analyzers.Tests
     {
       var code = RootWith("[Fetch] private void Fetch(IDal dal) { var other = new A { Item = dal.GetChild() }; }");
       await AssertReportedAsync(code, "Fetch", ": Item");
+    }
+
+    [TestMethod]
+    public async Task ReportsWhenOnlyANewObjectIsLoaded()
+    {
+      var code = RootWith("[Fetch] private void Fetch(IDal dal) { new A().LoadProperty(ItemProperty, dal.GetChild()); }");
+      await AssertReportedAsync(code, "Fetch", ": Item");
+    }
+
+    [DataTestMethod]
+    [DataRow("var self = this; self.LoadProperty(ItemProperty, dal.GetChild());")]
+    [DataRow("this.LoadProperty(ItemProperty, dal.GetChild());")]
+    [DataRow("base.LoadProperty(ItemProperty, dal.GetChild());")]
+    public async Task SilentWhenTheReceiverMayBeThisObject(string body)
+    {
+      var code = RootWith($"[Fetch] private void Fetch(IDal dal) {{ {body} }}");
+      await AssertSilentAsync(code);
+    }
+
+    [TestMethod]
+    public async Task ReportsInheritedRegistrationOfAGenericValueType()
+    {
+      var code = Usings +
+        """
+        public abstract class Base<T, P> : BusinessBase<T> where T : Base<T, P> where P : notnull
+        {
+          public static readonly NotNullPropertyInfo<P> ItemProperty = RegisterNotNullProperty<P>(nameof(Item));
+          public P Item => GetProperty(ItemProperty);
+        }
+
+        public class A : Base<A, Child>
+        {
+          [Fetch] private void Fetch() { }
+        }
+        """;
+      await AssertReportedAsync(code, "Fetch", ": Item");
+    }
+
+    [TestMethod]
+    public async Task SilentForInheritedRegistrationOfAGenericValueTypeArgument()
+    {
+      var code = Usings +
+        """
+        public abstract class Base<T, P> : BusinessBase<T> where T : Base<T, P> where P : notnull
+        {
+          public static readonly NotNullPropertyInfo<P> ItemProperty = RegisterNotNullProperty<P>(nameof(Item));
+          public P Item => GetProperty(ItemProperty);
+        }
+
+        public class A : Base<A, int>
+        {
+          [Fetch] private void Fetch() { }
+        }
+        """;
+      await AssertSilentAsync(code);
+    }
+
+    [TestMethod]
+    public async Task SilentWhenGenericBaseRegistrationIsLoaded()
+    {
+      var code = Usings +
+        """
+        public abstract class Base<T, P> : BusinessBase<T> where T : Base<T, P> where P : notnull
+        {
+          public static readonly NotNullPropertyInfo<P> ItemProperty = RegisterNotNullProperty<P>(nameof(Item));
+          public P Item => GetProperty(ItemProperty);
+        }
+
+        public class A : Base<A, Child>
+        {
+          [Fetch] private void Fetch(IDal dal) => LoadProperty(ItemProperty, dal.GetChild());
+        }
+        """;
+      await AssertSilentAsync(code);
+    }
+
+    [TestMethod]
+    public async Task SilentForCommandThatInheritsCreate()
+    {
+      var code = Usings +
+        """
+        public abstract class BaseCmd<T> : CommandBase<T> where T : BaseCmd<T>
+        {
+          public static readonly NotNullPropertyInfo<Child> InputProperty = RegisterNotNullProperty<Child>(nameof(Input));
+          public Child Input { get => ReadProperty(InputProperty); private set => LoadProperty(InputProperty, value); }
+          [Create] protected void Create(Child input) => Input = input;
+        }
+
+        public class Cmd : BaseCmd<Cmd>
+        {
+          [Execute] private void Execute() { }
+        }
+        """;
+      await AssertSilentAsync(code);
     }
 
     [TestMethod]

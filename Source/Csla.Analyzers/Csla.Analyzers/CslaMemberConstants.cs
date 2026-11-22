@@ -216,6 +216,10 @@
       /// </summary>
       public const string IBusinessRuleAsync = nameof(IBusinessRuleAsync);
       /// <summary>
+      /// The <c>Csla.Rules.IAuthorizationRuleBase</c> interface, shared by sync and async authorization rules.
+      /// </summary>
+      public const string IAuthorizationRuleBase = nameof(IAuthorizationRuleBase);
+      /// <summary>
       /// 
       /// </summary>
       public const string DataPortalChildOperationAttribute = nameof(DataPortalChildOperationAttribute);

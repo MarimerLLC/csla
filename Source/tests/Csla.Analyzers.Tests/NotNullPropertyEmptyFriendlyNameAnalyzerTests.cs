@@ -41,7 +41,7 @@ namespace Csla.Analyzers.Tests
     public async Task ReportsEmptyOrWhitespaceFriendlyName(string registration, string locationText)
     {
       var code = BusinessObjectWith($"public static readonly NotNullPropertyInfo<string> NameProperty = {registration};");
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyEmptyFriendlyNameAnalyzer>(code);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyEmptyFriendlyNameAnalyzer>(code);
       Assert.AreEqual(1, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
       var location = diagnostics[0].Location;
       Assert.AreEqual(locationText, location.SourceTree.ToString().Substring(location.SourceSpan.Start, location.SourceSpan.Length));
@@ -57,7 +57,7 @@ namespace Csla.Analyzers.Tests
     public async Task SilentForOtherRegistrations(string registration)
     {
       var code = BusinessObjectWith($"public static readonly NotNullPropertyInfo<string> NameProperty = {registration};");
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyEmptyFriendlyNameAnalyzer>(code);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyEmptyFriendlyNameAnalyzer>(code);
       Assert.AreEqual(0, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
 
@@ -77,7 +77,7 @@ namespace Csla.Analyzers.Tests
           public string Name => GetProperty(NameProperty)!;
         }
         """;
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyEmptyFriendlyNameAnalyzer>(code);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyEmptyFriendlyNameAnalyzer>(code);
       Assert.AreEqual(0, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
   }

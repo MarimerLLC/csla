@@ -31,7 +31,7 @@ The analyzer is also tripped by a `BusinessBase` child type that has these prope
 
 These count as loading the property anywhere in the operation, including in lambdas and local functions:
 
-* a call to `LoadProperty`, `LoadPropertyMarkDirty`, `LoadPropertyConvert`, `SetProperty` or `SetPropertyConvert` with the property's field, typed or untyped;
+* a call to `LoadProperty`, `LoadPropertyMarkDirty`, `LoadPropertyConvert`, `SetProperty` or `SetPropertyConvert` with the property's field, typed or untyped, on this object (`this.` and `base.` count). A call on a newly created object, such as `new Order().LoadProperty(...)`, doesn't count;
 * an assignment to the property of this object, including as part of a deconstruction such as `(Customer, Name) = ...`. Setting it in an object initializer of another instance (`new Order { Customer = ... }`) doesn't count.
 
 The analyzer doesn't follow paths, so a load on only one branch still counts.
@@ -45,10 +45,13 @@ The check is best-effort, and it stays silent whenever it can't tell. The data p
 * operations that pass `this` to a method or constructor;
 * operations that call a method of their own type hierarchy declared in source, because a helper may load the property;
 * operations that load through a property info that isn't a field;
+* operations that load through another reference, such as a local or a parameter, which could be this object;
 * properties with a default value, and value types;
 * properties registered in a base type from another assembly.
 
-For a command, the data portal doesn't check `[Create]`. A property counts as loaded for `[Execute]` when the command's `[Create]` loads it, or when the property has a non-private setter, because the caller sets it before executing the command.
+For a command, the data portal doesn't check `[Create]`. A property counts as loaded for `[Execute]` when the command's `[Create]` loads it, or when the property has a non-private setter, because the caller sets it before executing the command. A command that inherits a `[Create]` from a base type isn't checked, because the analyzer can't read what that `[Create]` loads.
+
+Properties registered in a generic base type are checked with the derived type's type arguments: for `Order : OrderBase<Order, Customer>`, a `NotNullPropertyInfo<TCustomer>` in the base is a `Customer` property.
 
 ## Code Fix
 

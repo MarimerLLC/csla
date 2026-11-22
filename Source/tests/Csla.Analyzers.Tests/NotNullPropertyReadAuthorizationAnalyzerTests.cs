@@ -44,7 +44,7 @@ namespace Csla.Analyzers.Tests
       """;
 
     private static async Task<List<Diagnostic>> GetDiagnosticsAsync(string code, params string[] additionalSources) =>
-      await TestHelpers.GetDiagnosticsAsync<NotNullPropertyReadAuthorizationAnalyzer>(code, additionalSources);
+      await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyReadAuthorizationAnalyzer>(code, additionalSources);
 
     [TestMethod]
     public async Task ReportsReadRuleWithoutDefault()
@@ -125,6 +125,62 @@ namespace Csla.Analyzers.Tests
       var code = BusinessObjectWith("RegisterNotNullProperty<Child>(nameof(Item), null, new Child())",
         "BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, ItemProperty, \"Admin\"));");
       Assert.AreEqual(0, (await GetDiagnosticsAsync(code)).Count);
+    }
+
+    [TestMethod]
+    public async Task ReportsReadRuleFromAFactoryMethod()
+    {
+      var code =
+        """
+        #nullable enable
+        using Csla;
+        using Csla.Core;
+        using Csla.Rules;
+        using Csla.Rules.CommonRules;
+
+        public class Child : BusinessBase<Child> { }
+
+        public static class Rules
+        {
+          public static IAuthorizationRule AdminOnly(AuthorizationActions action, IMemberInfo element) => new IsInRole(action, element, "Admin");
+        }
+
+        public class A : BusinessBase<A>
+        {
+          public static readonly NotNullPropertyInfo<Child> ItemProperty = RegisterNotNullProperty<Child>(nameof(Item));
+          public Child Item => GetProperty(ItemProperty);
+
+          protected override void AddBusinessRules()
+          {
+            BusinessRules.AddRule(Rules.AdminOnly(AuthorizationActions.ReadProperty, ItemProperty));
+          }
+        }
+        """;
+      var diagnostics = await GetDiagnosticsAsync(code);
+      Assert.AreEqual(1, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
+      var location = diagnostics[0].Location;
+      Assert.AreEqual("Rules.AdminOnly(AuthorizationActions.ReadProperty, ItemProperty)",
+        location.SourceTree.ToString().Substring(location.SourceSpan.Start, location.SourceSpan.Length));
+    }
+
+    [DataTestMethod]
+    [DataRow("_ = BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, ItemProperty);")]
+    [DataRow("_ = BusinessRules.HasPermissionAsync(ApplicationContext, AuthorizationActions.ReadProperty, ItemProperty, default);")]
+    [DataRow("_ = Csla.Rules.BusinessRules.HasPermission(ApplicationContext, AuthorizationActions.ReadProperty, (object)ItemProperty);")]
+    public async Task SilentForPermissionQuery(string query)
+    {
+      var code = BusinessObjectWith("RegisterNotNullProperty<Child>(nameof(Item))", query);
+      var diagnostics = await GetDiagnosticsAsync(code);
+      Assert.AreEqual(0, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
+    }
+
+    [TestMethod]
+    public async Task SilentForObjectThatIsNotARule()
+    {
+      var code = BusinessObjectWith("RegisterNotNullProperty<Child>(nameof(Item))",
+        "_ = new System.Collections.Generic.KeyValuePair<AuthorizationActions, Csla.Core.IPropertyInfo>(AuthorizationActions.ReadProperty, ItemProperty);");
+      var diagnostics = await GetDiagnosticsAsync(code);
+      Assert.AreEqual(0, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
 
     [TestMethod]

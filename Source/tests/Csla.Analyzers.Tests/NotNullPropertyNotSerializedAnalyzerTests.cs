@@ -36,7 +36,7 @@ namespace Csla.Analyzers.Tests
 
     private static async Task AssertReportedAsync(string code, string locationText, params string[] additionalSources)
     {
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyNotSerializedAnalyzer>(code, additionalSources);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyNotSerializedAnalyzer>(code, additionalSources);
       Assert.AreEqual(1, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
       Assert.AreEqual(Constants.AnalyzerIdentifiers.NotNullPropertyNotSerializedWithoutDefault, diagnostics[0].Id);
       Assert.AreEqual(locationText, diagnostics[0].Location.SourceTree.ToString().Substring(
@@ -45,7 +45,7 @@ namespace Csla.Analyzers.Tests
 
     private static async Task AssertSilentAsync(string code, params string[] additionalSources)
     {
-      var diagnostics = await TestHelpers.GetDiagnosticsAsync<NotNullPropertyNotSerializedAnalyzer>(code, additionalSources);
+      var diagnostics = await TestHelpers.GetDiagnosticsOfValidCodeAsync<NotNullPropertyNotSerializedAnalyzer>(code, additionalSources);
       Assert.AreEqual(0, diagnostics.Count, string.Join(Environment.NewLine, diagnostics));
     }
 

@@ -34,3 +34,8 @@ CSLA0028 | Usage | Error | MobileSerializerAttributeUsageAnalyzer
 CSLA0029 | Usage | Warning | MobileSerializerAttributeUsageAnalyzer
 CSLA0030 | Usage | Warning | ImplementPropertiesInterfaceAnalyzer
 CSLA0031 | Usage | Warning | AddsToRuleContextAttributeUsageAnalyzer
+CSLA0032 | Usage | Error | NotNullPropertyNotSerializedAnalyzer
+CSLA0033 | Usage | Warning | NotNullPropertyNotLoadedAnalyzer
+CSLA0034 | Usage | Warning | NotNullPropertyReadAuthorizationAnalyzer
+CSLA0035 | Usage | Warning | NotNullPropertyEmptyFriendlyNameAnalyzer
+CSLA0036 | Usage | Error | NotNullPropertyDelayedLoadAnalyzer

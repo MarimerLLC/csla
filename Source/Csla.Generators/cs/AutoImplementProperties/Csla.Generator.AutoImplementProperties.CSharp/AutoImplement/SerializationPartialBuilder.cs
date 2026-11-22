@@ -187,8 +187,8 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
       switch (registration)
       {
         case NotNullRegistration.NotNullString:
-          // string reads as string.Empty until loaded, as before CSLA 11, and its typed
-          // setter still stores null as string.Empty; LoadProperty of null now throws
+          // string reads as string.Empty until loaded, as before CSLA 11, and a not-null
+          // string stores null as string.Empty on every write path, so it never returns null
           textWriter.WriteLine($"public static readonly NotNullPropertyInfo<{type}> {name}Property = RegisterNotNullProperty<{type}>(nameof({name}), null, string.Empty);");
           break;
         case NotNullRegistration.NotNull:

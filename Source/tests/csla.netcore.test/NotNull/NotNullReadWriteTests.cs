@@ -167,10 +167,9 @@ namespace Csla.Test.NotNull
 
         var ex = Assert.Throws<ArgumentNullException>(() => write(obj), path);
         StringAssert.Contains(ex.Message, "not-null property", path);
-        // nothing was stored: both properties still fail the invariant (the *Convert
-        // methods materialise the null default before converting, as for any property)
-        var unsatisfied = Csla.Core.NotNullInvariant.GetUnsatisfiedProperties(obj).Select(p => p.Name).ToList();
-        CollectionAssert.IsSubsetOf(new[] { nameof(NotNullEditRoot.Data), nameof(NotNullEditRoot.Token) }, unsatisfied, path);
+        // nothing was stored: the properties stay unloaded
+        Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.DataProperty), path);
+        Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.TokenProperty), path);
       }
     }
 
@@ -239,6 +238,7 @@ namespace Csla.Test.NotNull
       Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadData(null));
       Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullInfo.DataProperty, null));
       Assert.Throws<ArgumentNullException>(() => obj.LoadDataConvert(null));
+      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullInfo.DataProperty));
     }
 
     [TestMethod]
@@ -279,6 +279,7 @@ namespace Csla.Test.NotNull
       Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullCommand.PayloadProperty, null));
       Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntypedMarkDirty(NotNullCommand.PayloadProperty, null));
       Assert.Throws<ArgumentNullException>(() => obj.LoadPayloadConvert(null));
+      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullCommand.PayloadProperty));
     }
 
     [TestMethod]

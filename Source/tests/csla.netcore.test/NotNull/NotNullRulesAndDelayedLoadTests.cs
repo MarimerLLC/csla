@@ -109,6 +109,7 @@ namespace Csla.Test.NotNull
       obj.RunOutValueRule(OutValueMode.String);
 
       Assert.IsNull(obj.Captured);
+      Assert.AreEqual(string.Empty, obj.CapturedOutValue, "The output value is the one the object stores");
       Assert.AreEqual(string.Empty, obj.Name);
     }
 
@@ -212,6 +213,14 @@ namespace Csla.Test.NotNull
       set => _captured = value;
     }
 
+    [NonSerialized]
+    private object? _capturedOutValue;
+    public object? CapturedOutValue
+    {
+      get => _capturedOutValue;
+      set => _capturedOutValue = value;
+    }
+
     public void LoadCode(string value) => LoadProperty(CodeProperty, value);
 
     public void RunOutValueRule(OutValueMode mode)
@@ -286,6 +295,7 @@ namespace Csla.Test.NotNull
               break;
             case OutValueMode.String:
               context.AddOutValue(_string, null);
+              target.CapturedOutValue = context.OutputPropertyValues[_string];
               break;
           }
         }

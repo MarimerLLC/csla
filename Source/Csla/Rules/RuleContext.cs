@@ -290,9 +290,7 @@ namespace Csla.Rules
     {
       if (Rule.PrimaryProperty is null)
         throw new InvalidOperationException($"{nameof(Rule)}.{nameof(Rule.PrimaryProperty)} == null");
-      ThrowIfNotNullOutputNull(Rule.PrimaryProperty, value);
-
-      OutputPropertyValues.Add(Rule.PrimaryProperty, value);
+      OutputPropertyValues.Add(Rule.PrimaryProperty, CheckOutValue(Rule.PrimaryProperty, value));
     }
 
     /// <inheritdoc />
@@ -302,14 +300,23 @@ namespace Csla.Rules
         throw new ArgumentNullException(nameof(property));
 
       var outValue = (value is null) ? property.DefaultValue : Utilities.CoerceValue(property.Type, value.GetType(), null, value);
-      ThrowIfNotNullOutputNull(property, outValue);
-      OutputPropertyValues[property] = outValue;
+      OutputPropertyValues[property] = CheckOutValue(property, outValue);
     }
 
-    private static void ThrowIfNotNullOutputNull(IPropertyInfo property, object? value)
+    /// <summary>
+    /// Returns the output value as the target will store it: null for a not-null
+    /// string becomes <see cref="string.Empty"/>, and null for any other not-null
+    /// reference-type property throws.
+    /// </summary>
+    private static object? CheckOutValue(IPropertyInfo property, object? value)
     {
-      if (value is null && NotNullGuard.RejectsNull(property))
+      if (value is null && NotNullGuard.IsNotNullReference(property))
+      {
+        if (!NotNullGuard.RejectsNull(property))
+          return string.Empty;
         throw new ArgumentNullException(nameof(value), string.Format(Resources.NotNullPropertyValueNull, property.Name));
+      }
+      return value;
     }
 
 

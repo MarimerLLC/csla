@@ -40,7 +40,7 @@ namespace Csla.Core
     /// Gets the not-null properties of an object that do not satisfy the
     /// invariant: they hold null, or were never loaded and have no default value.
     /// </summary>
-    /// <param name="obj">The object to check. It is not changed.</param>
+    /// <param name="obj">The object to check. An object derived from a CSLA base class is not changed; for a custom <see cref="IUseFieldManager"/> implementation the check reads <see cref="IUseFieldManager.FieldManager"/>, which may create its field manager.</param>
     /// <returns>The failing properties, or an empty list when the invariant holds.</returns>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     public static IReadOnlyList<IPropertyInfo> GetUnsatisfiedProperties(object obj)
@@ -54,7 +54,7 @@ namespace Csla.Core
     /// <summary>
     /// Verifies that every not-null property of an object satisfies the invariant.
     /// </summary>
-    /// <param name="obj">The object to check. It is not changed.</param>
+    /// <param name="obj">The object to check. An object derived from a CSLA base class is not changed; for a custom <see cref="IUseFieldManager"/> implementation the check reads <see cref="IUseFieldManager.FieldManager"/>, which may create its field manager.</param>
     /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
     /// <exception cref="InvalidOperationException">A not-null property is null, or was never
     /// loaded and has no default value. The message names the type and every failing property.</exception>
@@ -77,7 +77,7 @@ namespace Csla.Core
     /// Gets the not-null reference-type properties of <paramref name="obj"/>
     /// that hold null, or were never loaded and have no non-null default.
     /// An object without a field manager (a list) gives an empty list.
-    /// The object is not changed, and no field manager is created.
+    /// An object derived from a CSLA base class is not changed, and no field manager is created; a custom IUseFieldManager implementation is read through its FieldManager property.
     /// </summary>
     internal static IReadOnlyList<IPropertyInfo> GetUnsatisfied(object obj)
     {

@@ -1735,7 +1735,9 @@ namespace Csla
         if (fieldData == null)
         {
           oldValue = propertyInfo.DefaultValue;
-          fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue);
+          // a not-null property without a default stays unloaded until the converted value passes the check
+          if (oldValue is not null || !NotNullGuard.IsNotNullReference(propertyInfo))
+            fieldData = FieldManager.LoadFieldData(propertyInfo, oldValue);
         }
         else
         {

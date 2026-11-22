@@ -447,7 +447,7 @@ namespace Csla.Server
         {
           Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: true);
         }
-        catch (InvalidOperationException ex)
+        catch (Exception ex)
         {
           throw new Csla.DataPortalException("ChildDataPortal.Update " + Properties.Resources.FailedOnServer, ex, obj);
         }

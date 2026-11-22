@@ -31,6 +31,12 @@ namespace Csla.Web.Mvc
   /// only sets the values that were posted. Otherwise it creates a
   /// new object graph. New list items are created using the list's
   /// declared child type.
+  /// A posted value that is null (or converts to null) for a not-null property
+  /// other than <see cref="string"/> (<see cref="Core.INotNullPropertyInfo"/>) is
+  /// ignored: the property keeps its current value, or stays unloaded on a new
+  /// object, and no ModelState error is added. Validate such input with a
+  /// business rule, or declare the property nullable. A null string is stored
+  /// as <see cref="string.Empty"/>.
   /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
   [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
@@ -242,8 +248,8 @@ namespace Csla.Web.Mvc
           else
             loadValue = null;
 
-          // a not-null property can't hold null: leave it as it is, so
-          // validation or the data portal check reports it
+          // a not-null property can't hold null: leave it as it is (no ModelState
+          // error is added; see the class remarks)
           if (loadValue is null && Core.NotNullGuard.RejectsNull(item))
             return;
           LoadProperty(result, item, loadValue);

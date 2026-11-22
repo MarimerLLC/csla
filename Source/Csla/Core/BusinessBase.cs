@@ -2860,7 +2860,9 @@ namespace Csla.Core
           if (fieldData == null)
           {
             oldValue = propertyInfo.DefaultValue;
-            fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+            // a not-null property without a default stays unloaded until the converted value passes the check
+            if (oldValue is not null || !NotNullGuard.IsNotNullReference(propertyInfo))
+              fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
           }
           else
           {
@@ -3109,7 +3111,9 @@ namespace Csla.Core
         if (fieldData == null)
         {
           oldValue = propertyInfo.DefaultValue;
-          fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
+          // a not-null property without a default stays unloaded until the converted value passes the check
+          if (oldValue is not null || !NotNullGuard.IsNotNullReference(propertyInfo))
+            fieldData = FieldManager.LoadFieldData<P>(propertyInfo, oldValue);
         }
         else
         {

@@ -16,6 +16,16 @@ namespace Csla.Server
   /// Allows the Data Portal call to be intercepted by
   /// a custom IDataPortalServer implementation.
   /// </summary>
+  /// <remarks>
+  /// The broker also checks the not-null property invariant of root objects
+  /// (<see cref="INotNullPropertyInfo"/>). Its exit check runs after the
+  /// operation has completed, so a root object that fails it has already had
+  /// <c>DataPortal_OnDataPortalInvokeComplete</c> called, and does not get
+  /// <c>DataPortal_OnDataPortalException</c>; the failure reaches the caller as a
+  /// <see cref="DataPortalException"/>. A child object is checked before
+  /// <c>Child_OnDataPortalInvokeComplete</c>, and a failure there raises
+  /// <c>Child_OnDataPortalException</c> instead.
+  /// </remarks>
   public class DataPortalBroker : IDataPortalServer
   {
     private readonly DataPortalSelector _dataPortalSelector;

@@ -18,31 +18,58 @@ namespace Csla.Core
   internal static class NotNullGuard
   {
     /// <summary>
-    /// Throws <see cref="ArgumentNullException"/> when <paramref name="value"/>
-    /// is null and the property is a not-null property.
+    /// Checks a value about to be written to a property, and returns the value
+    /// to store. For a not-null property, null becomes <see cref="string.Empty"/>
+    /// when the property is a <see cref="string"/>, and otherwise throws
+    /// <see cref="ArgumentNullException"/>.
     /// </summary>
     /// <remarks>
+    /// <para>
+    /// A string never throws, as the typed setter never did: Windows Forms data
+    /// binding needs a string property that never returns null, and a setter
+    /// that throws holds the user in the field.
+    /// </para>
+    /// <para>
     /// The null test runs first, so a non-null write pays one comparison
     /// (none for a value type). Value-type properties never throw: an untyped
     /// null becomes <c>default(T)</c> as for any other property.
+    /// </para>
     /// </remarks>
-    internal static void ThrowIfNull<P>(IPropertyInfo propertyInfo, P? value)
+    internal static P? CheckWrite<P>(IPropertyInfo propertyInfo, P? value)
     {
       if (value is null && IsNotNullReference(propertyInfo))
+      {
+        if (propertyInfo.Type == typeof(string))
+          return (P)(object)string.Empty;
         throw new ArgumentNullException(propertyInfo.Name, string.Format(Resources.NotNullPropertyValueNull, propertyInfo.Name));
+      }
+      return value;
     }
 
     /// <summary>
-    /// Throws <see cref="NotNullPropertyViolationException"/> when <paramref name="value"/>
-    /// is null and the property is a not-null property. Used inside the
+    /// As <see cref="CheckWrite{P}(IPropertyInfo, P)"/>, but throws
+    /// <see cref="NotNullPropertyViolationException"/>. Used inside the
     /// <c>try</c> blocks of the write funnels, whose generic <c>catch</c> lets
     /// this exception type pass through unwrapped.
     /// </summary>
-    internal static void ThrowIfNullInsideTry<P>(IPropertyInfo propertyInfo, P? value)
+    internal static P? CheckWriteInsideTry<P>(IPropertyInfo propertyInfo, P? value)
     {
       if (value is null && IsNotNullReference(propertyInfo))
+      {
+        if (propertyInfo.Type == typeof(string))
+          return (P)(object)string.Empty;
         throw new NotNullPropertyViolationException(propertyInfo.Name, string.Format(Resources.NotNullPropertyValueNull, propertyInfo.Name));
+      }
+      return value;
     }
+
+    /// <summary>
+    /// Gets a value indicating whether a null written to the property is
+    /// rejected (a not-null reference-type property other than <see cref="string"/>,
+    /// which stores null as <see cref="string.Empty"/>).
+    /// </summary>
+    internal static bool RejectsNull(IPropertyInfo propertyInfo)
+      => IsNotNullReference(propertyInfo) && propertyInfo.Type != typeof(string);
 
     /// <summary>
     /// For a not-null reference-type property, converts an untyped value to the

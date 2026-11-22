@@ -427,7 +427,7 @@ namespace Csla.Core
             oldValue = (P?)fieldData.Value;
         }
         var convertedValue = Utilities.CoerceValue<P>(typeof(F), oldValue, newValue);
-        NotNullGuard.ThrowIfNullInsideTry(propertyInfo, convertedValue);
+        convertedValue = NotNullGuard.CheckWriteInsideTry(propertyInfo, convertedValue);
         LoadPropertyValue<P>(propertyInfo, oldValue, convertedValue);
       }
       catch (NotNullPropertyViolationException)
@@ -465,7 +465,7 @@ namespace Csla.Core
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
-      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
+      newValue = NotNullGuard.CheckWrite(propertyInfo, newValue);
       try
       {
         P? oldValue = default(P);
@@ -505,7 +505,7 @@ namespace Csla.Core
     /// No authorization checks occur when this method is called,
     /// and no PropertyChanging or PropertyChanged events are raised.
     /// </remarks>
-    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> or <paramref name="newValue"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>, or <paramref name="newValue"/> is <see langword="null"/> and <typeparamref name="P"/> is not <see cref="string"/> (a null string is stored as <see cref="string.Empty"/>).</exception>
     /// <exception cref="PropertyLoadException"></exception>
     protected void LoadProperty<P>(NotNullPropertyInfo<P> propertyInfo, P newValue) where P : notnull
     {
@@ -517,7 +517,7 @@ namespace Csla.Core
 
     private bool LoadPropertyMarkDirty<P>(PropertyInfo<P> propertyInfo, P? newValue)
     {
-      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
+      newValue = NotNullGuard.CheckWrite(propertyInfo, newValue);
       try
       {
         P? oldValue;

@@ -244,7 +244,7 @@ namespace Csla.Web.Mvc
 
           // a not-null property can't hold null: leave it as it is, so
           // validation or the data portal check reports it
-          if (loadValue is null && Core.NotNullGuard.IsNotNullReference(item))
+          if (loadValue is null && Core.NotNullGuard.RejectsNull(item))
             return;
           LoadProperty(result, item, loadValue);
         }

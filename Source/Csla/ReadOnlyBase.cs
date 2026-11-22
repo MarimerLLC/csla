@@ -1745,12 +1745,15 @@ namespace Csla
         if (ValueComparer.AreNotEqual(oldValue, newValue))
         {
           var convertedValue = Utilities.CoerceValue<P>(typeof(F), oldValue, newValue);
-          NotNullGuard.ThrowIfNullInsideTry(propertyInfo, convertedValue);
+          convertedValue = NotNullGuard.CheckWriteInsideTry(propertyInfo, convertedValue);
           FieldManager.LoadFieldData(propertyInfo, convertedValue);
         }
         else
         {
-          NotNullGuard.ThrowIfNullInsideTry(propertyInfo, newValue);
+          // equal values: only a null for a not-null property needs attention
+          var checkedValue = NotNullGuard.CheckWriteInsideTry(propertyInfo, oldValue);
+          if (oldValue is null && checkedValue is not null)
+            FieldManager.LoadFieldData(propertyInfo, checkedValue);
         }
       }
       catch (NotNullPropertyViolationException)
@@ -1803,7 +1806,7 @@ namespace Csla
       if (propertyInfo is null)
         throw new ArgumentNullException(nameof(propertyInfo));
 
-      NotNullGuard.ThrowIfNull(propertyInfo, newValue);
+      newValue = NotNullGuard.CheckWrite(propertyInfo, newValue);
       try
       {
         P? oldValue;
@@ -1843,7 +1846,7 @@ namespace Csla
     /// No authorization checks occur when this method is called,
     /// and no PropertyChanging or PropertyChanged events are raised.
     /// </remarks>
-    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> or <paramref name="newValue"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>, or <paramref name="newValue"/> is <see langword="null"/> and <typeparamref name="P"/> is not <see cref="string"/> (a null string is stored as <see cref="string.Empty"/>).</exception>
     /// <exception cref="PropertyLoadException"></exception>
     protected void LoadProperty<P>(NotNullPropertyInfo<P> propertyInfo, P newValue) where P : notnull
     {

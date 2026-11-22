@@ -115,66 +115,63 @@ namespace Csla.Test.NotNull
       CollectionAssert.AreEqual(new byte[] { 1 }, obj.Data);
     }
 
-    [TestMethod]
-    public void BusinessBase_LoadProperty_NullString_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullEditRoot>();
+    // A not-null string never throws for null: every write path stores
+    // string.Empty, as the typed setter always has (Windows Forms data binding
+    // needs a string that never returns null, and a setter that never throws)
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadName(null));
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.NameProperty));
+    [TestMethod]
+    public void BusinessBase_StringWritePaths_Null_StoreEmptyString()
+    {
+      var writes = new (string Path, Action<NotNullEditRoot> Write)[]
+      {
+        ("LoadProperty", o => o.LoadName(null)),
+        ("LoadPropertyMarkDirty", o => o.LoadNameMarkDirty(null)),
+        ("LoadPropertyConvert", o => o.LoadNameConvert(null)),
+        ("untyped LoadProperty", o => o.LoadUntyped(NotNullEditRoot.NameProperty, null)),
+        ("untyped LoadPropertyMarkDirty", o => o.LoadUntypedMarkDirty(NotNullEditRoot.NameProperty, null)),
+        ("untyped SetProperty", o => o.SetUntyped(NotNullEditRoot.NameProperty, null)),
+        ("untyped SetProperty, value converting to null", o => o.SetUntyped(NotNullEditRoot.NameProperty, new NullToString())),
+        ("SetPropertyConvert", o => o.SetNameConvert(null)),
+      };
+
+      foreach (var (path, write) in writes)
+      {
+        var obj = New<NotNullEditRoot>();
+        obj.LoadName("old");
+
+        write(obj);
+
+        Assert.AreEqual(string.Empty, obj.Name, path);
+      }
     }
 
     [TestMethod]
-    public void BusinessBase_LoadPropertyMarkDirty_Null_ThrowsArgumentNullException()
+    public void BusinessBase_NonStringWritePaths_Null_ThrowArgumentNullException()
     {
-      var obj = New<NotNullEditRoot>();
+      var writes = new (string Path, Action<NotNullEditRoot> Write)[]
+      {
+        ("SetProperty", o => o.Data = null!),
+        ("LoadPropertyMarkDirty", o => o.LoadDataMarkDirty(null)),
+        ("LoadPropertyConvert", o => o.LoadDataConvert(null)),
+        ("SetPropertyConvert", o => o.SetDataConvert(null)),
+        ("untyped LoadProperty", o => o.LoadUntyped(NotNullEditRoot.DataProperty, null)),
+        ("untyped LoadPropertyMarkDirty", o => o.LoadUntypedMarkDirty(NotNullEditRoot.DataProperty, null)),
+        ("untyped SetProperty", o => o.SetUntyped(NotNullEditRoot.DataProperty, null)),
+        // the value converts to null (TypeConverter fallback), so the converted value is guarded
+        ("untyped SetProperty, value converting to null", o => o.SetUntyped(NotNullEditRoot.TokenProperty, "x")),
+      };
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadNameMarkDirty(null));
-    }
+      foreach (var (path, write) in writes)
+      {
+        var obj = New<NotNullEditRoot>();
 
-    [TestMethod]
-    public void BusinessBase_LoadPropertyConvert_NullAfterConversion_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullEditRoot>();
-
-      var ex = Assert.Throws<ArgumentNullException>(() => obj.LoadNameConvert(null));
-      Assert.AreEqual(nameof(NotNullEditRoot.Name), ex.ParamName);
-    }
-
-    [TestMethod]
-    public void BusinessBase_SetPropertyConvert_NullAfterConversion_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullEditRoot>();
-
-      Assert.Throws<ArgumentNullException>(() => obj.SetDataConvert(null));
-    }
-
-    [TestMethod]
-    public void BusinessBase_SetPropertyConvert_NullString_StoresEmptyString()
-    {
-      var obj = New<NotNullEditRoot>();
-
-      obj.SetNameConvert(null);
-
-      Assert.AreEqual(string.Empty, obj.Name);
-    }
-
-    // Untyped writes
-
-    [TestMethod]
-    public void BusinessBase_UntypedLoadProperty_Null_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullEditRoot>();
-
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullEditRoot.NameProperty, null));
-    }
-
-    [TestMethod]
-    public void BusinessBase_UntypedLoadPropertyMarkDirty_Null_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullEditRoot>();
-
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntypedMarkDirty(NotNullEditRoot.NameProperty, null));
+        var ex = Assert.Throws<ArgumentNullException>(() => write(obj), path);
+        StringAssert.Contains(ex.Message, "not-null property", path);
+        // nothing was stored: both properties still fail the invariant (the *Convert
+        // methods materialise the null default before converting, as for any property)
+        var unsatisfied = Csla.Core.NotNullInvariant.GetUnsatisfiedProperties(obj).Select(p => p.Name).ToList();
+        CollectionAssert.IsSubsetOf(new[] { nameof(NotNullEditRoot.Data), nameof(NotNullEditRoot.Token) }, unsatisfied, path);
+      }
     }
 
     [TestMethod]
@@ -186,32 +183,6 @@ namespace Csla.Test.NotNull
       obj.LoadUntyped(NotNullEditRoot.CountProperty, null);
 
       Assert.AreEqual(0, obj.Count);
-    }
-
-    [TestMethod]
-    public void BusinessBase_UntypedSetProperty_Null_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullEditRoot>();
-
-      Assert.Throws<ArgumentNullException>(() => obj.SetUntyped(NotNullEditRoot.NameProperty, null));
-    }
-
-    [TestMethod]
-    public void BusinessBase_UntypedSetProperty_ValueConvertingToNull_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullEditRoot>();
-
-      Assert.Throws<ArgumentNullException>(() => obj.SetUntyped(NotNullEditRoot.NameProperty, new NullToString()));
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.NameProperty));
-    }
-
-    [TestMethod]
-    public void CommandBase_ManagePropertiesSetProperty_ValueConvertingToNull_ThrowsArgumentNullException()
-    {
-      var obj = New<NotNullCommand>();
-
-      Assert.ThrowsExactly<ArgumentNullException>(() => ((IManageProperties)obj).SetProperty(NotNullCommand.ResultProperty, new NullToString()));
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullCommand.ResultProperty));
     }
 
     [TestMethod]
@@ -238,13 +209,36 @@ namespace Csla.Test.NotNull
     }
 
     [TestMethod]
-    public void ReadOnlyBase_LoadProperty_Null_ThrowsArgumentNullException()
+    public void ReadOnlyBase_LoadProperty_NullString_StoresEmptyString()
+    {
+      foreach (var write in new Action<NotNullInfo>[] { o => o.LoadName(null), o => o.LoadUntyped(NotNullInfo.NameProperty, null), o => o.LoadNameConvert(null) })
+      {
+        var obj = New<NotNullInfo>();
+        write(obj);
+        Assert.AreEqual(string.Empty, obj.Name);
+      }
+    }
+
+    [TestMethod]
+    public void ReadOnlyBase_LoadPropertyConvert_NullStringOnUnloadedProperty_StoresEmptyString()
+    {
+      // old and new values are both null, so nothing changes, but the field must not stay null
+      var obj = New<NotNullInfo>();
+
+      obj.LoadNameConvert(null);
+
+      Assert.AreEqual(string.Empty, obj.Name);
+      Assert.AreEqual(0, Csla.Core.NotNullInvariant.GetUnsatisfiedProperties(obj).Count(p => p.Name == nameof(NotNullInfo.Name)));
+    }
+
+    [TestMethod]
+    public void ReadOnlyBase_LoadProperty_NullReference_ThrowsArgumentNullException()
     {
       var obj = New<NotNullInfo>();
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadName(null));
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullInfo.NameProperty, null));
-      Assert.Throws<ArgumentNullException>(() => obj.LoadNameConvert(null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadData(null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullInfo.DataProperty, null));
+      Assert.Throws<ArgumentNullException>(() => obj.LoadDataConvert(null));
     }
 
     [TestMethod]
@@ -258,22 +252,43 @@ namespace Csla.Test.NotNull
     }
 
     [TestMethod]
-    public void ManagedObjectBase_LoadProperty_Null_ThrowsArgumentNullException()
+    public void ManagedObjectBase_LoadProperty_NullString_StoresEmptyString()
     {
-      var obj = New<NotNullCommand>();
-
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadResult(null));
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullCommand.ResultProperty, null));
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntypedMarkDirty(NotNullCommand.ResultProperty, null));
-      Assert.Throws<ArgumentNullException>(() => obj.LoadResultConvert(null));
+      foreach (var write in new Action<NotNullCommand>[]
+      {
+        o => o.LoadResult(null),
+        o => o.LoadUntyped(NotNullCommand.ResultProperty, null),
+        o => o.LoadUntypedMarkDirty(NotNullCommand.ResultProperty, null),
+        o => o.LoadResultConvert(null),
+        o => ((IManageProperties)o).SetProperty(NotNullCommand.ResultProperty, null),
+        o => ((IManageProperties)o).SetProperty(NotNullCommand.ResultProperty, new NullToString()),
+      })
+      {
+        var obj = New<NotNullCommand>();
+        write(obj);
+        Assert.AreEqual(string.Empty, obj.Result);
+      }
     }
 
     [TestMethod]
-    public void CommandBase_ManagePropertiesSetProperty_Null_ThrowsArgumentNullException()
+    public void ManagedObjectBase_LoadProperty_NullReference_ThrowsArgumentNullException()
     {
       var obj = New<NotNullCommand>();
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => ((IManageProperties)obj).SetProperty(NotNullCommand.ResultProperty, null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadPayload(null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullCommand.PayloadProperty, null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntypedMarkDirty(NotNullCommand.PayloadProperty, null));
+      Assert.Throws<ArgumentNullException>(() => obj.LoadPayloadConvert(null));
+    }
+
+    [TestMethod]
+    public void CommandBase_ManagePropertiesSetProperty_NullReference_ThrowsArgumentNullException()
+    {
+      var obj = New<NotNullCommand>();
+
+      Assert.ThrowsExactly<ArgumentNullException>(() => ((IManageProperties)obj).SetProperty(NotNullCommand.PayloadProperty, null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => ((IManageProperties)obj).SetProperty(NotNullCommand.TokenProperty, "x"));
+      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullCommand.TokenProperty));
     }
 
     [TestMethod]
@@ -320,6 +335,12 @@ namespace Csla.Test.NotNull
     public static readonly PropertyInfo<string?> NullableProperty = RegisterProperty<string?>(nameof(Nullable));
     public string? Nullable => GetProperty(NullableProperty);
 
+    public static readonly NotNullPropertyInfo<NullToken> TokenProperty = RegisterNotNullProperty<NullToken>(nameof(Token));
+    public NullToken Token => GetProperty(TokenProperty);
+
+    public bool LoadDataMarkDirty(byte[]? value) => LoadPropertyMarkDirty(DataProperty, value!);
+    public void LoadDataConvert(object? value) => LoadPropertyConvert<byte[], object>(DataProperty, value);
+
     public string ReadCode() => ReadProperty(CodeProperty);
     public void LoadSecret(string value) => LoadProperty(SecretProperty, value);
     public void LoadName(string? value) => LoadProperty(NameProperty, value!);
@@ -352,6 +373,12 @@ namespace Csla.Test.NotNull
     public void LoadName(string? value) => LoadProperty(NameProperty, value!);
     public void LoadNameConvert(object? value) => LoadPropertyConvert<string, object>(NameProperty, value);
     public void LoadUntyped(IPropertyInfo property, object? value) => LoadProperty(property, value);
+
+    public static readonly NotNullPropertyInfo<byte[]> DataProperty = RegisterNotNullProperty<byte[]>(nameof(Data));
+    public byte[] Data => GetProperty(DataProperty);
+
+    public void LoadData(byte[]? value) => LoadProperty(DataProperty, value!);
+    public void LoadDataConvert(object? value) => LoadPropertyConvert<byte[], object>(DataProperty, value);
   }
 
   [Serializable]
@@ -364,5 +391,32 @@ namespace Csla.Test.NotNull
     public void LoadResultConvert(object? value) => LoadPropertyConvert<string, object>(ResultProperty, value);
     public void LoadUntyped(IPropertyInfo property, object? value) => LoadProperty(property, value);
     public bool LoadUntypedMarkDirty(IPropertyInfo property, object? value) => LoadPropertyMarkDirty(property, value);
+
+    public static readonly NotNullPropertyInfo<byte[]> PayloadProperty = RegisterNotNullProperty<byte[]>(nameof(Payload));
+    public byte[] Payload => ReadProperty(PayloadProperty);
+
+    public static readonly NotNullPropertyInfo<NullToken> TokenProperty = RegisterNotNullProperty<NullToken>(nameof(Token));
+    public NullToken Token => ReadProperty(TokenProperty);
+
+    public void LoadPayload(byte[]? value) => LoadProperty(PayloadProperty, value!);
+    public void LoadPayloadConvert(object? value) => LoadPropertyConvert<byte[], object>(PayloadProperty, value);
+  }
+
+  /// <summary>
+  /// A type whose TypeConverter converts any string to null, so an untyped
+  /// write of a non-null string converts to null.
+  /// </summary>
+  [System.ComponentModel.TypeConverter(typeof(NullTokenConverter))]
+  public sealed class NullToken
+  {
+  }
+
+  public sealed class NullTokenConverter : System.ComponentModel.TypeConverter
+  {
+    public override bool CanConvertFrom(System.ComponentModel.ITypeDescriptorContext? context, Type sourceType)
+      => sourceType == typeof(string) || base.CanConvertFrom(context, sourceType);
+
+    public override object? ConvertFrom(System.ComponentModel.ITypeDescriptorContext? context, System.Globalization.CultureInfo? culture, object value)
+      => value is string ? null : base.ConvertFrom(context, culture, value);
   }
 }

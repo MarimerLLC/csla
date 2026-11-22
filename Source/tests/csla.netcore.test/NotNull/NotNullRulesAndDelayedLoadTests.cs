@@ -45,6 +45,8 @@ namespace Csla.Test.NotNull
 
       Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullRuleRoot.DataProperty));
       Assert.AreEqual("set", obj.Name, "Other output values are still written");
+      Assert.AreEqual(string.Empty, obj.Label, "A null string output is stored as string.Empty");
+      Assert.IsFalse(obj.BrokenRulesCollection.Any(r => r.Property == nameof(NotNullRuleRoot.Label)));
       var broken = obj.BrokenRulesCollection.Single(r => r.Property == nameof(NotNullRuleRoot.Data));
       Assert.AreEqual(RuleSeverity.Error, broken.Severity);
       StringAssert.Contains(broken.Description, nameof(NotNullRuleRoot.Data));
@@ -96,6 +98,18 @@ namespace Csla.Test.NotNull
 
       Assert.IsNull(obj.Captured);
       Assert.AreEqual("unknown", obj.Code);
+    }
+
+    [TestMethod]
+    public void RuleContext_AddOutValueNullForNotNullString_StoresEmptyString()
+    {
+      var obj = New<NotNullRuleRoot>();
+      obj.LoadName("x");
+
+      obj.RunOutValueRule(OutValueMode.String);
+
+      Assert.IsNull(obj.Captured);
+      Assert.AreEqual(string.Empty, obj.Name);
     }
 
     // Delayed loading
@@ -157,7 +171,8 @@ namespace Csla.Test.NotNull
     None,
     Primary,
     Property,
-    Defaulted
+    Defaulted,
+    String
   }
 
   [Serializable]
@@ -179,6 +194,12 @@ namespace Csla.Test.NotNull
     public static readonly NotNullPropertyInfo<string> CodeProperty = RegisterNotNullProperty<string>(nameof(Code), null, "unknown");
     public string Code => GetProperty(CodeProperty);
 
+    public static readonly NotNullPropertyInfo<string> LabelProperty = RegisterNotNullProperty<string>(nameof(Label));
+    public string Label => GetProperty(LabelProperty);
+
+    public void LoadName(string value) => LoadProperty(NameProperty, value);
+    public void LoadLabel(string value) => LoadProperty(LabelProperty, value);
+
     [NonSerialized]
     private OutValueMode _mode;
     public OutValueMode Mode => _mode;
@@ -196,29 +217,32 @@ namespace Csla.Test.NotNull
     public void RunOutValueRule(OutValueMode mode)
     {
       _mode = mode;
-      BusinessRules.CheckRules(NameProperty);
+      BusinessRules.CheckRules(DataProperty);
       _mode = OutValueMode.None;
     }
 
     protected override void AddBusinessRules()
     {
       base.AddBusinessRules();
-      BusinessRules.AddRule(new NullOutputRule(TriggerProperty, DataProperty, NameProperty));
-      BusinessRules.AddRule(new OutValueRule(NameProperty, CodeProperty));
+      BusinessRules.AddRule(new NullOutputRule(TriggerProperty, DataProperty, NameProperty, LabelProperty));
+      BusinessRules.AddRule(new OutValueRule(DataProperty, CodeProperty, NameProperty));
     }
 
     private class NullOutputRule : BusinessRule
     {
       private readonly IPropertyInfo _nullTarget;
       private readonly IPropertyInfo _valueTarget;
+      private readonly IPropertyInfo _nullStringTarget;
 
-      public NullOutputRule(IPropertyInfo primaryProperty, IPropertyInfo nullTarget, IPropertyInfo valueTarget)
+      public NullOutputRule(IPropertyInfo primaryProperty, IPropertyInfo nullTarget, IPropertyInfo valueTarget, IPropertyInfo nullStringTarget)
         : base(primaryProperty)
       {
         _nullTarget = nullTarget;
         _valueTarget = valueTarget;
+        _nullStringTarget = nullStringTarget;
         AffectedProperties.Add(nullTarget);
         AffectedProperties.Add(valueTarget);
+        AffectedProperties.Add(nullStringTarget);
       }
 
       protected override void Execute(IRuleContext context)
@@ -226,18 +250,22 @@ namespace Csla.Test.NotNull
         // bypasses AddOutValue, which would throw, to reach the write-back backstop
         context.OutputPropertyValues[_nullTarget] = null;
         context.OutputPropertyValues[_valueTarget] = "set";
+        context.OutputPropertyValues[_nullStringTarget] = null;
       }
     }
 
     private class OutValueRule : BusinessRule
     {
       private readonly IPropertyInfo _defaulted;
+      private readonly IPropertyInfo _string;
 
-      public OutValueRule(IPropertyInfo primaryProperty, IPropertyInfo defaulted)
+      public OutValueRule(IPropertyInfo primaryProperty, IPropertyInfo defaulted, IPropertyInfo stringProperty)
         : base(primaryProperty)
       {
         _defaulted = defaulted;
+        _string = stringProperty;
         AffectedProperties.Add(defaulted);
+        AffectedProperties.Add(stringProperty);
       }
 
       protected override void Execute(IRuleContext context)
@@ -255,6 +283,9 @@ namespace Csla.Test.NotNull
               break;
             case OutValueMode.Defaulted:
               context.AddOutValue(_defaulted, null);
+              break;
+            case OutValueMode.String:
+              context.AddOutValue(_string, null);
               break;
           }
         }

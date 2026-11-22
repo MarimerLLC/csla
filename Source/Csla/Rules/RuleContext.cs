@@ -308,7 +308,7 @@ namespace Csla.Rules
 
     private static void ThrowIfNotNullOutputNull(IPropertyInfo property, object? value)
     {
-      if (value is null && NotNullGuard.IsNotNullReference(property))
+      if (value is null && NotNullGuard.RejectsNull(property))
         throw new ArgumentNullException(nameof(value), string.Format(Resources.NotNullPropertyValueNull, property.Name));
     }
 

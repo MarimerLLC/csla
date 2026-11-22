@@ -1494,9 +1494,9 @@ namespace Csla.Rules
 
     /// <summary>
     /// Writes a completed rule's output values to the target. A null output
-    /// for a not-null reference-type property is not written; the rule gets
-    /// an Error result instead, so no exception escapes an async rule's
-    /// completion.
+    /// for a not-null reference-type property other than string (which stores
+    /// it as string.Empty) is not written; the rule gets an Error result
+    /// instead, so no exception escapes an async rule's completion.
     /// </summary>
     private void StoreOutputValues(IRuleContext r)
     {
@@ -1505,7 +1505,7 @@ namespace Csla.Rules
 
       foreach (var item in r.OutputPropertyValues)
       {
-        if (item.Value is null && NotNullGuard.IsNotNullReference(item.Key))
+        if (item.Value is null && NotNullGuard.RejectsNull(item.Key))
         {
           r.Results.Add(new RuleResult(
             r.Rule.RuleName,

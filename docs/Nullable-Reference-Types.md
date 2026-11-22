@@ -88,9 +88,9 @@ The data portal checks the property:
 * for root objects, and for child objects that go through the child data portal (`CreateChild`, `FetchChild` and `UpdateChild`). A child that isn't dirty isn't saved, so it isn't checked;
 * one object at a time. The check doesn't look into child objects; each child is checked when it goes through the child data portal.
 
-If the property is still null, the data portal throws `InvalidOperationException`, naming the type and every property that failed. At the start of Update the message says that the operation wasn't started; at the end of an operation it says that the operation has already run. A root call gets the exception wrapped in a `DataPortalException`.
+If the property is still null, the data portal throws `InvalidOperationException`, naming the type and every property that failed. At the start of Update the message says that the operation wasn't started; at the end of an operation it says that the operation has already run. A caller of `IDataPortal<T>` gets it wrapped in a `DataPortalException`: catch that, and read its `BusinessException` or `InnerException`.
 
-* **Transactions.** With `[Transactional(TransactionalTypes.TransactionScope)]`, the check runs inside the transaction, so a failure rolls the work back. In `Manual` mode (the default), the check runs after your code returns, so a transaction your code committed stays committed.
+* **Transactions.** When the data portal provides the transaction (`[Transactional(TransactionalTypes.TransactionScope)]`, or `EnterpriseServices` on .NET Framework), the root object's check runs inside it, so a failure rolls the work back. In `Manual` mode (the default), the root object's exit check runs after your code returns, so a transaction your code committed stays committed. A child object is checked while your root code runs, when the child goes through the child data portal, so a child's failure is raised before your code commits.
 * **Commands.** A command's `[Create]` isn't checked, and the inputs of a command sent with `ExecuteAsync(command)` aren't checked before `[Execute]` runs, so they can still be null inside `[Execute]`. A property that is still null when `[Execute]` returns fails the check. Pass required inputs as criteria, or declare them nullable.
 * **Child objects.** Give a `BusinessBase` child with such properties its own `[CreateChild]` that loads them. The inherited one loads nothing.
 * **Several fetch shapes.** If one type has several fetch operations and some of them don't load the property, load it anyway, declare it nullable, or split the type.
@@ -100,9 +100,9 @@ Analyzer [CSLA0033](analyzers/CSLA0033-NotNullPropertyNotLoadedAnalyzer.md) warn
 ### Writing null
 
 * A **`string`** property stores null as `string.Empty` on every write path: `SetProperty`, `LoadProperty`, the untyped and `*Convert` forms, business rule output and `AddOutValue`. Its setter never throws, and its getter never returns null once it holds a value.
-* Any **other reference type** rejects null. `SetProperty`, `LoadProperty` and their untyped and `*Convert` forms throw `ArgumentNullException`, and the null isn't stored. `RuleContext.AddOutValue` throws the same exception, and a rule whose output value is null gets an Error result instead, with nothing stored.
+* Any **other reference type** rejects null. `SetProperty`, `LoadProperty` and their untyped and `*Convert` forms throw `ArgumentNullException`, and the null isn't stored. In a business rule, `RuleContext.AddOutValue(value)` throws the same exception for a null value. `AddOutValue(property, null)` first substitutes the property's default value, so it throws only for a property without a default. A rule whose output value is still null gets an Error result, with nothing stored.
 
-The ASP.NET Core `CslaModelBinder` doesn't store a posted null in a not-null property of a non-`string` type. It leaves the property alone.
+The `CslaModelBinder` in ASP.NET Core and ASP.NET MVC 5 doesn't store a posted null in a not-null property of a non-`string` type. It leaves the property alone.
 
 ### Cases that need a default value or a nullable property
 

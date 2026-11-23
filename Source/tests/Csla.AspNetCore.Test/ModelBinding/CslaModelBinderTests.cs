@@ -369,6 +369,17 @@ public class CslaModelBinderTests
     existing.Children[0].Name.Should().Be("child0");
   }
 
+  [TestMethod]
+  public async Task Bind_NewRoot_NotNullPropertyNotPosted_IsLeftUnloaded()
+  {
+    var result = await BindAsync<NotNullBindTarget>(new()
+    {
+      ["Name"] = "root",
+    });
+
+    result.Name.Should().Be("root");
+    result.DataIsLoaded.Should().BeFalse();
+  }
   private async Task<Parent> FetchParentAsync()
   {
     var portal = _scope.ServiceProvider.GetRequiredService<IDataPortal<Parent>>();

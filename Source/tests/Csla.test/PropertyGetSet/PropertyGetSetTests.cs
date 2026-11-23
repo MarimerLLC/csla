@@ -621,6 +621,18 @@ namespace Csla.Test.PropertyGetSet
       {
         throw ex.InnerException;
       }
+      catch (DataPortalException ex) when (FindTypeInitializationException(ex) is { InnerException: { } inner })
+      {
+        // the not-null property check runs the type initializer inside the data portal
+        throw inner;
+      }
+    }
+
+    private static TypeInitializationException FindTypeInitializationException(Exception ex)
+    {
+      while (ex is not null and not TypeInitializationException)
+        ex = ex.InnerException;
+      return (TypeInitializationException)ex;
     }
 
     [TestMethod]
@@ -640,6 +652,11 @@ namespace Csla.Test.PropertyGetSet
           throw ex.InnerException;
         else
           throw;
+      }
+      catch (DataPortalException ex) when (FindTypeInitializationException(ex) is { InnerException: { } inner })
+      {
+        // the not-null property check runs the type initializer inside the data portal
+        throw inner;
       }
     }
 #endif

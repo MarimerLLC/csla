@@ -577,4 +577,32 @@
     <value>CheckRules stopped after {0} rerun passes because rule output values were still changing these properties: {1}. Look for rules whose output values feed each other, or raise MaxRerunPasses with RuleOptions.UseBatchCheckRules.</value>
     <comment>0 - number of passes, 1 - comma-separated property names</comment>
   </data>
+  <data name="NotNullInvariantViolated" xml:space="preserve">
+    <value>{0} does not satisfy the not-null invariant; these not-null properties are null: {1}.</value>
+    <comment>0 - business object type, 1 - comma-separated property names</comment>
+  </data>
+  <data name="NotNullInvariantViolatedOnEntry" xml:space="preserve">
+    <value>{0} on {1} was not started because these not-null properties are null: {2}.</value>
+    <comment>0 - data portal operation, 1 - business object type, 2 - comma-separated property names</comment>
+  </data>
+  <data name="NotNullInvariantViolatedOnExit" xml:space="preserve">
+    <value>{0} on {1} has already run, but left these not-null properties null: {2}. Load them in every operation that completes the object, give them a default value, or declare them nullable and register them with RegisterProperty.</value>
+    <comment>0 - data portal operation, 1 - business object type, 2 - comma-separated property names</comment>
+  </data>
+  <data name="NotNullPropertyDelayedLoadNotSupported" xml:space="preserve">
+    <value>Property {0} is a not-null property; delayed loading (LazyGetProperty, LazyReadProperty, their async forms and LoadPropertyAsync) is not supported for it. Declare the property nullable and register it with RegisterProperty.</value>
+    <comment>0 - property name</comment>
+  </data>
+  <data name="NotNullPropertyNotSerializedWithoutDefault" xml:space="preserve">
+    <value>Property {1} of {0} is a not-null property without a default value, but it is not serialized; it would be null after serialization. Give it a default value, or declare it nullable and register it with RegisterProperty.</value>
+    <comment>0 - business object type, 1 - property name</comment>
+  </data>
+  <data name="NotNullPropertyRuleOutputNull" xml:space="preserve">
+    <value>Rule {0} returned null for the not-null property {1}; the value was not stored.</value>
+    <comment>0 - rule URI, 1 - property name</comment>
+  </data>
+  <data name="NotNullPropertyValueNull" xml:space="preserve">
+    <value>Property {0} is a not-null property; null cannot be stored in it.</value>
+    <comment>0 - property name</comment>
+  </data>
 </root>

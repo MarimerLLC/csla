@@ -150,6 +150,33 @@ namespace Csla.Server
     }
 
     /// <summary>
+    /// Verifies that every not-null property (<see cref="INotNullPropertyInfo"/>)
+    /// of the specified object holds a value.
+    /// </summary>
+    /// <param name="obj">The object to verify.</param>
+    /// <remarks>
+    /// <para>
+    /// The data portal checks the root object a factory method returns, but not
+    /// the objects a factory builds by hand, such as child objects and the items
+    /// of a list: call this method for each of them. It checks one object and
+    /// does not recurse into its children.
+    /// </para>
+    /// <para>
+    /// Call it before the operation commits: a violation thrown inside a
+    /// <see cref="TransactionalTypes.TransactionScope"/> transaction rolls it back.
+    /// </para>
+    /// <para>
+    /// See <see cref="NotNullInvariant.Verify(object)"/>.
+    /// </para>
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="obj"/> is <see langword="null"/>.</exception>
+    /// <exception cref="InvalidOperationException">A not-null property of <paramref name="obj"/> is null, or was never loaded and has no default value.</exception>
+    protected void VerifyNotNullInvariant(object obj)
+    {
+      NotNullInvariant.Verify(obj);
+    }
+
+    /// <summary>
     /// Calls the MarkNew method on the specified
     /// object, if possible.
     /// </summary>

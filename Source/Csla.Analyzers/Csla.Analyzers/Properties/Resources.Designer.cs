@@ -1016,5 +1016,59 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("NotNullPropertyDelayedLoadAnalyzer_Message", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Register the property as a not-null property.
+        /// </summary>
+        internal static string MigrateToNotNullPropertyAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("MigrateToNotNullPropertyAnalyzer_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; can be registered with RegisterNotNullProperty, so its getter returns a non-null value without &apos;!&apos;.
+        /// </summary>
+        internal static string MigrateToNotNullPropertyAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("MigrateToNotNullPropertyAnalyzer_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Register the property as a not-null property after review.
+        /// </summary>
+        internal static string MigrateToNotNullPropertyAnalyzer_ReviewTitle {
+            get {
+                return ResourceManager.GetString("MigrateToNotNullPropertyAnalyzer_ReviewTitle", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; can be registered with RegisterNotNullProperty, but it has no default value, so every Create and Fetch must load it; check its data portal operations before migrating.
+        /// </summary>
+        internal static string MigrateToNotNullPropertyAnalyzer_ReviewMessage {
+            get {
+                return ResourceManager.GetString("MigrateToNotNullPropertyAnalyzer_ReviewMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Register as a not-null property.
+        /// </summary>
+        internal static string MigrateToNotNullPropertyCodeFix_Title {
+            get {
+                return ResourceManager.GetString("MigrateToNotNullPropertyCodeFix_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Register as a not-null property (it must be loaded on every Create and Fetch).
+        /// </summary>
+        internal static string MigrateToNotNullPropertyCodeFix_ReviewTitle {
+            get {
+                return ResourceManager.GetString("MigrateToNotNullPropertyCodeFix_ReviewTitle", resourceCulture);
+            }
+        }
     }
 }

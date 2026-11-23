@@ -58,6 +58,8 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 * [CSLA0034](CSLA0034-NotNullPropertyReadAuthorizationAnalyzer.md) - Not-null properties with read authorization rules need a default value
 * [CSLA0035](CSLA0035-NotNullPropertyEmptyFriendlyNameAnalyzer.md) - An empty friendly name registers no default value
 * [CSLA0036](CSLA0036-NotNullPropertyDelayedLoadAnalyzer.md) - Not-null properties don't support delayed loading
+* [CSLA0037](CSLA0037-MigrateToNotNullPropertyAnalyzer.md) - Register the property as a not-null property
+* [CSLA0038](CSLA0038-MigrateToNotNullPropertyAnalyzer.md) - Register the property as a not-null property after review
 
 ## Suppressors
 Some .NET code style and code quality rules report false positives on CSLA code, because CSLA calls data portal operations and other methods through reflection. The `Csla` package includes diagnostic suppressors that hide these diagnostics only where they don't apply. The diagnostics still appear everywhere else.

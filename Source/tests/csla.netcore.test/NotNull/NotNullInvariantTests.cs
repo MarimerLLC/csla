@@ -11,6 +11,8 @@
 using Csla.Core;
 using Csla.Server;
 using Csla.Testing;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.NotNull
@@ -37,8 +39,11 @@ namespace Csla.Test.NotNull
     [TestMethod]
     public void NotNullInvariant_Null_ThrowsArgumentNullException()
     {
-      Assert.ThrowsExactly<ArgumentNullException>(() => NotNullInvariant.GetUnsatisfiedProperties(null!));
-      Assert.ThrowsExactly<ArgumentNullException>(() => NotNullInvariant.Verify(null!));
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => NotNullInvariant.GetUnsatisfiedProperties(null!)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => NotNullInvariant.Verify(null!)).Should().ThrowExactly<ArgumentNullException>();
+      }
     }
 
     [TestMethod]
@@ -46,7 +51,7 @@ namespace Csla.Test.NotNull
     {
       var list = New<NotNullPortalList>();
 
-      Assert.AreEqual(0, NotNullInvariant.GetUnsatisfiedProperties(list).Count);
+      NotNullInvariant.GetUnsatisfiedProperties(list).Should().BeEmpty();
       NotNullInvariant.Verify(list);
     }
 
@@ -56,7 +61,7 @@ namespace Csla.Test.NotNull
       var obj = New<NotNullPortalRoot>();
       obj.LoadAll();
 
-      Assert.AreEqual(0, NotNullInvariant.GetUnsatisfiedProperties(obj).Count);
+      NotNullInvariant.GetUnsatisfiedProperties(obj).Should().BeEmpty();
       NotNullInvariant.Verify(obj);
     }
 
@@ -69,20 +74,26 @@ namespace Csla.Test.NotNull
       var wasDirty = obj.IsDirty;
 
       var failing = NotNullInvariant.GetUnsatisfiedProperties(obj);
-      var ex = Assert.ThrowsExactly<InvalidOperationException>(() => NotNullInvariant.Verify(obj));
+      var ex = FluentActions.Invoking(() => NotNullInvariant.Verify(obj)).Should().ThrowExactly<InvalidOperationException>().Which;
 
-      Assert.AreEqual(nameof(NotNullPortalRoot.Data), failing.Single().Name);
-      StringAssert.Contains(ex.Message, typeof(NotNullPortalRoot).FullName);
-      StringAssert.Contains(ex.Message, nameof(NotNullPortalRoot.Data));
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullPortalRoot.CodeProperty), "The defaulted property was not materialised");
-      Assert.AreEqual(wasDirty, obj.IsDirty);
+      using (new AssertionScope())
+      {
+        failing.Single().Name.Should().Be(nameof(NotNullPortalRoot.Data));
+        ex.Message.Should().Contain(typeof(NotNullPortalRoot).FullName!);
+        ex.Message.Should().Contain(nameof(NotNullPortalRoot.Data));
+        ((IManageProperties)obj).FieldExists(NotNullPortalRoot.CodeProperty).Should().BeFalse("the defaulted property was not materialised");
+        obj.IsDirty.Should().Be(wasDirty);
+      }
     }
 
     [TestMethod]
     public void NotNullInvariant_ReadOnlyAndCommand_AreChecked()
     {
-      Assert.AreEqual(nameof(NotNullPortalInfo.Name), NotNullInvariant.GetUnsatisfiedProperties(New<NotNullPortalInfo>()).Single().Name);
-      Assert.AreEqual(nameof(NotNullPortalCommand.Result), NotNullInvariant.GetUnsatisfiedProperties(New<NotNullPortalCommand>()).Single().Name);
+      using (new AssertionScope())
+      {
+        NotNullInvariant.GetUnsatisfiedProperties(New<NotNullPortalInfo>()).Single().Name.Should().Be(nameof(NotNullPortalInfo.Name));
+        NotNullInvariant.GetUnsatisfiedProperties(New<NotNullPortalCommand>()).Single().Name.Should().Be(nameof(NotNullPortalCommand.Result));
+      }
     }
 
     [TestMethod]
@@ -90,16 +101,16 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetDataPortal<NotNullFactoryParent>();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.FetchAsync(false));
+      var ex = (await FluentActions.Awaiting(() => portal.FetchAsync(false)).Should().ThrowAsync<DataPortalException>()).Which;
 
       InvalidOperationException? violation = null;
       for (Exception? e = ex; e != null; e = e.InnerException)
         violation ??= e as InvalidOperationException;
-      Assert.IsNotNull(violation);
-      StringAssert.Contains(violation.Message, typeof(NotNullPortalChild).FullName);
+      violation.Should().NotBeNull();
+      violation!.Message.Should().Contain(typeof(NotNullPortalChild).FullName!);
 
       var parent = await portal.FetchAsync(true);
-      Assert.AreEqual("child", parent.Child.Name);
+      parent.Child.Name.Should().Be("child");
     }
   }
 

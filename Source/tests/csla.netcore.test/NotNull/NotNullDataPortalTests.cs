@@ -12,6 +12,8 @@ using System.Transactions;
 using Csla.Core;
 using Csla.Server;
 using Csla.Testing;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.NotNull
@@ -48,8 +50,8 @@ namespace Csla.Test.NotNull
         if (e is InvalidOperationException ioe && ioe.Message.Contains("not-null properties"))
           return ioe;
       }
-      Assert.Fail($"No not-null violation in {ex}");
-      return null!;
+      // thrown directly, not through an assertion, so it also fails at once inside an AssertionScope
+      throw new AssertionFailedException($"No not-null violation in {ex}");
     }
 
     private static bool IsEntryViolation(InvalidOperationException ex) => ex.Message.Contains("was not started");
@@ -61,15 +63,18 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetDataPortal<NotNullPortalRoot>();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.CreateAsync(NotNullPortalMode.LoadNothing));
+      var ex = (await FluentActions.Awaiting(() => portal.CreateAsync(NotNullPortalMode.LoadNothing)).Should().ThrowAsync<DataPortalException>()).Which;
 
       var violation = FindViolation(ex);
-      Assert.IsFalse(IsEntryViolation(violation));
-      StringAssert.Contains(violation.Message, typeof(NotNullPortalRoot).FullName);
-      StringAssert.Contains(violation.Message, nameof(NotNullPortalRoot.Name));
-      StringAssert.Contains(violation.Message, nameof(NotNullPortalRoot.Data));
-      Assert.IsFalse(violation.Message.Contains(nameof(NotNullPortalRoot.Code)), "A defaulted property is satisfied");
-      Assert.IsTrue(NotNullPortalLog.Contains("Create"), "The operation ran");
+      using (new AssertionScope())
+      {
+        IsEntryViolation(violation).Should().BeFalse();
+        violation.Message.Should().Contain(typeof(NotNullPortalRoot).FullName!);
+        violation.Message.Should().Contain(nameof(NotNullPortalRoot.Name));
+        violation.Message.Should().Contain(nameof(NotNullPortalRoot.Data));
+        violation.Message.Should().NotContain(nameof(NotNullPortalRoot.Code), "a defaulted property is satisfied");
+        NotNullPortalLog.Contains("Create").Should().BeTrue("the operation ran");
+      }
     }
 
     [TestMethod]
@@ -79,7 +84,7 @@ namespace Csla.Test.NotNull
 
       var obj = await portal.CreateAsync(NotNullPortalMode.LoadAll);
 
-      Assert.AreEqual("unknown", obj.Code);
+      obj.Code.Should().Be("unknown");
     }
 
     [TestMethod]
@@ -89,7 +94,7 @@ namespace Csla.Test.NotNull
 
       var cmd = await portal.CreateAsync();
 
-      Assert.IsNotNull(cmd);
+      cmd.Should().NotBeNull();
     }
 
     // Fetch
@@ -99,12 +104,15 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetDataPortal<NotNullPortalRoot>();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.FetchAsync(NotNullPortalMode.LoadNameOnly));
+      var ex = (await FluentActions.Awaiting(() => portal.FetchAsync(NotNullPortalMode.LoadNameOnly)).Should().ThrowAsync<DataPortalException>()).Which;
 
       var violation = FindViolation(ex);
-      StringAssert.Contains(violation.Message, nameof(NotNullPortalRoot.Data));
-      Assert.IsFalse(violation.Message.Contains(nameof(NotNullPortalRoot.Name) + ","));
-      Assert.IsTrue(NotNullPortalLog.Contains("Fetch"));
+      using (new AssertionScope())
+      {
+        violation.Message.Should().Contain(nameof(NotNullPortalRoot.Data));
+        violation.Message.Should().NotContain(nameof(NotNullPortalRoot.Name) + ",");
+        NotNullPortalLog.Contains("Fetch").Should().BeTrue();
+      }
     }
 
     [TestMethod]
@@ -114,7 +122,7 @@ namespace Csla.Test.NotNull
 
       var obj = await portal.FetchAsync(NotNullPortalMode.LoadAll);
 
-      Assert.AreEqual("name", obj.Name);
+      obj.Name.Should().Be("name");
     }
 
     [TestMethod]
@@ -122,10 +130,10 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetDataPortal<NotNullPortalInfo>();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.FetchAsync(false));
+      var ex = (await FluentActions.Awaiting(() => portal.FetchAsync(false)).Should().ThrowAsync<DataPortalException>()).Which;
 
-      StringAssert.Contains(FindViolation(ex).Message, nameof(NotNullPortalInfo.Name));
-      Assert.AreEqual("x", (await portal.FetchAsync(true)).Name);
+      FindViolation(ex).Message.Should().Contain(nameof(NotNullPortalInfo.Name));
+      (await portal.FetchAsync(true)).Name.Should().Be("x");
     }
 
     [TestMethod]
@@ -133,10 +141,10 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetDataPortal<NotNullFactoryRoot>();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.FetchAsync(false));
+      var ex = (await FluentActions.Awaiting(() => portal.FetchAsync(false)).Should().ThrowAsync<DataPortalException>()).Which;
 
-      StringAssert.Contains(FindViolation(ex).Message, nameof(NotNullFactoryRoot.Name));
-      Assert.AreEqual("factory", (await portal.FetchAsync(true)).Name);
+      FindViolation(ex).Message.Should().Contain(nameof(NotNullFactoryRoot.Name));
+      (await portal.FetchAsync(true)).Name.Should().Be("factory");
     }
 
     // Execute
@@ -147,11 +155,14 @@ namespace Csla.Test.NotNull
       var portal = _testHost.GetDataPortal<NotNullPortalCommand>();
       var cmd = await portal.CreateAsync();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.ExecuteAsync(cmd));
+      var ex = (await FluentActions.Awaiting(() => portal.ExecuteAsync(cmd)).Should().ThrowAsync<DataPortalException>()).Which;
 
       var violation = FindViolation(ex);
-      Assert.IsFalse(IsEntryViolation(violation), "A command is not checked on entry");
-      Assert.IsTrue(NotNullPortalLog.Contains("Execute"));
+      using (new AssertionScope())
+      {
+        IsEntryViolation(violation).Should().BeFalse("a command is not checked on entry");
+        NotNullPortalLog.Contains("Execute").Should().BeTrue();
+      }
     }
 
     [TestMethod]
@@ -159,10 +170,10 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetDataPortal<NotNullPortalCommand>();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.ExecuteAsync(false));
+      var ex = (await FluentActions.Awaiting(() => portal.ExecuteAsync(false)).Should().ThrowAsync<DataPortalException>()).Which;
 
-      Assert.IsFalse(IsEntryViolation(FindViolation(ex)));
-      Assert.AreEqual("done", (await portal.ExecuteAsync(true)).Result);
+      IsEntryViolation(FindViolation(ex)).Should().BeFalse();
+      (await portal.ExecuteAsync(true)).Result.Should().Be("done");
     }
 
     // Update
@@ -175,12 +186,15 @@ namespace Csla.Test.NotNull
       obj.LoadAll();
       obj.PlantNull(NotNullPortalRoot.NameProperty);
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateAsync(obj));
+      var ex = (await FluentActions.Awaiting(() => portal.UpdateAsync(obj)).Should().ThrowAsync<DataPortalException>()).Which;
 
       var violation = FindViolation(ex);
-      Assert.IsTrue(IsEntryViolation(violation));
-      StringAssert.Contains(violation.Message, nameof(NotNullPortalRoot.Name));
-      Assert.IsFalse(NotNullPortalLog.Contains("Insert"), "The operation did not start");
+      using (new AssertionScope())
+      {
+        IsEntryViolation(violation).Should().BeTrue();
+        violation.Message.Should().Contain(nameof(NotNullPortalRoot.Name));
+        NotNullPortalLog.Contains("Insert").Should().BeFalse("the operation did not start");
+      }
     }
 
     [TestMethod]
@@ -191,10 +205,14 @@ namespace Csla.Test.NotNull
       obj.LoadAll();
       obj.NullNameOnInsert = true;
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateAsync(obj));
+      var ex = (await FluentActions.Awaiting(() => portal.UpdateAsync(obj)).Should().ThrowAsync<DataPortalException>()).Which;
 
-      Assert.IsFalse(IsEntryViolation(FindViolation(ex)));
-      Assert.IsTrue(NotNullPortalLog.Contains("Insert"), "In Manual mode the operation has run");
+      var violation = FindViolation(ex);
+      using (new AssertionScope())
+      {
+        IsEntryViolation(violation).Should().BeFalse();
+        NotNullPortalLog.Contains("Insert").Should().BeTrue("in Manual mode the operation has run");
+      }
     }
 
     [TestMethod]
@@ -207,18 +225,26 @@ namespace Csla.Test.NotNull
       entry.MarkOldForTest();
       entry.Delete();
       entry.PlantNull(NotNullPortalRoot.DataProperty);
-      var entryEx = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateAsync(entry));
-      Assert.IsTrue(IsEntryViolation(FindViolation(entryEx)));
-      Assert.IsFalse(NotNullPortalLog.Contains("DeleteSelf"));
+      var entryEx = (await FluentActions.Awaiting(() => portal.UpdateAsync(entry)).Should().ThrowAsync<DataPortalException>()).Which;
+      var entryViolation = FindViolation(entryEx);
+      using (new AssertionScope())
+      {
+        IsEntryViolation(entryViolation).Should().BeTrue();
+        NotNullPortalLog.Contains("DeleteSelf").Should().BeFalse();
+      }
 
       var exit = New<NotNullPortalRoot>();
       exit.LoadAll();
       exit.MarkOldForTest();
       exit.Delete();
       exit.NullNameOnInsert = true;
-      var exitEx = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateAsync(exit));
-      Assert.IsFalse(IsEntryViolation(FindViolation(exitEx)));
-      Assert.IsTrue(NotNullPortalLog.Contains("DeleteSelf"));
+      var exitEx = (await FluentActions.Awaiting(() => portal.UpdateAsync(exit)).Should().ThrowAsync<DataPortalException>()).Which;
+      var exitViolation = FindViolation(exitEx);
+      using (new AssertionScope())
+      {
+        IsEntryViolation(exitViolation).Should().BeFalse();
+        NotNullPortalLog.Contains("DeleteSelf").Should().BeTrue();
+      }
     }
 
     [TestMethod]
@@ -228,7 +254,7 @@ namespace Csla.Test.NotNull
 
       await portal.DeleteAsync(NotNullPortalMode.LoadNothing);
 
-      Assert.IsTrue(NotNullPortalLog.Contains("Delete"));
+      NotNullPortalLog.Contains("Delete").Should().BeTrue();
     }
 
     [TestMethod]
@@ -237,9 +263,9 @@ namespace Csla.Test.NotNull
       var portal = _testHost.GetDataPortal<NotNullTransactionalRoot>();
       var obj = New<NotNullTransactionalRoot>();
 
-      await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateAsync(obj));
+      await FluentActions.Awaiting(() => portal.UpdateAsync(obj)).Should().ThrowAsync<DataPortalException>();
 
-      Assert.AreEqual(TransactionStatus.Aborted, NotNullTransactionalRoot.LastStatus);
+      NotNullTransactionalRoot.LastStatus.Should().Be(TransactionStatus.Aborted);
     }
 
     // Child data portal
@@ -249,15 +275,18 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetChildDataPortal<NotNullPortalChild>();
 
-      var createEx = await Assert.ThrowsAsync<DataPortalException>(() => portal.CreateChildAsync(false));
-      Assert.IsFalse(IsEntryViolation(FindViolation(createEx)));
-      var fetchEx = await Assert.ThrowsAsync<DataPortalException>(() => portal.FetchChildAsync(false));
-      Assert.IsFalse(IsEntryViolation(FindViolation(fetchEx)));
-      Assert.IsTrue(NotNullPortalLog.Contains("Child.Exception"), "A failed exit check is reported as an exception");
-      Assert.IsFalse(NotNullPortalLog.Contains("Child.InvokeComplete"), "and not as a completed operation");
+      var createEx = (await FluentActions.Awaiting(() => portal.CreateChildAsync(false)).Should().ThrowAsync<DataPortalException>()).Which;
+      IsEntryViolation(FindViolation(createEx)).Should().BeFalse();
+      var fetchEx = (await FluentActions.Awaiting(() => portal.FetchChildAsync(false)).Should().ThrowAsync<DataPortalException>()).Which;
+      IsEntryViolation(FindViolation(fetchEx)).Should().BeFalse();
+      using (new AssertionScope())
+      {
+        NotNullPortalLog.Contains("Child.Exception").Should().BeTrue("a failed exit check is reported as an exception");
+        NotNullPortalLog.Contains("Child.InvokeComplete").Should().BeFalse("a failed exit check is not reported as a completed operation");
+      }
 
-      Assert.AreEqual("child", (await portal.CreateChildAsync(true)).Name);
-      Assert.AreEqual("child", (await portal.FetchChildAsync(true)).Name);
+      (await portal.CreateChildAsync(true)).Name.Should().Be("child");
+      (await portal.FetchChildAsync(true)).Name.Should().Be("child");
     }
 
     [TestMethod]
@@ -268,12 +297,16 @@ namespace Csla.Test.NotNull
       child.PlantNull(NotNullPortalChild.NameProperty);
       NotNullPortalLog.Clear();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateChildAsync(child));
+      var ex = (await FluentActions.Awaiting(() => portal.UpdateChildAsync(child)).Should().ThrowAsync<DataPortalException>()).Which;
 
-      Assert.IsTrue(IsEntryViolation(FindViolation(ex)));
-      Assert.IsFalse(NotNullPortalLog.Contains("InsertChild"));
-      Assert.IsFalse(NotNullPortalLog.Contains("Child.Invoke"), "The operation did not start");
-      Assert.IsFalse(NotNullPortalLog.Contains("Child.Exception"), "so no exception notification is raised");
+      var violation = FindViolation(ex);
+      using (new AssertionScope())
+      {
+        IsEntryViolation(violation).Should().BeTrue();
+        NotNullPortalLog.Contains("InsertChild").Should().BeFalse();
+        NotNullPortalLog.Contains("Child.Invoke").Should().BeFalse("the operation did not start");
+        NotNullPortalLog.Contains("Child.Exception").Should().BeFalse("no exception notification is raised when the operation did not start");
+      }
     }
 
     [TestMethod]
@@ -286,7 +319,7 @@ namespace Csla.Test.NotNull
 
       await portal.UpdateChildAsync(child);
 
-      Assert.IsFalse(NotNullPortalLog.Contains("UpdateChild"));
+      NotNullPortalLog.Contains("UpdateChild").Should().BeFalse();
     }
 
     [TestMethod]
@@ -297,16 +330,24 @@ namespace Csla.Test.NotNull
       var entry = await portal.FetchChildAsync(true);
       entry.DeleteForTest();
       entry.PlantNull(NotNullPortalChild.NameProperty);
-      var entryEx = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateChildAsync(entry));
-      Assert.IsTrue(IsEntryViolation(FindViolation(entryEx)));
-      Assert.IsFalse(NotNullPortalLog.Contains("DeleteSelfChild"));
+      var entryEx = (await FluentActions.Awaiting(() => portal.UpdateChildAsync(entry)).Should().ThrowAsync<DataPortalException>()).Which;
+      var entryViolation = FindViolation(entryEx);
+      using (new AssertionScope())
+      {
+        IsEntryViolation(entryViolation).Should().BeTrue();
+        NotNullPortalLog.Contains("DeleteSelfChild").Should().BeFalse();
+      }
 
       var exit = await portal.FetchChildAsync(true);
       exit.DeleteForTest();
       exit.NullNameOnSave = true;
-      var exitEx = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateChildAsync(exit));
-      Assert.IsFalse(IsEntryViolation(FindViolation(exitEx)));
-      Assert.IsTrue(NotNullPortalLog.Contains("DeleteSelfChild"));
+      var exitEx = (await FluentActions.Awaiting(() => portal.UpdateChildAsync(exit)).Should().ThrowAsync<DataPortalException>()).Which;
+      var exitViolation = FindViolation(exitEx);
+      using (new AssertionScope())
+      {
+        IsEntryViolation(exitViolation).Should().BeFalse();
+        NotNullPortalLog.Contains("DeleteSelfChild").Should().BeTrue();
+      }
     }
 
     [TestMethod]
@@ -315,28 +356,35 @@ namespace Csla.Test.NotNull
       var portal = _testHost.GetChildDataPortal<NotNullChildCommand>();
 
       var cmd = await portal.CreateChildAsync();
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.UpdateChildAsync(cmd));
+      var ex = (await FluentActions.Awaiting(() => portal.UpdateChildAsync(cmd)).Should().ThrowAsync<DataPortalException>()).Which;
 
-      Assert.IsFalse(IsEntryViolation(FindViolation(ex)));
-      Assert.IsTrue(NotNullPortalLog.Contains("ExecuteChild"));
+      var violation = FindViolation(ex);
+      using (new AssertionScope())
+      {
+        IsEntryViolation(violation).Should().BeFalse();
+        NotNullPortalLog.Contains("ExecuteChild").Should().BeTrue();
+      }
     }
 
     [TestMethod]
     public void NotNullInvariant_ObjectWithoutFieldManager_ReportsNoDefaultPropertiesWithoutCreatingIt()
     {
       var obj = New<NotNullPortalRoot>();
-      Assert.IsNull(((IFieldManagerAccess)obj).FieldManagerIfCreated);
+      ((IFieldManagerAccess)obj).FieldManagerIfCreated.Should().BeNull();
 
       var failing = NotNullInvariant.GetUnsatisfied(obj).Select(p => p.Name).ToArray();
 
-      CollectionAssert.AreEquivalent(new[] { nameof(NotNullPortalRoot.Name), nameof(NotNullPortalRoot.Data) }, failing);
-      Assert.IsNull(((IFieldManagerAccess)obj).FieldManagerIfCreated, "The check does not create a field manager");
+      using (new AssertionScope())
+      {
+        failing.Should().BeEquivalentTo(new[] { nameof(NotNullPortalRoot.Name), nameof(NotNullPortalRoot.Data) });
+        ((IFieldManagerAccess)obj).FieldManagerIfCreated.Should().BeNull("the check does not create a field manager");
+      }
     }
 
     [TestMethod]
     public void NotNullInvariant_List_IsSkipped()
     {
-      Assert.AreEqual(0, NotNullInvariant.GetUnsatisfied(New<NotNullPortalList>()).Count);
+      NotNullInvariant.GetUnsatisfied(New<NotNullPortalList>()).Should().BeEmpty();
     }
 
     // Hierarchies and the backstop
@@ -346,13 +394,16 @@ namespace Csla.Test.NotNull
     {
       var portal = _testHost.GetDataPortal<NotNullLeaf>();
 
-      var ex = await Assert.ThrowsAsync<DataPortalException>(() => portal.CreateAsync(false));
+      var ex = (await FluentActions.Awaiting(() => portal.CreateAsync(false)).Should().ThrowAsync<DataPortalException>()).Which;
 
       var violation = FindViolation(ex);
-      StringAssert.Contains(violation.Message, nameof(NotNullLeaf.LayerName));
-      StringAssert.Contains(violation.Message, nameof(NotNullLeaf.MiddleName));
-      StringAssert.Contains(violation.Message, nameof(NotNullLeaf.LeafName));
-      Assert.AreEqual("leaf", (await portal.CreateAsync(true)).LeafName);
+      using (new AssertionScope())
+      {
+        violation.Message.Should().Contain(nameof(NotNullLeaf.LayerName));
+        violation.Message.Should().Contain(nameof(NotNullLeaf.MiddleName));
+        violation.Message.Should().Contain(nameof(NotNullLeaf.LeafName));
+      }
+      (await portal.CreateAsync(true)).LeafName.Should().Be("leaf");
     }
 
     [TestMethod]
@@ -361,8 +412,8 @@ namespace Csla.Test.NotNull
       for (var i = 0; i < 2; i++)
       {
         var obj = New<NotNullNotSerializedRoot>();
-        var ex = Assert.ThrowsExactly<InvalidOperationException>(() => _ = ((IUseFieldManager)obj).FieldManager);
-        StringAssert.Contains(ex.Message, nameof(NotNullNotSerializedRoot.Transient));
+        var ex = FluentActions.Invoking(() => _ = ((IUseFieldManager)obj).FieldManager).Should().ThrowExactly<InvalidOperationException>().Which;
+        ex.Message.Should().Contain(nameof(NotNullNotSerializedRoot.Transient));
       }
     }
 
@@ -371,7 +422,7 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullNotSerializedDefaultRoot>();
 
-      Assert.AreEqual("d", obj.Transient);
+      obj.Transient.Should().Be("d");
     }
   }
 

@@ -1129,7 +1129,7 @@ namespace Csla
     protected static new NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName) where P : notnull
     {
       if (string.IsNullOrWhiteSpace(propertyName))
-        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
       return RegisterNotNullProperty(Core.FieldManager.PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName));
     }
@@ -1163,7 +1163,7 @@ namespace Csla
     protected static new NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName) where P : notnull
     {
       if (string.IsNullOrWhiteSpace(propertyName))
-        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
       return RegisterNotNullProperty(Core.FieldManager.PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName));
     }
@@ -1200,7 +1200,7 @@ namespace Csla
     protected static new NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName, P defaultValue) where P : notnull
     {
       if (string.IsNullOrWhiteSpace(propertyName))
-        throw new ArgumentException("Property name must not be null or empty.", nameof(propertyName));
+        throw new ArgumentException(string.Format(Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
       return RegisterNotNullProperty(Core.FieldManager.PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }

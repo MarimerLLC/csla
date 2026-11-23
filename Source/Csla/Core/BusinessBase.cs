@@ -2066,7 +2066,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <remarks>
     /// <para>
     /// If the user is not authorized to read the property
@@ -2096,9 +2096,9 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="noAccess">
-    /// True if an exception should be thrown when the
+    /// Specifies whether an exception is thrown when the
     /// user is not authorized to read this property.</param>
     /// <remarks>
     /// <para>
@@ -2385,7 +2385,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <remarks>
     /// An unloaded property reads as its default value, which is stored
     /// unless it is null. The value is non-null on an object the data
@@ -2886,11 +2886,7 @@ namespace Csla.Core
       {
         throw;
       }
-      catch (NotNullPropertyViolationException)
-      {
-        throw;
-      }
-      catch (Exception ex)
+      catch (Exception ex) when (ex is not NotNullPropertyViolationException)
       {
         throw new PropertyLoadException(
           string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
@@ -2957,7 +2953,7 @@ namespace Csla.Core
     /// </summary>
     /// <typeparam name="P">Property type.</typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>
@@ -2984,11 +2980,11 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <param name="noAccess">
-    /// True if an exception should be thrown when the
+    /// Specifies whether an exception is thrown when the
     /// user is not authorized to change this property.</param>
     /// <remarks>
     /// A null <see cref="string"/> is stored as <see cref="string.Empty"/>;
@@ -3046,11 +3042,7 @@ namespace Csla.Core
       {
         throw;
       }
-      catch (NotNullPropertyViolationException)
-      {
-        throw;
-      }
-      catch (Exception ex)
+      catch (Exception ex) when (ex is not NotNullPropertyViolationException)
       {
         throw new PropertyLoadException(
           string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
@@ -3126,11 +3118,7 @@ namespace Csla.Core
         convertedValue = NotNullGuard.CheckWriteInsideTry(propertyInfo, convertedValue);
         LoadPropertyValue<P>(propertyInfo, oldValue, convertedValue, false);
       }
-      catch (NotNullPropertyViolationException)
-      {
-        throw;
-      }
-      catch (Exception ex)
+      catch (Exception ex) when (ex is not NotNullPropertyViolationException)
       {
         throw new PropertyLoadException(
           string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message), ex);
@@ -3283,7 +3271,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>
@@ -3310,7 +3298,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>

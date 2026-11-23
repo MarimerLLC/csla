@@ -409,10 +409,10 @@ namespace Csla
     /// Type of property.
     /// </typeparam>
     /// <param name="info">
-    /// NotNullPropertyInfo object for the property.
+    /// <see cref="NotNullPropertyInfo{T}"/> object for the property.
     /// </param>
     /// <returns>
-    /// The provided NotNullPropertyInfo object.
+    /// The provided <see cref="NotNullPropertyInfo{T}"/> object.
     /// </returns>
     /// <remarks>
     /// The data portal verifies a command's not-null properties when Execute
@@ -435,11 +435,11 @@ namespace Csla
     /// </summary>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
-    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName) where P : notnull
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
       return RegisterNotNullProperty(Core.FieldManager.PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName));
     }
@@ -469,11 +469,11 @@ namespace Csla
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
     protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName) where P : notnull
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
       return RegisterNotNullProperty(Core.FieldManager.PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName));
     }
@@ -505,11 +505,12 @@ namespace Csla
     /// <param name="propertyName">Property name from nameof()</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    /// <exception cref="ArgumentNullException"><paramref name="propertyName"/> or <paramref name="defaultValue"/> is <see langword="null"/>.</exception>
+    /// <exception cref="ArgumentException"><paramref name="propertyName"/> is <see langword="null"/>, <see cref="string.Empty"/> or only consists of white spaces.</exception>
+    /// <exception cref="ArgumentNullException"><paramref name="defaultValue"/> is <see langword="null"/>.</exception>
     protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(string propertyName, string? friendlyName, P defaultValue) where P : notnull
     {
-      if (propertyName is null)
-        throw new ArgumentNullException(nameof(propertyName));
+      if (string.IsNullOrWhiteSpace(propertyName))
+        throw new ArgumentException(string.Format(Properties.Resources.StringNotNullOrWhiteSpaceException, nameof(propertyName)), nameof(propertyName));
 
       return RegisterNotNullProperty(Core.FieldManager.PropertyInfoFactory.Factory.CreateNotNull<P>(typeof(T), propertyName, friendlyName, defaultValue));
     }

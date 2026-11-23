@@ -95,7 +95,7 @@ namespace Csla.Core.FieldManager
           ? fieldData.Value is not null
           : propertyInfo.DefaultValue is not null;
         if (!satisfied)
-          (result ??= []).Add(propertyInfo);
+          (result ??= new List<IPropertyInfo>(notNull.Length)).Add(propertyInfo);
       }
       return result ?? (IReadOnlyList<IPropertyInfo>)[];
     }
@@ -117,7 +117,7 @@ namespace Csla.Core.FieldManager
       foreach (var propertyInfo in notNull)
       {
         if (propertyInfo.DefaultValue is null)
-          (result ??= []).Add(propertyInfo);
+          (result ??= new List<IPropertyInfo>(notNull.Length)).Add(propertyInfo);
       }
       return result ?? (IReadOnlyList<IPropertyInfo>)[];
     }
@@ -282,10 +282,8 @@ namespace Csla.Core.FieldManager
       // default and isn't serialized would be null after serialization,
       // so the type is rejected (and nothing is cached)
       List<IPropertyInfo>? notNull = null;
-      foreach (var item in result)
+      foreach (var item in result.Where(NotNullGuard.IsNotNullReference))
       {
-        if (!NotNullGuard.IsNotNullReference(item))
-          continue;
         if (item.DefaultValue is null && !item.IsSerializable)
           throw new InvalidOperationException(string.Format(Resources.NotNullPropertyNotSerializedWithoutDefault, type.FullName, item.Name));
         (notNull ??= []).Add(item);

@@ -17,4 +17,9 @@
                       Condition="$([System.Int32]::Parse($(CslaVersion.Split('.')[0]))) &lt; 11" />
 
   </ItemGroup>
+
+  <!-- Not-null properties (#5047) exist from CSLA 11 on -->
+  <ItemGroup Condition="$([System.Int32]::Parse($(CslaVersion.Split('.')[0]))) &lt; 11">
+    <Compile Remove="NotNullInvariant\NotNullGraphBenchmark.cs" />
+  </ItemGroup>
 </Project>

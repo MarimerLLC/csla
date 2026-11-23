@@ -177,10 +177,10 @@ namespace Csla.Core
     /// Type of object to which the property belongs.
     /// </param>
     /// <param name="info">
-    /// NotNullPropertyInfo object for the property.
+    /// <see cref="NotNullPropertyInfo{T}"/> object for the property.
     /// </param>
     /// <returns>
-    /// The provided NotNullPropertyInfo object.
+    /// The provided <see cref="NotNullPropertyInfo{T}"/> object.
     /// </returns>
     /// <remarks>
     /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
@@ -207,7 +207,7 @@ namespace Csla.Core
     /// <typeparam name="T">Type of object to which the property belongs.</typeparam>
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
-    /// <returns>The provided NotNullPropertyInfo object.</returns>
+    /// <returns>The provided <see cref="NotNullPropertyInfo{T}"/> object.</returns>
     /// <remarks>
     /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
     /// travel into a data portal operation and are never verified, so a not-null
@@ -232,7 +232,7 @@ namespace Csla.Core
     /// <typeparam name="P">Type of property</typeparam>
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
-    /// <returns>The provided NotNullPropertyInfo object.</returns>
+    /// <returns>The provided <see cref="NotNullPropertyInfo{T}"/> object.</returns>
     /// <remarks>
     /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
     /// travel into a data portal operation and are never verified, so a not-null
@@ -258,7 +258,7 @@ namespace Csla.Core
     /// <param name="propertyLambdaExpression">Property Expression</param>
     /// <param name="friendlyName">Friendly description for a property to be used in databinding</param>
     /// <param name="defaultValue">Default Value for the property</param>
-    /// <returns>The provided NotNullPropertyInfo object.</returns>
+    /// <returns>The provided <see cref="NotNullPropertyInfo{T}"/> object.</returns>
     /// <remarks>
     /// <see cref="CriteriaBase{T}"/> inherits this method. Criteria objects only
     /// travel into a data portal operation and are never verified, so a not-null
@@ -339,7 +339,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <remarks>
     /// An unloaded property reads as its default value, which is stored
     /// unless it is null. For a command, the value is non-null after the
@@ -432,11 +432,7 @@ namespace Csla.Core
         convertedValue = NotNullGuard.CheckWriteInsideTry(propertyInfo, convertedValue);
         LoadPropertyValue<P>(propertyInfo, oldValue, convertedValue);
       }
-      catch (NotNullPropertyViolationException)
-      {
-        throw;
-      }
-      catch (Exception ex)
+      catch (Exception ex) when (ex is not NotNullPropertyViolationException)
       {
         throw new PropertyLoadException(string.Format(Properties.Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
       }
@@ -500,7 +496,7 @@ namespace Csla.Core
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>

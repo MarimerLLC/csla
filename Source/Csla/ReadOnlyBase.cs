@@ -760,10 +760,10 @@ namespace Csla
     /// Type of object to which the property belongs.
     /// </param>
     /// <param name="info">
-    /// NotNullPropertyInfo object for the property.
+    /// <see cref="NotNullPropertyInfo{T}"/> object for the property.
     /// </param>
     /// <returns>
-    /// The provided NotNullPropertyInfo object.
+    /// The provided <see cref="NotNullPropertyInfo{T}"/> object.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="objectType"/> or <paramref name="info"/> is <see langword="null"/>.</exception>
     [UnconditionalSuppressMessage("Trimming", "IL2067", Justification = Csla.Core.TrimmingMessages.BusinessTypeJustification)]
@@ -786,10 +786,10 @@ namespace Csla
     /// Type of property.
     /// </typeparam>
     /// <param name="info">
-    /// NotNullPropertyInfo object for the property.
+    /// <see cref="NotNullPropertyInfo{T}"/> object for the property.
     /// </param>
     /// <returns>
-    /// The provided NotNullPropertyInfo object.
+    /// The provided <see cref="NotNullPropertyInfo{T}"/> object.
     /// </returns>
     /// <exception cref="ArgumentNullException"><paramref name="info"/> is <see langword="null"/>.</exception>
     protected static NotNullPropertyInfo<P> RegisterNotNullProperty<P>(NotNullPropertyInfo<P> info) where P : notnull
@@ -1420,7 +1420,7 @@ namespace Csla
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <remarks>
     /// <para>
     /// If the user is not authorized to read the property
@@ -1450,9 +1450,9 @@ namespace Csla
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="noAccess">
-    /// True if an exception should be thrown when the
+    /// Specifies whether an exception is thrown when the
     /// user is not authorized to read this property.</param>
     /// <remarks>
     /// <para>
@@ -1577,7 +1577,7 @@ namespace Csla
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <remarks>
     /// An unloaded property reads as its default value, which is stored
     /// unless it is null. The value is non-null on an object the data
@@ -1758,11 +1758,7 @@ namespace Csla
             FieldManager.LoadFieldData(propertyInfo, checkedValue);
         }
       }
-      catch (NotNullPropertyViolationException)
-      {
-        throw;
-      }
-      catch (Exception ex)
+      catch (Exception ex) when (ex is not NotNullPropertyViolationException)
       {
         throw new PropertyLoadException(string.Format(Resources.PropertyLoadException, propertyInfo.Name, ex.Message));
       }
@@ -1841,7 +1837,7 @@ namespace Csla
     /// Type of the property.
     /// </typeparam>
     /// <param name="propertyInfo">
-    /// NotNullPropertyInfo object containing property metadata.</param>
+    /// <see cref="NotNullPropertyInfo{T}"/> object containing property metadata.</param>
     /// <param name="newValue">
     /// The new value for the property.</param>
     /// <remarks>

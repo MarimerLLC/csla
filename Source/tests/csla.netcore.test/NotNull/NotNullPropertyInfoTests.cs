@@ -10,6 +10,8 @@
 
 using Csla.Core;
 using Csla.Core.FieldManager;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.NotNull
@@ -22,10 +24,13 @@ namespace Csla.Test.NotNull
     {
       var pi = new NotNullPropertyInfo<string>("Name");
 
-      Assert.IsFalse(pi.HasDefaultValue);
-      Assert.IsNull(pi.DefaultValue, "No-default form must not use the data binding friendly string.Empty");
-      Assert.AreEqual(RelationshipTypes.None, pi.RelationshipType);
-      Assert.IsInstanceOfType<INotNullPropertyInfo>(pi);
+      using (new AssertionScope())
+      {
+        pi.HasDefaultValue.Should().BeFalse();
+        pi.DefaultValue.Should().BeNull("the no-default form must not use the data binding friendly string.Empty");
+        pi.RelationshipType.Should().Be(RelationshipTypes.None);
+        pi.Should().BeAssignableTo<INotNullPropertyInfo>();
+      }
     }
 
     [TestMethod]
@@ -33,9 +38,12 @@ namespace Csla.Test.NotNull
     {
       var pi = new NotNullPropertyInfo<int>("Id", "Identifier");
 
-      Assert.IsFalse(pi.HasDefaultValue);
-      Assert.AreEqual(0, pi.DefaultValue);
-      Assert.AreEqual("Identifier", pi.FriendlyName);
+      using (new AssertionScope())
+      {
+        pi.HasDefaultValue.Should().BeFalse();
+        pi.DefaultValue.Should().Be(0);
+        pi.FriendlyName.Should().Be("Identifier");
+      }
     }
 
     [TestMethod]
@@ -43,14 +51,17 @@ namespace Csla.Test.NotNull
     {
       var pi = new NotNullPropertyInfo<string>("Name", null, null, string.Empty);
 
-      Assert.IsTrue(pi.HasDefaultValue);
-      Assert.AreEqual(string.Empty, pi.DefaultValue);
+      using (new AssertionScope())
+      {
+        pi.HasDefaultValue.Should().BeTrue();
+        pi.DefaultValue.Should().Be(string.Empty);
+      }
     }
 
     [TestMethod]
     public void NotNullPropertyInfo_NullDefault_Throws()
     {
-      Assert.ThrowsExactly<ArgumentNullException>(() => new NotNullPropertyInfo<string>("Name", null, null, null!));
+      FluentActions.Invoking(() => new NotNullPropertyInfo<string>("Name", null, null, null!)).Should().ThrowExactly<ArgumentNullException>();
     }
 
     [TestMethod]
@@ -62,11 +73,14 @@ namespace Csla.Test.NotNull
       var friendly = factory.CreateNotNull<string>(typeof(NotNullRegistrationRoot), "Name", "Friendly");
       var withDefault = factory.CreateNotNull<string>(typeof(NotNullRegistrationRoot), "Name", null, "x");
 
-      Assert.IsFalse(noDefault.HasDefaultValue);
-      Assert.IsFalse(friendly.HasDefaultValue);
-      Assert.AreEqual("Friendly", friendly.FriendlyName);
-      Assert.IsTrue(withDefault.HasDefaultValue);
-      Assert.AreEqual("x", withDefault.DefaultValue);
+      using (new AssertionScope())
+      {
+        noDefault.HasDefaultValue.Should().BeFalse();
+        friendly.HasDefaultValue.Should().BeFalse();
+        friendly.FriendlyName.Should().Be("Friendly");
+        withDefault.HasDefaultValue.Should().BeTrue();
+        withDefault.DefaultValue.Should().Be("x");
+      }
     }
 
     [TestMethod]
@@ -74,98 +88,183 @@ namespace Csla.Test.NotNull
     {
       var factory = PropertyInfoFactory.Factory;
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => factory.CreateNotNull<string>(null!, "Name"));
-      Assert.ThrowsExactly<ArgumentNullException>(() => factory.CreateNotNull<string>(typeof(NotNullRegistrationRoot), null!));
-      Assert.ThrowsExactly<ArgumentNullException>(() => factory.CreateNotNull<string>(typeof(NotNullRegistrationRoot), "Name", null, null!));
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => factory.CreateNotNull<string>(null!, "Name")).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => factory.CreateNotNull<string>(typeof(NotNullRegistrationRoot), null!)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => factory.CreateNotNull<string>(typeof(NotNullRegistrationRoot), "Name", null, null!)).Should().ThrowExactly<ArgumentNullException>();
+      }
     }
 
     [TestMethod]
     public void BusinessBase_RegisterNotNullProperty_RegistersAllShapes()
     {
-      AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.ByNameProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.ByLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.FriendlyProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.FriendlyLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.DefaultedProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.DefaultedLambdaProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.InstanceProperty, hasDefault: false);
+      using (new AssertionScope())
+      {
+        AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.ByNameProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.ByLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.FriendlyProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.FriendlyLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.DefaultedProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.DefaultedLambdaProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationRoot), NotNullRegistrationRoot.InstanceProperty, hasDefault: false);
 
-      Assert.AreEqual("Friendly name", NotNullRegistrationRoot.FriendlyProperty.FriendlyName);
-      Assert.AreEqual("default", NotNullRegistrationRoot.DefaultedProperty.DefaultValue);
+        NotNullRegistrationRoot.FriendlyProperty.FriendlyName.Should().Be("Friendly name");
+        NotNullRegistrationRoot.DefaultedProperty.DefaultValue.Should().Be("default");
+      }
     }
 
     [TestMethod]
     public void BusinessBase_RegisterNotNullProperty_TwoArgumentStringBindsToFriendlyName()
     {
       // (name, friendlyName) is the no-default form, also for P == string
-      Assert.IsFalse(NotNullRegistrationRoot.FriendlyProperty.HasDefaultValue);
-      Assert.IsNull(NotNullRegistrationRoot.FriendlyProperty.DefaultValue);
+      using (new AssertionScope())
+      {
+        NotNullRegistrationRoot.FriendlyProperty.HasDefaultValue.Should().BeFalse();
+        NotNullRegistrationRoot.FriendlyProperty.DefaultValue.Should().BeNull();
+      }
+    }
+
+    [TestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    public void BusinessBase_RegisterNotNullPropertyByName_InvalidName_ThrowsArgumentException(string? propertyName)
+    {
+      FluentActions.Invoking(() => NotNullRegistrationRoot.RegisterByName(propertyName))
+        .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+    }
+
+    [TestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    public void BusinessBase_RegisterNotNullPropertyByNameAndFriendlyName_InvalidName_ThrowsArgumentException(string? propertyName)
+    {
+      FluentActions.Invoking(() => NotNullRegistrationRoot.RegisterByNameAndFriendlyName(propertyName))
+        .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+    }
+
+    [TestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    public void BusinessBase_RegisterNotNullPropertyWithDefault_InvalidName_ThrowsArgumentException(string? propertyName)
+    {
+      FluentActions.Invoking(() => NotNullRegistrationRoot.RegisterWithDefault(propertyName))
+        .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
     }
 
     [TestMethod]
     public void ReadOnlyBase_RegisterNotNullProperty_RegistersAllShapes()
     {
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.ByNameProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.ByLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.FriendlyProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.FriendlyLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.DefaultedProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.DefaultedLambdaProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.InstanceProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.TypedInstanceProperty, hasDefault: false);
+      using (new AssertionScope())
+      {
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.ByNameProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.ByLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.FriendlyProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.FriendlyLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.DefaultedProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.DefaultedLambdaProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.InstanceProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationInfo), NotNullRegistrationInfo.TypedInstanceProperty, hasDefault: false);
+      }
     }
 
     [TestMethod]
     public void ReadOnlyBase_RegisterNotNullProperty_EmptyName_Throws()
     {
-      Assert.ThrowsExactly<ArgumentException>(() => NotNullRegistrationInfo.RegisterEmptyName());
+      FluentActions.Invoking(() => NotNullRegistrationInfo.RegisterEmptyName()).Should().ThrowExactly<ArgumentException>();
+    }
+
+    [TestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    public void ReadOnlyBase_RegisterNotNullPropertyByNameOverloads_InvalidName_ThrowArgumentException(string? propertyName)
+    {
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => NotNullRegistrationInfo.RegisterByName(propertyName))
+          .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+        FluentActions.Invoking(() => NotNullRegistrationInfo.RegisterByNameAndFriendlyName(propertyName))
+          .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+        FluentActions.Invoking(() => NotNullRegistrationInfo.RegisterWithDefault(propertyName))
+          .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+      }
     }
 
     [TestMethod]
     public void CommandBase_RegisterNotNullProperty_RegistersAllShapes()
     {
-      AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.ByNameProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.ByLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.FriendlyProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.FriendlyLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.DefaultedProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.DefaultedLambdaProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.InstanceProperty, hasDefault: false);
+      using (new AssertionScope())
+      {
+        AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.ByNameProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.ByLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.FriendlyProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.FriendlyLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.DefaultedProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.DefaultedLambdaProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationCommand), NotNullRegistrationCommand.InstanceProperty, hasDefault: false);
+      }
+    }
+
+    [TestMethod]
+    [DataRow(null)]
+    [DataRow("")]
+    [DataRow("  ")]
+    public void CommandBase_RegisterNotNullPropertyByNameOverloads_InvalidName_ThrowArgumentException(string? propertyName)
+    {
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => NotNullRegistrationCommand.RegisterByName(propertyName))
+          .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+        FluentActions.Invoking(() => NotNullRegistrationCommand.RegisterByNameAndFriendlyName(propertyName))
+          .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+        FluentActions.Invoking(() => NotNullRegistrationCommand.RegisterWithDefault(propertyName))
+          .Should().ThrowExactly<ArgumentException>().WithParameterName("propertyName");
+      }
     }
 
     [TestMethod]
     public void ManagedObjectBase_RegisterNotNullProperty_RegistersAllShapes()
     {
-      AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.ByLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.FriendlyLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.DefaultedLambdaProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.InstanceProperty, hasDefault: false);
+      using (new AssertionScope())
+      {
+        AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.ByLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.FriendlyLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.DefaultedLambdaProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationCriteria), NotNullRegistrationCriteria.InstanceProperty, hasDefault: false);
+      }
     }
 
     [TestMethod]
     public void BusinessDocumentBase_RegisterNotNullProperty_RegistersAllShapes()
     {
-      AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.ByNameProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.ByLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.FriendlyProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.FriendlyLambdaProperty, hasDefault: false);
-      AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.DefaultedProperty, hasDefault: true);
-      AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.DefaultedLambdaProperty, hasDefault: true);
+      using (new AssertionScope())
+      {
+        AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.ByNameProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.ByLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.FriendlyProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.FriendlyLambdaProperty, hasDefault: false);
+        AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.DefaultedProperty, hasDefault: true);
+        AssertRegistered(typeof(NotNullRegistrationDocument), NotNullRegistrationDocument.DefaultedLambdaProperty, hasDefault: true);
+      }
     }
 
     [TestMethod]
     public void BusinessDocumentBase_RegisterNotNullProperty_EmptyName_Throws()
     {
-      Assert.ThrowsExactly<ArgumentException>(() => NotNullRegistrationDocument.RegisterEmptyName());
+      FluentActions.Invoking(() => NotNullRegistrationDocument.RegisterEmptyName()).Should().ThrowExactly<ArgumentException>();
     }
 
     private static void AssertRegistered(Type type, IPropertyInfo expected, bool hasDefault)
     {
       var registered = PropertyInfoManager.GetRegisteredProperties(type);
-      Assert.IsTrue(registered.Contains(expected), $"{expected.Name} is not registered on {type.Name}");
-      Assert.IsInstanceOfType<INotNullPropertyInfo>(expected);
+      registered.Should().Contain(expected, "{0} must be registered on {1}", expected.Name, type.Name);
+      expected.Should().BeAssignableTo<INotNullPropertyInfo>();
       var hasDefaultValue = (bool)expected.GetType().GetProperty("HasDefaultValue")!.GetValue(expected)!;
-      Assert.AreEqual(hasDefault, hasDefaultValue, $"{expected.Name}.HasDefaultValue");
+      hasDefaultValue.Should().Be(hasDefault, "that is the HasDefaultValue {0} was registered with", expected.Name);
     }
   }
 
@@ -192,6 +291,10 @@ namespace Csla.Test.NotNull
 
     public static readonly NotNullPropertyInfo<string> InstanceProperty = RegisterNotNullProperty(new NotNullPropertyInfo<string>(nameof(Instance)));
     public string Instance => GetProperty(InstanceProperty)!;
+
+    public static void RegisterByName(string? propertyName) => RegisterNotNullProperty<string>(propertyName!);
+    public static void RegisterByNameAndFriendlyName(string? propertyName) => RegisterNotNullProperty<string>(propertyName!, "Friendly name");
+    public static void RegisterWithDefault(string? propertyName) => RegisterNotNullProperty<string>(propertyName!, "Friendly name", "default");
   }
 
   [Serializable]
@@ -222,6 +325,10 @@ namespace Csla.Test.NotNull
     public string TypedInstance => GetProperty(TypedInstanceProperty)!;
 
     public static void RegisterEmptyName() => RegisterNotNullProperty<string>(" ");
+
+    public static void RegisterByName(string? propertyName) => RegisterNotNullProperty<string>(propertyName!);
+    public static void RegisterByNameAndFriendlyName(string? propertyName) => RegisterNotNullProperty<string>(propertyName!, "Friendly name");
+    public static void RegisterWithDefault(string? propertyName) => RegisterNotNullProperty<string>(propertyName!, "Friendly name", "default");
   }
 
   [Serializable]
@@ -247,6 +354,10 @@ namespace Csla.Test.NotNull
 
     public static readonly NotNullPropertyInfo<string> InstanceProperty = RegisterNotNullProperty(new NotNullPropertyInfo<string>(nameof(Instance)));
     public string Instance => ReadProperty(InstanceProperty)!;
+
+    public static void RegisterByName(string? propertyName) => RegisterNotNullProperty<string>(propertyName!);
+    public static void RegisterByNameAndFriendlyName(string? propertyName) => RegisterNotNullProperty<string>(propertyName!, "Friendly name");
+    public static void RegisterWithDefault(string? propertyName) => RegisterNotNullProperty<string>(propertyName!, "Friendly name", "default");
   }
 
   [Serializable]

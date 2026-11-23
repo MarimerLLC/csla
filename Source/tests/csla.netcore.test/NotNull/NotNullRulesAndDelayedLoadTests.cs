@@ -11,6 +11,8 @@
 using Csla.Core;
 using Csla.Rules;
 using Csla.Testing;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.NotNull
@@ -43,14 +45,17 @@ namespace Csla.Test.NotNull
 
       obj.Trigger = 1;
 
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullRuleRoot.DataProperty));
-      Assert.AreEqual("set", obj.Name, "Other output values are still written");
-      Assert.AreEqual(string.Empty, obj.Label, "A null string output is stored as string.Empty");
-      Assert.IsFalse(obj.BrokenRulesCollection.Any(r => r.Property == nameof(NotNullRuleRoot.Label)));
       var broken = obj.BrokenRulesCollection.Single(r => r.Property == nameof(NotNullRuleRoot.Data));
-      Assert.AreEqual(RuleSeverity.Error, broken.Severity);
-      StringAssert.Contains(broken.Description, nameof(NotNullRuleRoot.Data));
-      Assert.IsFalse(obj.IsValid);
+      using (new AssertionScope())
+      {
+        ((IManageProperties)obj).FieldExists(NotNullRuleRoot.DataProperty).Should().BeFalse();
+        obj.Name.Should().Be("set", "other output values are still written");
+        obj.Label.Should().Be(string.Empty, "a null string output is stored as string.Empty");
+        obj.BrokenRulesCollection.Should().NotContain(r => r.Property == nameof(NotNullRuleRoot.Label));
+        broken.Severity.Should().Be(RuleSeverity.Error);
+        broken.Description.Should().Contain(nameof(NotNullRuleRoot.Data));
+        obj.IsValid.Should().BeFalse();
+      }
     }
 
     [TestMethod]
@@ -61,9 +66,12 @@ namespace Csla.Test.NotNull
       obj.Trigger = 1;
       await obj.WaitForIdle(TimeSpan.FromSeconds(10));
 
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullAsyncRuleRoot.DataProperty));
       var broken = obj.BrokenRulesCollection.Single(r => r.Property == nameof(NotNullAsyncRuleRoot.Data));
-      Assert.AreEqual(RuleSeverity.Error, broken.Severity);
+      using (new AssertionScope())
+      {
+        ((IManageProperties)obj).FieldExists(NotNullAsyncRuleRoot.DataProperty).Should().BeFalse();
+        broken.Severity.Should().Be(RuleSeverity.Error);
+      }
     }
 
     // RuleContext.AddOutValue
@@ -75,7 +83,7 @@ namespace Csla.Test.NotNull
 
       obj.RunOutValueRule(OutValueMode.Primary);
 
-      Assert.IsInstanceOfType<ArgumentNullException>(obj.Captured);
+      obj.Captured.Should().BeAssignableTo<ArgumentNullException>();
     }
 
     [TestMethod]
@@ -85,7 +93,7 @@ namespace Csla.Test.NotNull
 
       obj.RunOutValueRule(OutValueMode.Property);
 
-      Assert.IsInstanceOfType<ArgumentNullException>(obj.Captured);
+      obj.Captured.Should().BeAssignableTo<ArgumentNullException>();
     }
 
     [TestMethod]
@@ -96,8 +104,11 @@ namespace Csla.Test.NotNull
 
       obj.RunOutValueRule(OutValueMode.Defaulted);
 
-      Assert.IsNull(obj.Captured);
-      Assert.AreEqual("unknown", obj.Code);
+      using (new AssertionScope())
+      {
+        obj.Captured.Should().BeNull();
+        obj.Code.Should().Be("unknown");
+      }
     }
 
     [TestMethod]
@@ -108,9 +119,12 @@ namespace Csla.Test.NotNull
 
       obj.RunOutValueRule(OutValueMode.String);
 
-      Assert.IsNull(obj.Captured);
-      Assert.AreEqual(string.Empty, obj.CapturedOutValue, "The output value is the one the object stores");
-      Assert.AreEqual(string.Empty, obj.Name);
+      using (new AssertionScope())
+      {
+        obj.Captured.Should().BeNull();
+        obj.CapturedOutValue.Should().Be(string.Empty, "the output value is the one the object stores");
+        obj.Name.Should().Be(string.Empty);
+      }
     }
 
     // Delayed loading
@@ -122,13 +136,13 @@ namespace Csla.Test.NotNull
 
       for (var i = 0; i < 2; i++)
       {
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyGet());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyGetAsync());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyRead());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyReadAsync());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LoadAsync());
+        FluentActions.Invoking(() => obj.LazyGet()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyGetAsync()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyRead()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyReadAsync()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LoadAsync()).Should().ThrowExactly<NotSupportedException>();
       }
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullLazyRoot.NameProperty));
+      ((IManageProperties)obj).FieldExists(NotNullLazyRoot.NameProperty).Should().BeFalse();
     }
 
     [TestMethod]
@@ -137,10 +151,13 @@ namespace Csla.Test.NotNull
       var obj = New<NotNullLazyRoot>();
       obj.LoadName("a");
 
-      Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyGet());
-      Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyGetAsync());
-      Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyRead());
-      Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyReadAsync());
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => obj.LazyGet()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyGetAsync()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyRead()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyReadAsync()).Should().ThrowExactly<NotSupportedException>();
+      }
     }
 
     [TestMethod]
@@ -150,11 +167,11 @@ namespace Csla.Test.NotNull
 
       for (var i = 0; i < 2; i++)
       {
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyGet());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyGetAsync());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyRead());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LazyReadAsync());
-        Assert.ThrowsExactly<NotSupportedException>(() => obj.LoadAsync());
+        FluentActions.Invoking(() => obj.LazyGet()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyGetAsync()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyRead()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LazyReadAsync()).Should().ThrowExactly<NotSupportedException>();
+        FluentActions.Invoking(() => obj.LoadAsync()).Should().ThrowExactly<NotSupportedException>();
       }
     }
 
@@ -163,7 +180,7 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullLazyRoot>();
 
-      Assert.AreEqual("lazy", obj.LazyGetRegular());
+      obj.LazyGetRegular().Should().Be("lazy");
     }
   }
 

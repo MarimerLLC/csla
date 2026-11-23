@@ -11,6 +11,8 @@
 using Csla.Core;
 using Csla.Rules;
 using Csla.Testing;
+using FluentAssertions;
+using FluentAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.NotNull
@@ -41,8 +43,11 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullEditRoot>();
 
-      Assert.IsNull(obj.Name);
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.NameProperty));
+      using (new AssertionScope())
+      {
+        obj.Name.Should().BeNull();
+        ((IManageProperties)obj).FieldExists(NotNullEditRoot.NameProperty).Should().BeFalse();
+      }
     }
 
     [TestMethod]
@@ -50,8 +55,8 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullEditRoot>();
 
-      Assert.AreEqual("unknown", obj.ReadCode());
-      Assert.IsTrue(((IManageProperties)obj).FieldExists(NotNullEditRoot.CodeProperty));
+      obj.ReadCode().Should().Be("unknown");
+      ((IManageProperties)obj).FieldExists(NotNullEditRoot.CodeProperty).Should().BeTrue();
     }
 
     [TestMethod]
@@ -60,7 +65,7 @@ namespace Csla.Test.NotNull
       var obj = New<NotNullEditRoot>();
       obj.LoadSecret("hidden");
 
-      Assert.IsNull(obj.Secret, "Authorization takes precedence over nullability");
+      obj.Secret.Should().BeNull("authorization takes precedence over nullability");
     }
 
     [TestMethod]
@@ -68,9 +73,9 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullInfo>();
 
-      Assert.IsNull(obj.Name);
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullInfo.NameProperty));
-      Assert.AreEqual("unknown", obj.Code);
+      obj.Name.Should().BeNull();
+      ((IManageProperties)obj).FieldExists(NotNullInfo.NameProperty).Should().BeFalse();
+      obj.Code.Should().Be("unknown");
     }
 
     [TestMethod]
@@ -78,8 +83,11 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullCommand>();
 
-      Assert.IsNull(obj.Result);
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullCommand.ResultProperty));
+      using (new AssertionScope())
+      {
+        obj.Result.Should().BeNull();
+        ((IManageProperties)obj).FieldExists(NotNullCommand.ResultProperty).Should().BeFalse();
+      }
     }
 
     // Typed writes
@@ -91,7 +99,7 @@ namespace Csla.Test.NotNull
 
       obj.Name = null!;
 
-      Assert.AreEqual(string.Empty, obj.Name);
+      obj.Name.Should().Be(string.Empty);
     }
 
     [TestMethod]
@@ -99,8 +107,8 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullEditRoot>();
 
-      var ex = Assert.ThrowsExactly<ArgumentNullException>(() => obj.Data = null!);
-      Assert.AreEqual(nameof(NotNullEditRoot.Data), ex.ParamName);
+      FluentActions.Invoking(() => obj.Data = null!).Should().ThrowExactly<ArgumentNullException>()
+        .WithParameterName(nameof(NotNullEditRoot.Data));
     }
 
     [TestMethod]
@@ -111,8 +119,11 @@ namespace Csla.Test.NotNull
       obj.Name = "a";
       obj.Data = [1];
 
-      Assert.AreEqual("a", obj.Name);
-      CollectionAssert.AreEqual(new byte[] { 1 }, obj.Data);
+      using (new AssertionScope())
+      {
+        obj.Name.Should().Be("a");
+        obj.Data.Should().Equal(new byte[] { 1 });
+      }
     }
 
     // A not-null string never throws for null: every write path stores
@@ -141,7 +152,7 @@ namespace Csla.Test.NotNull
 
         write(obj);
 
-        Assert.AreEqual(string.Empty, obj.Name, path);
+        obj.Name.Should().Be(string.Empty, "the {0} write path stores string.Empty for null", path);
       }
     }
 
@@ -165,11 +176,14 @@ namespace Csla.Test.NotNull
       {
         var obj = New<NotNullEditRoot>();
 
-        var ex = Assert.Throws<ArgumentNullException>(() => write(obj), path);
-        StringAssert.Contains(ex.Message, "not-null property", path);
-        // nothing was stored: the properties stay unloaded
-        Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.DataProperty), path);
-        Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullEditRoot.TokenProperty), path);
+        var ex = FluentActions.Invoking(() => write(obj)).Should().Throw<ArgumentNullException>("the {0} write path rejects null", path).Which;
+        using (new AssertionScope())
+        {
+          ex.Message.Should().Contain("not-null property", "the {0} write path names the not-null property", path);
+          // nothing was stored: the properties stay unloaded
+          ((IManageProperties)obj).FieldExists(NotNullEditRoot.DataProperty).Should().BeFalse("the {0} write path stores nothing", path);
+          ((IManageProperties)obj).FieldExists(NotNullEditRoot.TokenProperty).Should().BeFalse("the {0} write path stores nothing", path);
+        }
       }
     }
 
@@ -181,7 +195,7 @@ namespace Csla.Test.NotNull
 
       obj.LoadUntyped(NotNullEditRoot.CountProperty, null);
 
-      Assert.AreEqual(0, obj.Count);
+      obj.Count.Should().Be(0);
     }
 
     [TestMethod]
@@ -191,7 +205,7 @@ namespace Csla.Test.NotNull
 
       obj.SetUntyped(NotNullEditRoot.NameProperty, 42);
 
-      Assert.AreEqual("42", obj.Name);
+      obj.Name.Should().Be("42");
     }
 
     private sealed class NullToString
@@ -204,7 +218,7 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullEditRoot>();
 
-      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => obj.SetUntyped(NotNullEditRoot.SecretProperty, null));
+      FluentActions.Invoking(() => obj.SetUntyped(NotNullEditRoot.SecretProperty, null)).Should().ThrowExactly<Csla.Security.SecurityException>();
     }
 
     [TestMethod]
@@ -214,7 +228,7 @@ namespace Csla.Test.NotNull
       {
         var obj = New<NotNullInfo>();
         write(obj);
-        Assert.AreEqual(string.Empty, obj.Name);
+        obj.Name.Should().Be(string.Empty);
       }
     }
 
@@ -226,8 +240,11 @@ namespace Csla.Test.NotNull
 
       obj.LoadNameConvert(null);
 
-      Assert.AreEqual(string.Empty, obj.Name);
-      Assert.AreEqual(0, Csla.Core.NotNullInvariant.GetUnsatisfiedProperties(obj).Count(p => p.Name == nameof(NotNullInfo.Name)));
+      using (new AssertionScope())
+      {
+        obj.Name.Should().Be(string.Empty);
+        Csla.Core.NotNullInvariant.GetUnsatisfiedProperties(obj).Should().NotContain(p => p.Name == nameof(NotNullInfo.Name));
+      }
     }
 
     [TestMethod]
@@ -235,10 +252,13 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullInfo>();
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadData(null));
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullInfo.DataProperty, null));
-      Assert.Throws<ArgumentNullException>(() => obj.LoadDataConvert(null));
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullInfo.DataProperty));
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => obj.LoadData(null)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => obj.LoadUntyped(NotNullInfo.DataProperty, null)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => obj.LoadDataConvert(null)).Should().Throw<ArgumentNullException>();
+        ((IManageProperties)obj).FieldExists(NotNullInfo.DataProperty).Should().BeFalse();
+      }
     }
 
     [TestMethod]
@@ -248,7 +268,7 @@ namespace Csla.Test.NotNull
 
       obj.LoadName("a");
 
-      Assert.AreEqual("a", obj.Name);
+      obj.Name.Should().Be("a");
     }
 
     [TestMethod]
@@ -266,7 +286,7 @@ namespace Csla.Test.NotNull
       {
         var obj = New<NotNullCommand>();
         write(obj);
-        Assert.AreEqual(string.Empty, obj.Result);
+        obj.Result.Should().Be(string.Empty);
       }
     }
 
@@ -275,11 +295,14 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullCommand>();
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadPayload(null));
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntyped(NotNullCommand.PayloadProperty, null));
-      Assert.ThrowsExactly<ArgumentNullException>(() => obj.LoadUntypedMarkDirty(NotNullCommand.PayloadProperty, null));
-      Assert.Throws<ArgumentNullException>(() => obj.LoadPayloadConvert(null));
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullCommand.PayloadProperty));
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => obj.LoadPayload(null)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => obj.LoadUntyped(NotNullCommand.PayloadProperty, null)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => obj.LoadUntypedMarkDirty(NotNullCommand.PayloadProperty, null)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => obj.LoadPayloadConvert(null)).Should().Throw<ArgumentNullException>();
+        ((IManageProperties)obj).FieldExists(NotNullCommand.PayloadProperty).Should().BeFalse();
+      }
     }
 
     [TestMethod]
@@ -287,9 +310,12 @@ namespace Csla.Test.NotNull
     {
       var obj = New<NotNullCommand>();
 
-      Assert.ThrowsExactly<ArgumentNullException>(() => ((IManageProperties)obj).SetProperty(NotNullCommand.PayloadProperty, null));
-      Assert.ThrowsExactly<ArgumentNullException>(() => ((IManageProperties)obj).SetProperty(NotNullCommand.TokenProperty, "x"));
-      Assert.IsFalse(((IManageProperties)obj).FieldExists(NotNullCommand.TokenProperty));
+      using (new AssertionScope())
+      {
+        FluentActions.Invoking(() => ((IManageProperties)obj).SetProperty(NotNullCommand.PayloadProperty, null)).Should().ThrowExactly<ArgumentNullException>();
+        FluentActions.Invoking(() => ((IManageProperties)obj).SetProperty(NotNullCommand.TokenProperty, "x")).Should().ThrowExactly<ArgumentNullException>();
+        ((IManageProperties)obj).FieldExists(NotNullCommand.TokenProperty).Should().BeFalse();
+      }
     }
 
     [TestMethod]
@@ -299,7 +325,7 @@ namespace Csla.Test.NotNull
 
       obj.LoadNullable(null);
 
-      Assert.IsNull(obj.Nullable);
+      obj.Nullable.Should().BeNull();
     }
   }
 

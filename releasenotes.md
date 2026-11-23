@@ -135,7 +135,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 **Security**
 
 * [#4982](https://github.com/MarimerLLC/csla/issues/4982) Update `System.Security.Cryptography.Xml` in `Csla.Channels.Wcf` to patched versions for CVE-2026-96958, CVE-2026-96959 and CVE-2026-96960 ([#4983](https://github.com/MarimerLLC/csla/pull/4983))
-* [#5054](https://github.com/MarimerLLC/csla/issues/5054) The ASP.NET Core `CslaModelBinder` no longer stores a posted value with `LoadProperty` when the property setter rejects it. Before, a value denied by a write authorization rule (or rejected by setter logic) was stored anyway and could be saved. The value is now dropped and a localized ModelState error is added, and properties without a public setter aren't bound
+* [#5054](https://github.com/MarimerLLC/csla/issues/5054) The ASP.NET Core `CslaModelBinder` no longer stores a posted value with `LoadProperty` when the property setter rejects it. Before, a value denied by a write authorization rule (or rejected by setter logic) was stored anyway and could be saved. The value is now dropped and a localized ModelState error is added, and properties without a public setter aren't bound ([#5066](https://github.com/MarimerLLC/csla/pull/5066))
 
 **Collections**
 

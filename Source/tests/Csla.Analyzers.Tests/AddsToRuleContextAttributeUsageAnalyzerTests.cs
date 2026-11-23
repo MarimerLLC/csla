@@ -54,6 +54,26 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenExtensionMethodCallsTypedNotNullAddOutValue()
+    {
+      var code =
+        """
+        using Csla;
+        using Csla.Rules;
+
+        public static class RuleContextExtensions
+        {
+          [AddsToRuleContext]
+          public static void SetName(this IRuleContext context, NotNullPropertyInfo<string> property, string value)
+          {
+            context.AddOutValue(property, value);
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<AddsToRuleContextAttributeUsageAnalyzer>(code, []);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenStaticMethodCallsAddMethod()
     {
       var code =

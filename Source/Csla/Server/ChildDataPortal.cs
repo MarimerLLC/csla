@@ -19,6 +19,11 @@ namespace Csla.Server
   /// </summary>
   public class ChildDataPortal
   {
+    // operation names for the not-null invariant messages; they match the operation attributes
+    private const string CreateChildOperation = "CreateChild";
+    private const string FetchChildOperation = "FetchChild";
+    private const string UpdateChildOperation = "UpdateChild";
+
     /// <summary>
     /// Creates an instance of the type.
     /// </summary>
@@ -140,7 +145,7 @@ namespace Csla.Server
         obj.MarkNew();
         await obj.CreateChildAsync(operationName, parameters).ConfigureAwait(false);
         if (obj.Instance is not Core.ICommandObject)
-          Core.NotNullInvariant.Check(obj.Instance, "CreateChild", isEntry: false);
+          Core.NotNullInvariant.Check(obj.Instance, CreateChildOperation, isEntry: false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
 
@@ -275,7 +280,7 @@ namespace Csla.Server
         obj.MarkAsChild();
         obj.MarkOld();
         await obj.FetchChildAsync(operationName, parameters).ConfigureAwait(false);
-        Core.NotNullInvariant.Check(obj.Instance, "FetchChild", isEntry: false);
+        Core.NotNullInvariant.Check(obj.Instance, FetchChildOperation, isEntry: false);
         obj.Child_OnDataPortalInvokeComplete(eventArgs);
         return obj.Instance;
       }
@@ -445,7 +450,7 @@ namespace Csla.Server
       {
         try
         {
-          Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: true);
+          Core.NotNullInvariant.Check(obj, UpdateChildOperation, isEntry: true);
         }
         catch (Exception ex)
         {
@@ -457,7 +462,7 @@ namespace Csla.Server
       {
         lb.Child_OnDataPortalInvoke(new DataPortalEventArgs(null, objectType, obj, operation));
         await lb.UpdateChildAsync(parameters).ConfigureAwait(false);
-        Core.NotNullInvariant.Check(obj, "UpdateChild", isEntry: false);
+        Core.NotNullInvariant.Check(obj, UpdateChildOperation, isEntry: false);
         lb.Child_OnDataPortalInvokeComplete(new DataPortalEventArgs(null, objectType, obj, operation));
       }
       catch (Exception ex)

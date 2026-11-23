@@ -39,7 +39,8 @@ namespace Csla.Web.Mvc
   /// throws, the value isn't stored (a value written before the setter
   /// failed is restored) and a ModelState error is added under that field's
   /// key. A read-only property posted back with its current value isn't an
-  /// error. Fields listed in <c>__Invariant</c> by the tag helpers, such as
+  /// error, provided the user may read the property; otherwise any posted
+  /// value is reported, so the response doesn't reveal the current value. Fields listed in <c>__Invariant</c> by the tag helpers, such as
   /// <c>&lt;input type="number"&gt;</c>, are parsed with the invariant culture.
   /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
@@ -288,15 +289,22 @@ namespace Csla.Web.Mvc
         return;
       }
 
-      if (obj is Csla.Security.IAuthorizeReadWrite auth && !CanWriteProperty(auth, item))
+      if (obj is Csla.Security.IAuthorizeReadWrite auth && !IsAllowed(() => auth.CanWriteProperty(item)))
       {
-        // a read-only field posted back unchanged isn't an error
-        if (posted && !IsUnchanged(item, value, newValue, ReadProperty(obj, item)))
-          AddError(scope, key, Csla.Properties.Resources.PropertySetNotAllowed);
+        // a read-only field posted back unchanged isn't an error; the value is
+        // only compared when the user may read it, so a guess can't be confirmed
+        if (posted)
+        {
+          var unchanged = IsAllowed(() => auth.CanReadProperty(item))
+            && TryReadCurrentValue(obj, item, out var currentValue)
+            && IsUnchanged(item, value, newValue, currentValue);
+          if (!unchanged)
+            AddError(scope, key, Csla.Properties.Resources.PropertySetNotAllowed);
+        }
         return;
       }
 
-      var oldValue = ReadProperty(obj, item);
+      var hasOldValue = TryReadCurrentValue(obj, item, out var oldValue);
       try
       {
         Reflection.MethodCaller.CallPropertySetterCore(obj, item.Name, newValue);
@@ -305,7 +313,7 @@ namespace Csla.Web.Mvc
       {
         // a failure after the field was written (for example in a
         // PropertyChanged handler) leaves the new value, so restore it
-        if (!Equals(oldValue, ReadProperty(obj, item)))
+        if (hasOldValue && TryReadCurrentValue(obj, item, out var failedValue) && !Equals(oldValue, failedValue))
           LoadProperty(obj, item, oldValue);
 
         var cause = GetCause(ex);
@@ -342,18 +350,33 @@ namespace Csla.Web.Mvc
       }
     }
 
-    private static bool CanWriteProperty(Csla.Security.IAuthorizeReadWrite auth, Core.IPropertyInfo item)
+    private static bool IsAllowed(Func<bool> authorizationCheck)
     {
       try
       {
-        return auth.CanWriteProperty(item);
+        return authorizationCheck();
       }
       catch
       {
         // the check couldn't complete (for example an async rule that's
-        // still running), so treat the property as not writable
+        // still running), so treat the action as not allowed
         return false;
       }
+    }
+
+    /// <summary>
+    /// Reads the property's current value, unless it's a lazy-loaded
+    /// property that isn't loaded, which can't be read without loading it.
+    /// </summary>
+    private bool TryReadCurrentValue(object obj, Core.IPropertyInfo item, out object? value)
+    {
+      if ((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad && !FieldExists(obj, item))
+      {
+        value = null;
+        return false;
+      }
+      value = ReadProperty(obj, item);
+      return true;
     }
 
     /// <summary>

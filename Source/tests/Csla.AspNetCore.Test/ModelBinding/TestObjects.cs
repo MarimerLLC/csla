@@ -183,6 +183,29 @@ public class Employee : BusinessBase<Employee>
       throw new InvalidOperationException("handler failed");
   }
 
+  // the user can neither read nor write this property
+  public static readonly PropertyInfo<string> SsnProperty = RegisterProperty<string>(nameof(Ssn));
+  public string Ssn
+  {
+    get => GetProperty(SsnProperty);
+    set => SetProperty(SsnProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> PhotoProperty = RegisterProperty<string>(nameof(Photo), RelationshipTypes.LazyLoad);
+  public string Photo
+  {
+    get => LazyGetProperty(PhotoProperty, () => "loaded");
+    set => SetProperty(PhotoProperty, value);
+  }
+
+  // lazy-loaded and write-denied
+  public static readonly PropertyInfo<string> AvatarProperty = RegisterProperty<string>(nameof(Avatar), RelationshipTypes.LazyLoad);
+  public string Avatar
+  {
+    get => LazyGetProperty(AvatarProperty, () => "loaded");
+    set => SetProperty(AvatarProperty, value);
+  }
+
   public static readonly PropertyInfo<string> ExternalIdProperty = RegisterProperty<string>(nameof(ExternalId));
   public string ExternalId
   {
@@ -207,6 +230,9 @@ public class Employee : BusinessBase<Employee>
     BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, HiredOnProperty, "HR"));
     BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, GradeProperty, "HR"));
     BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, RateProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, SsnProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, SsnProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, AvatarProperty, "HR"));
   }
 
   public static readonly DateTime FetchedHiredOn = new(2026, 11, 23, 14, 5, 30, 123);
@@ -224,6 +250,7 @@ public class Employee : BusinessBase<Employee>
     LoadProperty(RateProperty, 100.5m);
     LoadProperty(MoodProperty, "calm");
     LoadProperty(ExternalIdProperty, "external");
+    LoadProperty(SsnProperty, "123-45-6789");
   }
 }
 

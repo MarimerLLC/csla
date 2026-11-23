@@ -756,6 +756,53 @@ public class CslaModelBinderTests
     _modelState.ErrorCount.Should().Be(0);
   }
 
+  [TestMethod]
+  [DataRow("123-45-6789")]
+  [DataRow("000-00-0000")]
+  public async Task Bind_ReadAndWriteDeniedProperty_AnyPostedValueAddsModelStateError(string guess)
+  {
+    // a correct guess and a wrong one get the same response, so the
+    // current value can't be found by guessing
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Ssn"] = guess,
+    }, model: existing);
+
+    _modelState["Ssn"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+  }
+
+  [TestMethod]
+  public async Task Bind_UnloadedLazyProperty_PostedValueIsBound()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Photo"] = "posted",
+    }, model: existing);
+
+    existing.Photo.Should().Be("posted");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_UnloadedLazyWriteDeniedProperty_PostedValueAddsModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Avatar"] = "posted",
+    }, model: existing);
+
+    _modelState["Avatar"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+    existing.Avatar.Should().Be("loaded");
+  }
+
   private async Task<Employee> FetchEmployeeAsync()
   {
     var portal = _scope.ServiceProvider.GetRequiredService<IDataPortal<Employee>>();

@@ -259,6 +259,7 @@ public class CslaModelBinderTests
     });
 
     result.Should().BeEmpty();
+    _modelState.ErrorCount.Should().Be(0);
   }
 
   [TestMethod]
@@ -489,6 +490,109 @@ public class CslaModelBinderTests
     result.Salary.Should().Be(0m);
     _modelState.ContainsKey("emp.Salary").Should().BeTrue();
     _modelState["emp.Salary"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedUnchanged_AddsNoModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Name"] = "updated",
+      ["Salary"] = "100",
+    }, model: existing);
+
+    existing.Name.Should().Be("updated");
+    existing.Salary.Should().Be(100m);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedDefaultOnNewObject_AddsNoModelStateError()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Salary"] = "0",
+    });
+
+    result.Salary.Should().Be(0m);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetPropertyThrows_MessageIsUnwrapped()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Tag"] = "bad",
+    });
+
+    result.Tag.Should().NotBe("bad");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, "Tag", Employee.BadTagMessage);
+    _modelState["Tag"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterThrowsWithReflectionFallback_MessageIsUnwrapped()
+  {
+    var original = ApplicationContext.UseReflectionFallback;
+    ApplicationContext.UseReflectionFallback = true;
+    try
+    {
+      var result = await BindAsync<Employee>(new()
+      {
+        ["Code"] = "bad",
+      });
+
+      result.Code.Should().NotBe("bad");
+      var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, "Code", Employee.BadCodeMessage);
+      _modelState["Code"].Errors.Should().ContainSingle()
+        .Which.ErrorMessage.Should().Be(expected);
+    }
+    finally
+    {
+      ApplicationContext.UseReflectionFallback = original;
+    }
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterThrowsUnexpectedException_MessageHidesDetails()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Notes"] = "boom",
+    });
+
+    result.Notes.Should().NotBe("boom");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertyValueNotAccepted, "Notes");
+    _modelState["Notes"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
+  }
+
+  [TestMethod]
+  public async Task Bind_UnpostedSetterThrowsUnexpectedException_Throws()
+  {
+    var act = () => BindAsync<NullRejectingSetter>(new());
+
+    await act.Should().ThrowAsync<InvalidOperationException>();
+  }
+
+  [TestMethod]
+  public async Task Bind_ValueNotConvertible_AddsModelStateError()
+  {
+    var result = await BindAsync<Parent>(new()
+    {
+      ["Id"] = "not a number",
+      ["Name"] = "root",
+    });
+
+    result.Id.Should().Be(0);
+    result.Name.Should().Be("root");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertyValueNotAccepted, "Id");
+    _modelState["Id"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
   }
 
   private async Task<Employee> FetchEmployeeAsync()

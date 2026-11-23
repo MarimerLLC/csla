@@ -76,6 +76,8 @@ public class Parent : BusinessBase<Parent>
 public class Employee : BusinessBase<Employee>
 {
   public const string BadCodeMessage = "Code can't be bad";
+  public const string BadTagMessage = "Tag can't be bad";
+  public const string InternalErrorMessage = "connection string xyz failed";
 
   public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
   public string Name
@@ -104,6 +106,39 @@ public class Employee : BusinessBase<Employee>
     }
   }
 
+  // rejected from inside SetProperty, which wraps the exception in a PropertyLoadException
+  public static readonly PropertyInfo<string> TagProperty = RegisterProperty<string>(nameof(Tag));
+  private string _pendingTag;
+  public string Tag
+  {
+    get => GetProperty(TagProperty);
+    set
+    {
+      _pendingTag = value;
+      SetProperty((Core.IPropertyInfo)TagProperty, value);
+    }
+  }
+
+  protected override void OnPropertyChanging(Core.IPropertyInfo propertyInfo)
+  {
+    if (ReferenceEquals(propertyInfo, TagProperty) && _pendingTag == "bad")
+      throw new ArgumentException(BadTagMessage);
+    base.OnPropertyChanging(propertyInfo);
+  }
+
+  // fails with an exception whose message isn't meant for users
+  public static readonly PropertyInfo<string> NotesProperty = RegisterProperty<string>(nameof(Notes));
+  public string Notes
+  {
+    get => GetProperty(NotesProperty);
+    set
+    {
+      if (value == "boom")
+        throw new InvalidOperationException(InternalErrorMessage);
+      SetProperty(NotesProperty, value);
+    }
+  }
+
   public static readonly PropertyInfo<int> RatingProperty = RegisterProperty<int>(nameof(Rating));
   public int Rating
   {
@@ -128,6 +163,22 @@ public class Employee : BusinessBase<Employee>
     LoadProperty(CodeProperty, "code");
     Rating = 3;
     LoadProperty(BadgeProperty, "badge");
+  }
+}
+
+[Serializable]
+public class NullRejectingSetter : BusinessBase<NullRejectingSetter>
+{
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set
+    {
+      if (value is null)
+        throw new InvalidOperationException("setter bug");
+      SetProperty(NameProperty, value);
+    }
   }
 }
 

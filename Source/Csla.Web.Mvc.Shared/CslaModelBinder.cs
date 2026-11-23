@@ -34,13 +34,14 @@ namespace Csla.Web.Mvc
   /// declared child type.
   /// Only properties with a public setter are bound, and values are set
   /// through that setter, so authorization rules and setter logic run.
-  /// When the setter throws for a posted value, for example because the
-  /// user isn't allowed to write the property, the value isn't stored and
-  /// a ModelState error is added under that field's key.
+  /// When a posted value can't be converted to the property's type, the
+  /// user isn't allowed to change the property, or the setter throws, the
+  /// value isn't stored and a ModelState error is added under that field's
+  /// key. A read-only property posted back with its current value isn't
+  /// an error.
   /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
   [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
-  [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.MvcJustification)]
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>
@@ -212,6 +213,20 @@ namespace Csla.Web.Mvc
       public IModelMetadataProvider? MetadataProvider { get; }
 
       public ModelMetadata? GetMetadata(Type type) => MetadataProvider?.GetMetadataForType(type);
+
+      private readonly Dictionary<(Type, string), bool> _publicSetters = [];
+
+      [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.MvcJustification)]
+      public bool HasPublicSetter(object obj, string propertyName)
+      {
+        var type = obj.GetType();
+        if (!_publicSetters.TryGetValue((type, propertyName), out var result))
+        {
+          result = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)?.SetMethod is { IsPublic: true };
+          _publicSetters.Add((type, propertyName), result);
+        }
+        return result;
+      }
     }
 
     private static bool HasKeysWithPrefix(IFormCollection form, string prefix)
@@ -230,10 +245,10 @@ namespace Csla.Web.Mvc
       return result;
     }
 
-    private static void BindSingleProperty(BindingScope scope, object obj, Core.IPropertyInfo item, string key, bool posted)
+    private void BindSingleProperty(BindingScope scope, object obj, Core.IPropertyInfo item, string key, bool posted)
     {
       // a property without a public setter is read-only to the UI
-      if (!HasPublicSetter(obj, item.Name))
+      if (!scope.HasPublicSetter(obj, item.Name))
         return;
 
       var value = scope.Form[key].FirstOrDefault();
@@ -249,39 +264,66 @@ namespace Csla.Web.Mvc
         else
           newValue = Utilities.CoerceValue(item.Type, value.GetType(), null, value);
       }
-      catch (Exception ex)
+      catch
       {
-        throw new Exception($"Could not map {key} to model", ex);
+        // only a posted (non-null) value is converted, so this is user input
+        // that doesn't fit the property's type
+        scope.ModelState.TryAddModelError(key, GetValueNotAcceptedMessage(item));
+        return;
+      }
+
+      if (obj is Csla.Security.IAuthorizeReadWrite auth && !auth.CanWriteProperty(item))
+      {
+        // a read-only field posted back unchanged isn't an error
+        if (posted && !Equals(newValue, ReadProperty(obj, item)))
+          scope.ModelState.TryAddModelError(key, Csla.Properties.Resources.PropertySetNotAllowed);
+        return;
       }
 
       try
       {
-        Reflection.MethodCaller.CallPropertySetter(obj, item.Name, newValue);
+        Reflection.MethodCaller.CallPropertySetterCore(obj, item.Name, newValue);
       }
-      catch (Exception ex) when (posted)
+      catch (Exception ex)
       {
-        // the setter rejected the posted value (for example, write
-        // authorization denied it), so it isn't stored
-        scope.ModelState.TryAddModelError(key, GetSetFailedMessage(item, ex));
-      }
-      catch
-      {
-        // nothing was posted for this property on a new object,
-        // so a setter that rejects null leaves the property alone
+        var cause = GetCause(ex);
+        if (posted)
+        {
+          // the setter rejected the posted value, so it isn't stored
+          scope.ModelState.TryAddModelError(key, GetSetFailedMessage(item, cause));
+        }
+        else if (!IsSecurityException(cause) && cause is not ArgumentException)
+        {
+          // nothing was posted, so a setter rejecting null leaves the
+          // property alone; any other failure is a real error
+          throw;
+        }
       }
     }
 
-    private static bool HasPublicSetter(object obj, string propertyName)
-      => obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)?.SetMethod is { IsPublic: true };
-
-    private static string GetSetFailedMessage(Core.IPropertyInfo item, Exception ex)
+    private static Exception GetCause(Exception ex)
     {
-      if (ex is TargetInvocationException { InnerException: { } inner })
+      while (ex is TargetInvocationException or PropertyLoadException && ex.InnerException is { } inner)
         ex = inner;
-      if (ex is Csla.Security.SecurityException or System.Security.SecurityException)
-        return Csla.Properties.Resources.PropertySetNotAllowed;
-      return string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, item.FriendlyName, ex.Message);
+      return ex;
     }
+
+    private static bool IsSecurityException(Exception ex)
+      => ex is Csla.Security.SecurityException or System.Security.SecurityException;
+
+    private static string GetSetFailedMessage(Core.IPropertyInfo item, Exception cause)
+    {
+      if (IsSecurityException(cause))
+        return Csla.Properties.Resources.PropertySetNotAllowed;
+      // argument and validation exceptions carry messages meant for the user;
+      // other exceptions can hold internal details, so they get a generic message
+      if (cause is ArgumentException or System.ComponentModel.DataAnnotations.ValidationException)
+        return string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, item.FriendlyName, cause.Message);
+      return GetValueNotAcceptedMessage(item);
+    }
+
+    private static string GetValueNotAcceptedMessage(Core.IPropertyInfo item)
+      => string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertyValueNotAccepted, item.FriendlyName);
   }
 }
 #elif !NETSTANDARD

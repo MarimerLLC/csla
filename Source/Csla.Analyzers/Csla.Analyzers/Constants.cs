@@ -135,6 +135,31 @@
       /// that it passes the context to.
       /// </summary>
       public const string AddsToRuleContextUsage = "CSLA0031";
+      /// <summary>
+      /// A property with <c>[DoNotSerialize]</c> or <c>[CalculatedProperty]</c> is registered as a
+      /// not-null reference-type property without a default value: it is not serialized, so it
+      /// arrives null and fails the data portal check.
+      /// </summary>
+      public const string NotNullPropertyNotSerializedWithoutDefault = "CSLA0032";
+      /// <summary>
+      /// A data portal operation that completes an object doesn't visibly load a not-null
+      /// reference-type property that has no default value.
+      /// </summary>
+      public const string NotNullPropertyNotLoaded = "CSLA0033";
+      /// <summary>
+      /// A not-null reference-type property without a default value has a read authorization rule:
+      /// a denied read returns null through its non-nullable getter.
+      /// </summary>
+      public const string NotNullPropertyWithReadAuthorization = "CSLA0034";
+      /// <summary>
+      /// A two-argument <c>RegisterNotNullProperty&lt;string&gt;</c> call passes an empty or
+      /// whitespace string, which binds to <c>friendlyName</c> and registers no default value.
+      /// </summary>
+      public const string NotNullPropertyEmptyFriendlyName = "CSLA0035";
+      /// <summary>
+      /// A not-null property is used with a delayed-load method, which not-null properties don't support.
+      /// </summary>
+      public const string NotNullPropertyDelayedLoad = "CSLA0036";
 
     }
 

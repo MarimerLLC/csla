@@ -16,6 +16,13 @@ namespace Csla.Analyzers.Extensions
           (@this.BaseType.IsBusinessRule() || @this.Interfaces.Any(_ => _.IsBusinessRule())));
     }
 
+    internal static bool IsAuthorizationRule([NotNullWhen(true)] this ITypeSymbol? @this) =>
+      @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.IAuthorizationRuleBase &&
+          @this.ContainingAssembly?.Name == CslaMemberConstants.AssemblyName) ||
+          @this.AllInterfaces.Any(_ => _.Name == CslaMemberConstants.Types.IAuthorizationRuleBase &&
+            _.ContainingAssembly?.Name == CslaMemberConstants.AssemblyName));
+
     internal static bool IsObjectFactory([NotNullWhen(true)] this ITypeSymbol? @this)
     {
       return @this != null &&
@@ -202,5 +209,26 @@ namespace Csla.Analyzers.Extensions
         @this.Name == CslaMemberConstants.Types.CalculatedPropertyAttribute &&
         @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName;
     }
+
+    internal static bool IsDoNotSerializeAttribute([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        @this.Name == CslaMemberConstants.Types.DoNotSerializeAttribute &&
+        @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName;
+    }
+
+    internal static bool IsCommandBase([NotNullWhen(true)] this ITypeSymbol? @this)
+    {
+      return @this != null &&
+        ((@this.Name == CslaMemberConstants.Types.CommandBase &&
+          @this.ContainingAssembly.Name == CslaMemberConstants.AssemblyName) ||
+          @this.BaseType.IsCommandBase());
+    }
+
+    /// <summary>
+    /// Gets whether the type is declared in the Csla assembly.
+    /// </summary>
+    internal static bool IsDeclaredInCsla(this ITypeSymbol? @this) =>
+      @this?.ContainingAssembly?.Name == CslaMemberConstants.AssemblyName;
   }
 }

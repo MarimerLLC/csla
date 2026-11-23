@@ -402,4 +402,37 @@
   <data name="ImplementPropertiesInterfaceAnalyzer_UnsupportedBaseClass" xml:space="preserve">
     <value>it doesn't inherit BusinessBase, BusinessDocumentBase, ReadOnlyBase or CommandBase</value>
   </data>
+  <data name="NotNullPropertyNotSerializedAnalyzer_Title" xml:space="preserve">
+    <value>Not-serialized not-null properties need a default value</value>
+  </data>
+  <data name="NotNullPropertyNotSerializedAnalyzer_Message" xml:space="preserve">
+    <value>The property '{0}' is not serialized, but it is registered as a not-null property without a default value, so it is null after deserialization and fails the data portal check; register it with a default value, or declare it as a nullable type</value>
+  </data>
+  <data name="NotNullPropertyNotLoadedAnalyzer_Title" xml:space="preserve">
+    <value>Data portal operations should load not-null properties</value>
+  </data>
+  <data name="NotNullPropertyNotLoadedAnalyzer_Message" xml:space="preserve">
+    <value>'{0}' doesn't load these not-null properties, which have no default value, so the data portal fails the operation: {1}</value>
+  </data>
+  <data name="NotNullPropertyNotLoadedAnalyzer_MissingCreateChildMessage" xml:space="preserve">
+    <value>'{0}' has child data portal operations but no [CreateChild] operation of its own, and the inherited one doesn't load these not-null properties, which have no default value: {1}</value>
+  </data>
+  <data name="NotNullPropertyReadAuthorizationAnalyzer_Title" xml:space="preserve">
+    <value>Not-null properties with read authorization rules need a default value</value>
+  </data>
+  <data name="NotNullPropertyReadAuthorizationAnalyzer_Message" xml:space="preserve">
+    <value>The not-null property '{0}' has no default value and a read authorization rule: a denied read with NoAccessBehavior.SuppressException returns null through its non-nullable getter; register it with a default value, or declare it as a nullable type</value>
+  </data>
+  <data name="NotNullPropertyEmptyFriendlyNameAnalyzer_Title" xml:space="preserve">
+    <value>An empty friendly name registers no default value</value>
+  </data>
+  <data name="NotNullPropertyEmptyFriendlyNameAnalyzer_Message" xml:space="preserve">
+    <value>This argument is the friendly name, so '{0}' is registered without a default value; to use string.Empty as the default value, pass it as the third argument: RegisterNotNullProperty&lt;string&gt;(nameof({0}), null, string.Empty)</value>
+  </data>
+  <data name="NotNullPropertyDelayedLoadAnalyzer_Title" xml:space="preserve">
+    <value>Not-null properties don't support delayed loading</value>
+  </data>
+  <data name="NotNullPropertyDelayedLoadAnalyzer_Message" xml:space="preserve">
+    <value>The not-null property '{0}' can't be used with {1}, which throws NotSupportedException; register it with RegisterProperty, or load it in the data portal operation</value>
+  </data>
 </root>

@@ -917,5 +917,104 @@ namespace Csla.Analyzers.Properties {
                 return ResourceManager.GetString("ImplementPropertiesInterfaceAnalyzer_UnsupportedBaseClass", resourceCulture);
             }
         }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not-serialized not-null properties need a default value.
+        /// </summary>
+        internal static string NotNullPropertyNotSerializedAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("NotNullPropertyNotSerializedAnalyzer_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The property &apos;{0}&apos; is not serialized, but it is registered as a not-null property without a default value, so it is null after deserialization and fails the data portal check; register it with a default value, or declare it as a nullable type.
+        /// </summary>
+        internal static string NotNullPropertyNotSerializedAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("NotNullPropertyNotSerializedAnalyzer_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Data portal operations should load not-null properties.
+        /// </summary>
+        internal static string NotNullPropertyNotLoadedAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("NotNullPropertyNotLoadedAnalyzer_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; doesn&apos;t load these not-null properties, which have no default value, so the data portal fails the operation: {1}.
+        /// </summary>
+        internal static string NotNullPropertyNotLoadedAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("NotNullPropertyNotLoadedAnalyzer_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to &apos;{0}&apos; has child data portal operations but no [CreateChild] operation of its own, and the inherited one doesn&apos;t load these not-null properties, which have no default value: {1}.
+        /// </summary>
+        internal static string NotNullPropertyNotLoadedAnalyzer_MissingCreateChildMessage {
+            get {
+                return ResourceManager.GetString("NotNullPropertyNotLoadedAnalyzer_MissingCreateChildMessage", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not-null properties with read authorization rules need a default value.
+        /// </summary>
+        internal static string NotNullPropertyReadAuthorizationAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("NotNullPropertyReadAuthorizationAnalyzer_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The not-null property &apos;{0}&apos; has no default value and a read authorization rule: a denied read with NoAccessBehavior.SuppressException returns null through its non-nullable getter; register it with a default value, or declare it as a nullable type.
+        /// </summary>
+        internal static string NotNullPropertyReadAuthorizationAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("NotNullPropertyReadAuthorizationAnalyzer_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to An empty friendly name registers no default value.
+        /// </summary>
+        internal static string NotNullPropertyEmptyFriendlyNameAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("NotNullPropertyEmptyFriendlyNameAnalyzer_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to This argument is the friendly name, so &apos;{0}&apos; is registered without a default value; to use string.Empty as the default value, pass it as the third argument: RegisterNotNullProperty&lt;string&gt;(nameof({0}), null, string.Empty).
+        /// </summary>
+        internal static string NotNullPropertyEmptyFriendlyNameAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("NotNullPropertyEmptyFriendlyNameAnalyzer_Message", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to Not-null properties don&apos;t support delayed loading.
+        /// </summary>
+        internal static string NotNullPropertyDelayedLoadAnalyzer_Title {
+            get {
+                return ResourceManager.GetString("NotNullPropertyDelayedLoadAnalyzer_Title", resourceCulture);
+            }
+        }
+
+        /// <summary>
+        ///   Looks up a localized string similar to The not-null property &apos;{0}&apos; can&apos;t be used with {1}, which throws NotSupportedException; register it with RegisterProperty, or load it in the data portal operation.
+        /// </summary>
+        internal static string NotNullPropertyDelayedLoadAnalyzer_Message {
+            get {
+                return ResourceManager.GetString("NotNullPropertyDelayedLoadAnalyzer_Message", resourceCulture);
+            }
+        }
     }
 }

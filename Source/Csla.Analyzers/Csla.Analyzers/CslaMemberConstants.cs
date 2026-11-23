@@ -216,6 +216,10 @@
       /// </summary>
       public const string IBusinessRuleAsync = nameof(IBusinessRuleAsync);
       /// <summary>
+      /// The <c>Csla.Rules.IAuthorizationRuleBase</c> interface, shared by sync and async authorization rules.
+      /// </summary>
+      public const string IAuthorizationRuleBase = nameof(IAuthorizationRuleBase);
+      /// <summary>
       /// 
       /// </summary>
       public const string DataPortalChildOperationAttribute = nameof(DataPortalChildOperationAttribute);
@@ -236,7 +240,35 @@
       /// </summary>
       public const string CalculatedPropertyAttribute = nameof(CalculatedPropertyAttribute);
       /// <summary>
-      /// 
+      /// The <c>Csla.DoNotSerializeAttribute</c> type.
+      /// </summary>
+      public const string DoNotSerializeAttribute = nameof(DoNotSerializeAttribute);
+      /// <summary>
+      /// The <c>Csla.CommandBase&lt;T&gt;</c> type.
+      /// </summary>
+      public const string CommandBase = nameof(CommandBase);
+      /// <summary>
+      /// The <c>Csla.CreateAttribute</c> type.
+      /// </summary>
+      public const string CreateAttribute = nameof(CreateAttribute);
+      /// <summary>
+      /// The <c>Csla.FetchAttribute</c> type.
+      /// </summary>
+      public const string FetchAttribute = nameof(FetchAttribute);
+      /// <summary>
+      /// The <c>Csla.FetchChildAttribute</c> type.
+      /// </summary>
+      public const string FetchChildAttribute = nameof(FetchChildAttribute);
+      /// <summary>
+      /// The <c>Csla.ExecuteAttribute</c> type.
+      /// </summary>
+      public const string ExecuteAttribute = nameof(ExecuteAttribute);
+      /// <summary>
+      /// The <c>Csla.Rules.AuthorizationActions</c> enum.
+      /// </summary>
+      public const string AuthorizationActions = nameof(AuthorizationActions);
+      /// <summary>
+      ///
       /// </summary>
       public const string DynamicListBase = nameof(DynamicListBase);
       /// <summary>

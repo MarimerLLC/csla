@@ -53,6 +53,11 @@ If you have an idea for an analyzer that would be beneficial for developers usin
 * [CSLA0029](CSLA0029-MobileSerializerAttributeUsageAnalyzer.md) - Type has more than one custom serializer
 * [CSLA0030](CSLA0030-ImplementPropertiesInterfaceAnalyzer.md) - Properties cannot be generated
 * [CSLA0031](CSLA0031-AddsToRuleContextAttributeUsageAnalyzer.md) - Methods with `[AddsToRuleContext]` should add to the rule context
+* [CSLA0032](CSLA0032-NotNullPropertyNotSerializedAnalyzer.md) - Not-serialized not-null properties need a default value
+* [CSLA0033](CSLA0033-NotNullPropertyNotLoadedAnalyzer.md) - Data portal operations should load not-null properties
+* [CSLA0034](CSLA0034-NotNullPropertyReadAuthorizationAnalyzer.md) - Not-null properties with read authorization rules need a default value
+* [CSLA0035](CSLA0035-NotNullPropertyEmptyFriendlyNameAnalyzer.md) - An empty friendly name registers no default value
+* [CSLA0036](CSLA0036-NotNullPropertyDelayedLoadAnalyzer.md) - Not-null properties don't support delayed loading
 
 ## Suppressors
 Some .NET code style and code quality rules report false positives on CSLA code, because CSLA calls data portal operations and other methods through reflection. The `Csla` package includes diagnostic suppressors that hide these diagnostics only where they don't apply. The diagnostics still appear everywhere else.

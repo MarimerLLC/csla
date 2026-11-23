@@ -28,3 +28,5 @@ The attribute on the `PropertyInfo` field itself doesn't trip the analyzer. Valu
 ## Code Fix
 
 There is no code fix for this analyzer.
+
+See [Nullable reference types and CSLA properties](../Nullable-Reference-Types.md#cases-that-need-a-default-value-or-a-nullable-property) for the cases where a not-null property needs a default value.

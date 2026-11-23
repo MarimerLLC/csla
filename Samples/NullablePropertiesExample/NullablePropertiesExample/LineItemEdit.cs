@@ -4,14 +4,15 @@ namespace NullablePropertiesExample
 {
   public partial class LineItemEdit : BusinessBase<LineItemEdit>
   {
-    public static readonly PropertyInfo<string> ProductProperty = RegisterProperty<string>(nameof(Product));
+    public static readonly NotNullPropertyInfo<string> ProductProperty =
+      RegisterNotNullProperty<string>(nameof(Product), null, string.Empty);
     public string Product
     {
-      get => GetProperty(ProductProperty)!;
+      get => GetProperty(ProductProperty);
       set => SetProperty(ProductProperty, value);
     }
 
-    public static readonly PropertyInfo<int> QuantityProperty = RegisterProperty<int>(nameof(Quantity));
+    public static readonly NotNullPropertyInfo<int> QuantityProperty = RegisterNotNullProperty<int>(nameof(Quantity));
     public int Quantity
     {
       get => GetProperty(QuantityProperty);

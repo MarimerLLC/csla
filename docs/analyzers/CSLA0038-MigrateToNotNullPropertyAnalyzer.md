@@ -35,3 +35,5 @@ There is **no Fix All**: each property is a decision about its load paths. A pro
 ## Not reported
 
 Besides the cases listed for [CSLA0037](CSLA0037-MigrateToNotNullPropertyAnalyzer.md), a property with `[DoNotSerialize]` or `[CalculatedProperty]` isn't reported. Without a default value, it would be null after every data portal call ([CSLA0032](CSLA0032-NotNullPropertyNotSerializedAnalyzer.md)).
+
+See [Nullable reference types and CSLA properties](../Nullable-Reference-Types.md#migrating-existing-code) for how the two migration analyzers divide the work.

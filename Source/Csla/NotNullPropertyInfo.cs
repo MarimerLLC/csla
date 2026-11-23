@@ -23,7 +23,9 @@ namespace Csla
   /// instead of <c>T?</c>.
   /// </para>
   /// <para>
-  /// The framework does not invent a value at read time. It rejects null writes, and
+  /// The framework does not invent a value at read time. It rejects null writes
+  /// with <see cref="ArgumentNullException"/>, except for a <see cref="string"/>
+  /// property, which stores null as <see cref="string.Empty"/> on every write path; and
   /// the data portal verifies at the end of the operation that completes an object
   /// (Create/Fetch, or Execute for a command) that the property holds a value.
   /// A property created with a default value is satisfied by that default; a

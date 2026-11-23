@@ -56,3 +56,5 @@ Properties registered in a generic base type are checked with the derived type's
 ## Code Fix
 
 There is no code fix for this analyzer.
+
+See [Nullable reference types and CSLA properties](../Nullable-Reference-Types.md#loading-not-null-properties) for how the data portal checks not-null properties.

@@ -78,6 +78,8 @@ A class that doesn't inherit one of these base classes gets no properties genera
 
 An interface member without a `set` accessor gets a `private` setter, and a member with a `set` accessor gets a public one. On a `ReadOnlyBase` class, declare a member get-only when only the object's own code, such as its data portal operations, loads its value. Keep the `set` accessor when code outside the class sets it, such as an object factory that doesn't call `LoadProperty`.
 
+Where nullable annotations are enabled, a non-nullable property is registered as a not-null property, with `RegisterNotNullProperty`, and its getter has no `!`. A `string` gets `string.Empty` as its default value. Any other reference type, such as a child object, has no default value, so the data portal operations must load it. A property declared nullable (`T?`), a property with `[AllowNull]` or `[MaybeNull]`, and a property of an unconstrained generic type keep `RegisterProperty`. To register every property with `RegisterProperty`, as CSLA 10 did, set the `CslaGenerateNotNullProperties` build property to `false`. See [Nullable reference types and CSLA properties](../../../../docs/Nullable-Reference-Types.md).
+
 ## Understanding [CslaImplementProperties]
 
 - **Source Generators:** Introduced in .NET 5, source generators allow for compile-time code generation based on the existing codebase. They are a powerful tool for reducing boilerplate code and automating repetitive coding tasks.
@@ -113,28 +115,28 @@ public partial class AddressPOCO
 		get => GetProperty(AddressLine1Property);
 		private set => SetProperty(AddressLine1Property, value);
 	}
-	public static readonly PropertyInfo<string> AddressLine2Property = RegisterProperty<string>(nameof(AddressLine2));
+	public static readonly NotNullPropertyInfo<string> AddressLine2Property = RegisterNotNullProperty<string>(nameof(AddressLine2), null, string.Empty);
 	public partial string AddressLine2
 	{
-		get => GetProperty(AddressLine2Property)!;
+		get => GetProperty(AddressLine2Property);
 		set => SetProperty(AddressLine2Property, value);
 	}
-	public static readonly PropertyInfo<string> TownProperty = RegisterProperty<string>(nameof(Town));
+	public static readonly NotNullPropertyInfo<string> TownProperty = RegisterNotNullProperty<string>(nameof(Town), null, string.Empty);
 	public partial string Town
 	{
-		get => GetProperty(TownProperty)!;
+		get => GetProperty(TownProperty);
 		set => SetProperty(TownProperty, value);
 	}
-	public static readonly PropertyInfo<string> CountyProperty = RegisterProperty<string>(nameof(County));
+	public static readonly NotNullPropertyInfo<string> CountyProperty = RegisterNotNullProperty<string>(nameof(County), null, string.Empty);
 	public partial string County
 	{
-		get => GetProperty(CountyProperty)!;
+		get => GetProperty(CountyProperty);
 		set => SetProperty(CountyProperty, value);
 	}
-	public static readonly PropertyInfo<string> PostcodeProperty = RegisterProperty<string>(nameof(Postcode));
+	public static readonly NotNullPropertyInfo<string> PostcodeProperty = RegisterNotNullProperty<string>(nameof(Postcode), null, string.Empty);
 	public partial string Postcode
 	{
-		get => GetProperty(PostcodeProperty)!;
+		get => GetProperty(PostcodeProperty);
 		set => SetProperty(PostcodeProperty, value);
 	}
 }
@@ -152,17 +154,17 @@ namespace Csla.Generator.AutoImplementProperties.TestObjects;
 
 public partial class InterfaceImplementBusinessPOCO
 {
-	public static readonly PropertyInfo<int> IdProperty = RegisterProperty<int>(nameof(Id));
+	public static readonly NotNullPropertyInfo<int> IdProperty = RegisterNotNullProperty<int>(nameof(Id));
 	public int Id
 	{
 		get => GetProperty(IdProperty);
 		private set => SetProperty(IdProperty, value);
 	}
-	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+	public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);
 	[global::System.ComponentModel.DataAnnotations.DisplayAttribute( Name="Interface Name")]
 	public string Name
 	{
-		get => GetProperty(NameProperty)!;
+		get => GetProperty(NameProperty);
 		set => SetProperty(NameProperty, value);
 	}
 	public static readonly PropertyInfo<string?> DescriptionProperty = RegisterProperty<string?>(nameof(Description));

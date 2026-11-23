@@ -34,3 +34,5 @@ The check is best-effort: a rule built inside a helper method from arguments it 
 ## Code Fix
 
 There is no code fix for this analyzer.
+
+See [Nullable reference types and CSLA properties](../Nullable-Reference-Types.md#cases-that-need-a-default-value-or-a-nullable-property) for the cases where a not-null property needs a default value.

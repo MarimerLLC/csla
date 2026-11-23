@@ -30,6 +30,18 @@ namespace Csla.Core
   /// builds by hand.
   /// </para>
   /// <para>
+  /// When the data portal provides the transaction
+  /// (<c>[Transactional(TransactionalTypes.TransactionScope)]</c>, or
+  /// <c>EnterpriseServices</c> on .NET Framework), the root object's checks run
+  /// inside it, so a failing exit check rolls the work back. In
+  /// <c>TransactionalTypes.Manual</c> mode (the default) the root object's exit
+  /// check runs after the operation's code returns, so a transaction that code
+  /// committed stays committed and the failure is reported afterwards. A child
+  /// object is checked inside the root's operation, when it goes through the
+  /// child data portal, so in Manual mode its failure is raised in the root's
+  /// code, before that code commits.
+  /// </para>
+  /// <para>
   /// Each call checks one object and does not recurse into its children.
   /// Objects without managed properties, such as lists, always satisfy it.
   /// </para>

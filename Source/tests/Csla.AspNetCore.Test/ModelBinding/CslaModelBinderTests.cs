@@ -595,6 +595,167 @@ public class CslaModelBinderTests
       .Which.ErrorMessage.Should().Be(expected);
   }
 
+  [TestMethod]
+  public async Task Bind_AsyncWriteRule_NewObjectBindsWithoutThrowing()
+  {
+    var result = await BindAsync<AsyncAuthEmployee>(new()
+    {
+      ["Name"] = "employee",
+    });
+
+    result.Name.Should().Be("employee");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_AsyncWriteRule_PostedChangeIsNotStored()
+  {
+    var result = await BindAsync<AsyncAuthEmployee>(new()
+    {
+      ["Salary"] = "999999",
+    });
+
+    result.Salary.Should().Be(0m);
+    _modelState["Salary"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+  }
+
+  [TestMethod]
+  [DataRow("2026-11-23")]
+  [DataRow("2026-11-23T14:05")]
+  [DataRow("2026-11-23T14:05:30")]
+  [DataRow("2026-11-23T14:05:30.123")]
+  public async Task Bind_WriteDeniedDate_PostedBackAtLowerPrecision_AddsNoModelStateError(string posted)
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["HiredOn"] = posted,
+    }, model: existing);
+
+    existing.HiredOn.Should().Be(Employee.FetchedHiredOn);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  [DataRow("2026-11-24")]
+  [DataRow("2026-11-23T14:06")]
+  public async Task Bind_WriteDeniedDate_PostedChanged_AddsModelStateError(string posted)
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["HiredOn"] = posted,
+    }, model: existing);
+
+    existing.HiredOn.Should().Be(Employee.FetchedHiredOn);
+    _modelState["HiredOn"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedNullString_PostedBackEmpty_AddsNoModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Grade"] = "",
+    }, model: existing);
+
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedDecimal_PostedBackInOtherCulture_AddsNoModelStateError()
+  {
+    var culture = CultureInfo.CurrentCulture;
+    CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+    try
+    {
+      var existing = await FetchEmployeeAsync();
+
+      await BindAsync(new()
+      {
+        ["Rate"] = "100.5",
+      }, model: existing);
+
+      existing.Rate.Should().Be(100.5m);
+      _modelState.ErrorCount.Should().Be(0);
+    }
+    finally
+    {
+      CultureInfo.CurrentCulture = culture;
+    }
+  }
+
+  [TestMethod]
+  public async Task Bind_InvariantField_ParsedWithInvariantCulture()
+  {
+    var culture = CultureInfo.CurrentCulture;
+    CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+    try
+    {
+      var invariant = await BindAsync<Employee>(new()
+      {
+        ["Bonus"] = "12.5",
+        ["__Invariant"] = "Bonus",
+      });
+      invariant.Bonus.Should().Be(12.5m);
+
+      var local = await BindAsync<Employee>(new()
+      {
+        ["Bonus"] = "12,5",
+      });
+      local.Bonus.Should().Be(12.5m);
+    }
+    finally
+    {
+      CultureInfo.CurrentCulture = culture;
+    }
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterFailsAfterWritingValue_ValueIsRestored()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Mood"] = "angry",
+    }, model: existing);
+
+    existing.Mood.Should().Be("calm");
+    _modelState["Mood"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_ModelStateError_KeepsAttemptedValue()
+  {
+    await BindAsync<Parent>(new()
+    {
+      ["Id"] = "not a number",
+    });
+
+    _modelState["Id"].AttemptedValue.Should().Be("not a number");
+    _modelState["Id"].RawValue.Should().NotBeNull();
+  }
+
+  [TestMethod]
+  public async Task Bind_InitOnlyProperty_IsNotBound()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["ExternalId"] = "evil",
+    }, model: existing);
+
+    existing.ExternalId.Should().Be("external");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
   private async Task<Employee> FetchEmployeeAsync()
   {
     var portal = _scope.ServiceProvider.GetRequiredService<IDataPortal<Employee>>();

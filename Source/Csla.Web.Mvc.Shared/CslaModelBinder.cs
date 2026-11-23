@@ -32,13 +32,15 @@ namespace Csla.Web.Mvc
   /// only sets the values that were posted. Otherwise it creates a
   /// new object graph. New list items are created using the list's
   /// declared child type.
-  /// Only properties with a public setter are bound, and values are set
-  /// through that setter, so authorization rules and setter logic run.
-  /// When a posted value can't be converted to the property's type, the
-  /// user isn't allowed to change the property, or the setter throws, the
-  /// value isn't stored and a ModelState error is added under that field's
-  /// key. A read-only property posted back with its current value isn't
-  /// an error.
+  /// Only properties with a public, non-<c>init</c> setter are bound, and
+  /// values are set through that setter, so authorization rules and setter
+  /// logic run. When a posted value can't be converted to the property's
+  /// type, the user isn't allowed to change the property, or the setter
+  /// throws, the value isn't stored (a value written before the setter
+  /// failed is restored) and a ModelState error is added under that field's
+  /// key. A read-only property posted back with its current value isn't an
+  /// error. Fields listed in <c>__Invariant</c> by the tag helpers, such as
+  /// <c>&lt;input type="number"&gt;</c>, are parsed with the invariant culture.
   /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
   [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
@@ -206,7 +208,16 @@ namespace Csla.Web.Mvc
         Form = form;
         MetadataProvider = metadataProvider;
         ModelState = modelState;
+        // the tag helpers list fields rendered with the invariant culture
+        // (such as <input type="number">) in __Invariant, as MVC's FormValueProvider expects
+        _invariantKeys = new HashSet<string>(
+          form.TryGetValue("__Invariant", out var keys) ? keys.Where(k => k is not null).Select(k => k!) : [],
+          StringComparer.OrdinalIgnoreCase);
       }
+
+      private readonly HashSet<string> _invariantKeys;
+
+      public bool IsInvariant(string key) => _invariantKeys.Contains(key);
 
       public IFormCollection Form { get; }
       public ModelStateDictionary ModelState { get; }
@@ -222,11 +233,16 @@ namespace Csla.Web.Mvc
         var type = obj.GetType();
         if (!_publicSetters.TryGetValue((type, propertyName), out var result))
         {
-          result = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)?.SetMethod is { IsPublic: true };
+          var setter = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)?.SetMethod;
+          // an init accessor only sets the value while the object is created
+          result = setter is { IsPublic: true } && !IsInitOnly(setter);
           _publicSetters.Add((type, propertyName), result);
         }
         return result;
       }
+
+      private static bool IsInitOnly(System.Reflection.MethodInfo setter)
+        => setter.ReturnParameter.GetRequiredCustomModifiers().Any(m => m.FullName == "System.Runtime.CompilerServices.IsExternalInit");
     }
 
     private static bool HasKeysWithPrefix(IFormCollection form, string prefix)
@@ -262,35 +278,41 @@ namespace Csla.Web.Mvc
         if (item.Type.Equals(typeof(string)) || value is null)
           newValue = value;
         else
-          newValue = Utilities.CoerceValue(item.Type, value.GetType(), null, value);
+          newValue = CoerceValue(item.Type, value, scope.IsInvariant(key));
       }
       catch
       {
         // only a posted (non-null) value is converted, so this is user input
         // that doesn't fit the property's type
-        scope.ModelState.TryAddModelError(key, GetValueNotAcceptedMessage(item));
+        AddError(scope, key, GetValueNotAcceptedMessage(item));
         return;
       }
 
-      if (obj is Csla.Security.IAuthorizeReadWrite auth && !auth.CanWriteProperty(item))
+      if (obj is Csla.Security.IAuthorizeReadWrite auth && !CanWriteProperty(auth, item))
       {
         // a read-only field posted back unchanged isn't an error
-        if (posted && !Equals(newValue, ReadProperty(obj, item)))
-          scope.ModelState.TryAddModelError(key, Csla.Properties.Resources.PropertySetNotAllowed);
+        if (posted && !IsUnchanged(item, value, newValue, ReadProperty(obj, item)))
+          AddError(scope, key, Csla.Properties.Resources.PropertySetNotAllowed);
         return;
       }
 
+      var oldValue = ReadProperty(obj, item);
       try
       {
         Reflection.MethodCaller.CallPropertySetterCore(obj, item.Name, newValue);
       }
       catch (Exception ex)
       {
+        // a failure after the field was written (for example in a
+        // PropertyChanged handler) leaves the new value, so restore it
+        if (!Equals(oldValue, ReadProperty(obj, item)))
+          LoadProperty(obj, item, oldValue);
+
         var cause = GetCause(ex);
         if (posted)
         {
           // the setter rejected the posted value, so it isn't stored
-          scope.ModelState.TryAddModelError(key, GetSetFailedMessage(item, cause));
+          AddError(scope, key, GetSetFailedMessage(item, cause));
         }
         else if (!IsSecurityException(cause) && cause is not ArgumentException)
         {
@@ -299,6 +321,87 @@ namespace Csla.Web.Mvc
           throw;
         }
       }
+    }
+
+    private static object? CoerceValue(Type type, string value, bool invariant)
+    {
+      if (!invariant)
+        return Utilities.CoerceValue(type, typeof(string), null, value);
+
+      // the field was rendered with the invariant culture (for example
+      // <input type="number">), so parse it that way
+      var culture = CultureInfo.CurrentCulture;
+      CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+      try
+      {
+        return Utilities.CoerceValue(type, typeof(string), null, value);
+      }
+      finally
+      {
+        CultureInfo.CurrentCulture = culture;
+      }
+    }
+
+    private static bool CanWriteProperty(Csla.Security.IAuthorizeReadWrite auth, Core.IPropertyInfo item)
+    {
+      try
+      {
+        return auth.CanWriteProperty(item);
+      }
+      catch
+      {
+        // the check couldn't complete (for example an async rule that's
+        // still running), so treat the property as not writable
+        return false;
+      }
+    }
+
+    /// <summary>
+    /// Gets whether a posted value matches the current value, allowing for
+    /// what's lost when a value is rendered and posted back.
+    /// </summary>
+    private static bool IsUnchanged(Core.IPropertyInfo item, string? postedText, object? newValue, object? currentValue)
+    {
+      if (Equals(newValue, currentValue))
+        return true;
+      if (item.Type.Equals(typeof(string)))
+        return string.IsNullOrEmpty((string?)newValue) && string.IsNullOrEmpty((string?)currentValue);
+      if (newValue is DateTime postedDate && currentValue is DateTime currentDate)
+        return MatchesAtPostedPrecision(postedDate, currentDate);
+      if (newValue is DateTimeOffset postedOffset && currentValue is DateTimeOffset currentOffset)
+        return postedOffset.Offset == currentOffset.Offset && MatchesAtPostedPrecision(postedOffset.DateTime, currentOffset.DateTime);
+      // the current value may have been rendered in another culture
+      return postedText is not null && currentValue is not null
+        && (postedText == Convert.ToString(currentValue, CultureInfo.InvariantCulture)
+          || postedText == Convert.ToString(currentValue, CultureInfo.CurrentCulture));
+    }
+
+    /// <summary>
+    /// Compares a posted date with the current one at the precision the
+    /// posted text has: a date input drops the time, a datetime-local
+    /// input drops the seconds or milliseconds.
+    /// </summary>
+    private static bool MatchesAtPostedPrecision(DateTime posted, DateTime current)
+    {
+      long unit;
+      if (posted.Ticks % TimeSpan.TicksPerDay == 0)
+        unit = TimeSpan.TicksPerDay;
+      else if (posted.Ticks % TimeSpan.TicksPerMinute == 0)
+        unit = TimeSpan.TicksPerMinute;
+      else if (posted.Ticks % TimeSpan.TicksPerSecond == 0)
+        unit = TimeSpan.TicksPerSecond;
+      else if (posted.Ticks % TimeSpan.TicksPerMillisecond == 0)
+        unit = TimeSpan.TicksPerMillisecond;
+      else
+        unit = 1;
+      return posted.Ticks == current.Ticks - current.Ticks % unit;
+    }
+
+    private static void AddError(BindingScope scope, string key, string message)
+    {
+      // keep what was posted so the form shows it again next to the error
+      scope.ModelState.SetModelValue(key, new ValueProviderResult(scope.Form[key], CultureInfo.CurrentCulture));
+      scope.ModelState.TryAddModelError(key, message);
     }
 
     private static Exception GetCause(Exception ex)

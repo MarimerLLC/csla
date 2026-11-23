@@ -139,6 +139,57 @@ public class Employee : BusinessBase<Employee>
     }
   }
 
+  // write-denied like Salary, for checking values posted back unchanged
+  public static readonly PropertyInfo<DateTime> HiredOnProperty = RegisterProperty<DateTime>(nameof(HiredOn));
+  public DateTime HiredOn
+  {
+    get => GetProperty(HiredOnProperty);
+    set => SetProperty(HiredOnProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> GradeProperty = RegisterProperty<string>(nameof(Grade));
+  public string Grade
+  {
+    get => GetProperty(GradeProperty);
+    set => SetProperty(GradeProperty, value);
+  }
+
+  public static readonly PropertyInfo<decimal> RateProperty = RegisterProperty<decimal>(nameof(Rate));
+  public decimal Rate
+  {
+    get => GetProperty(RateProperty);
+    set => SetProperty(RateProperty, value);
+  }
+
+  public static readonly PropertyInfo<decimal> BonusProperty = RegisterProperty<decimal>(nameof(Bonus));
+  public decimal Bonus
+  {
+    get => GetProperty(BonusProperty);
+    set => SetProperty(BonusProperty, value);
+  }
+
+  // fails after the value is written, in OnPropertyChanged
+  public static readonly PropertyInfo<string> MoodProperty = RegisterProperty<string>(nameof(Mood));
+  public string Mood
+  {
+    get => GetProperty(MoodProperty);
+    set => SetProperty(MoodProperty, value);
+  }
+
+  protected override void OnPropertyChanged(Core.IPropertyInfo propertyInfo)
+  {
+    base.OnPropertyChanged(propertyInfo);
+    if (ReferenceEquals(propertyInfo, MoodProperty) && ReadProperty(MoodProperty) == "angry")
+      throw new InvalidOperationException("handler failed");
+  }
+
+  public static readonly PropertyInfo<string> ExternalIdProperty = RegisterProperty<string>(nameof(ExternalId));
+  public string ExternalId
+  {
+    get => GetProperty(ExternalIdProperty);
+    init => LoadProperty(ExternalIdProperty, value);
+  }
+
   public static readonly PropertyInfo<int> RatingProperty = RegisterProperty<int>(nameof(Rating));
   public int Rating
   {
@@ -153,7 +204,12 @@ public class Employee : BusinessBase<Employee>
   {
     base.AddBusinessRules();
     BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, SalaryProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, HiredOnProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, GradeProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, RateProperty, "HR"));
   }
+
+  public static readonly DateTime FetchedHiredOn = new(2026, 11, 23, 14, 5, 30, 123);
 
   [Fetch]
   private void Fetch()
@@ -163,6 +219,61 @@ public class Employee : BusinessBase<Employee>
     LoadProperty(CodeProperty, "code");
     Rating = 3;
     LoadProperty(BadgeProperty, "badge");
+    LoadProperty(HiredOnProperty, FetchedHiredOn);
+    LoadProperty(GradeProperty, null);
+    LoadProperty(RateProperty, 100.5m);
+    LoadProperty(MoodProperty, "calm");
+    LoadProperty(ExternalIdProperty, "external");
+  }
+}
+
+[Serializable]
+public class AsyncAuthEmployee : BusinessBase<AsyncAuthEmployee>
+{
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set => SetProperty(NameProperty, value);
+  }
+
+  public static readonly PropertyInfo<decimal> SalaryProperty = RegisterProperty<decimal>(nameof(Salary));
+  public decimal Salary
+  {
+    get => GetProperty(SalaryProperty);
+    set => SetProperty(SalaryProperty, value);
+  }
+
+  // a reference type, so an unposted value still reaches the write check
+  public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(nameof(Code));
+  public string Code
+  {
+    get => GetProperty(CodeProperty);
+    set => SetProperty(CodeProperty, value);
+  }
+
+  protected override void AddBusinessRules()
+  {
+    base.AddBusinessRules();
+    BusinessRules.AddRule(new SlowWriteRule(SalaryProperty));
+    BusinessRules.AddRule(new SlowWriteRule(CodeProperty));
+  }
+
+  /// <summary>
+  /// Async write rule that doesn't complete synchronously, so the
+  /// synchronous CanWriteProperty throws.
+  /// </summary>
+  private sealed class SlowWriteRule : AuthorizationRuleAsync
+  {
+    public SlowWriteRule(Core.IMemberInfo element)
+      : base(AuthorizationActions.WriteProperty, element)
+    { }
+
+    protected override async Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
+    {
+      await Task.Delay(TimeSpan.FromMilliseconds(50), ct);
+      context.HasPermission = true;
+    }
   }
 }
 

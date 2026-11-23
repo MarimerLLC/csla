@@ -487,6 +487,8 @@ Behavior changes:
 * The binder no longer sets a child property to `null` when the form has no fields for it.
 * The binder now works out a posted list's items from the indexes in the field names. Previously it divided the number of posted fields by the number of properties, which gave the wrong count when items had child properties or fields weren't posted.
 * A request that isn't a form post binds to a new object with no values set, rather than throwing.
+* The binder binds only properties that have a public setter ([#5054](https://github.com/MarimerLLC/csla/issues/5054)). Previously it also set properties with a `private` or `protected` setter, get-only properties, and registered properties with no public property, using `LoadProperty` when there was no setter to call. To bind such a property, give it a public setter, or set it in your controller code.
+* When a property setter throws for a posted value, the binder no longer stores the value with `LoadProperty` ([#5054](https://github.com/MarimerLLC/csla/issues/5054)). Previously a value that the setter rejected, including one denied by a write authorization rule, was stored anyway, and could then be saved. Now the value isn't stored and a ModelState error is added under the field's name, so `ModelState.IsValid` and the result of `TryUpdateModelAsync` are `false`. The message is the localized `PropertySetNotAllowed` resource for a denied write, or `ModelBinderPropertySetFailed` with the setter's exception message for other exceptions.
 
 ## Trimming and NativeAOT annotations
 

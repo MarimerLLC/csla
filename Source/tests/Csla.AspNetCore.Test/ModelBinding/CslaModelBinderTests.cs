@@ -27,6 +27,7 @@ public class CslaModelBinderTests
   private ServiceProvider _rootProvider;
   private IServiceScope _scope;
   private DefaultHttpContext _httpContext;
+  private ModelStateDictionary _modelState;
 
   [TestInitialize]
   public void Setup()
@@ -369,6 +370,135 @@ public class CslaModelBinderTests
     existing.Children[0].Name.Should().Be("child0");
   }
 
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedOnNewObject_IsNotStoredAndAddsModelStateError()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Name"] = "employee",
+      ["Salary"] = "999999",
+    });
+
+    result.Name.Should().Be("employee");
+    result.Salary.Should().Be(0m);
+    _modelState.IsValid.Should().BeFalse();
+    _modelState["Salary"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedOnExistingObject_IsNotStoredAndAddsModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Salary"] = "999999",
+    }, model: existing);
+
+    existing.Salary.Should().Be(100m);
+    existing.IsDirty.Should().BeFalse();
+    _modelState["Salary"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_NotPostedOnNewObject_AddsNoModelStateError()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Name"] = "employee",
+    });
+
+    result.Name.Should().Be("employee");
+    result.Salary.Should().Be(0m);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterThrows_PostedValueIsNotStoredAndAddsModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Name"] = "updated",
+      ["Code"] = "bad",
+    }, model: existing);
+
+    existing.Name.Should().Be("updated");
+    existing.Code.Should().Be("code");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, "Code", Employee.BadCodeMessage);
+    _modelState["Code"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterAccepts_PostedValueIsStored()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Code"] = "good",
+    });
+
+    result.Code.Should().Be("good");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_PrivateSetterProperty_IsNotBound()
+  {
+    var created = await BindAsync<Employee>(new()
+    {
+      ["Rating"] = "5",
+    });
+    created.Rating.Should().Be(0);
+
+    var existing = await FetchEmployeeAsync();
+    await BindAsync(new()
+    {
+      ["Rating"] = "5",
+    }, model: existing);
+    existing.Rating.Should().Be(3);
+    existing.IsDirty.Should().BeFalse();
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_GetOnlyProperty_IsNotBound()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Badge"] = "posted",
+    }, model: existing);
+
+    existing.Badge.Should().Be("badge");
+    existing.IsDirty.Should().BeFalse();
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedPropertyWithPrefix_ModelStateKeyIncludesPrefix()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["emp.Salary"] = "999999",
+    }, "emp");
+
+    result.Salary.Should().Be(0m);
+    _modelState.ContainsKey("emp.Salary").Should().BeTrue();
+    _modelState["emp.Salary"].Errors.Should().ContainSingle();
+  }
+
+  private async Task<Employee> FetchEmployeeAsync()
+  {
+    var portal = _scope.ServiceProvider.GetRequiredService<IDataPortal<Employee>>();
+    var result = await portal.FetchAsync();
+    result.IsDirty.Should().BeFalse();
+    return result;
+  }
+
   private async Task<Parent> FetchParentAsync()
   {
     var portal = _scope.ServiceProvider.GetRequiredService<IDataPortal<Parent>>();
@@ -400,6 +530,7 @@ public class CslaModelBinderTests
     var binder = new CslaModelBinder(_scope.ServiceProvider.GetRequiredService<ApplicationContext>());
     await binder.BindModelAsync(bindingContext);
 
+    _modelState = bindingContext.ModelState;
     bindingContext.Result.IsModelSet.Should().BeTrue();
     return (T)bindingContext.Result.Model;
   }

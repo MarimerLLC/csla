@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -31,9 +32,15 @@ namespace Csla.Web.Mvc
   /// only sets the values that were posted. Otherwise it creates a
   /// new object graph. New list items are created using the list's
   /// declared child type.
+  /// Only properties with a public setter are bound, and values are set
+  /// through that setter, so authorization rules and setter logic run.
+  /// When the setter throws for a posted value, for example because the
+  /// user isn't allowed to write the property, the value isn't stored and
+  /// a ModelState error is added under that field's key.
   /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
   [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
+  [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.MvcJustification)]
   public class CslaModelBinder : Server.ObjectFactory, IModelBinder
   {
     /// <summary>
@@ -71,7 +78,8 @@ namespace Csla.Web.Mvc
         var request = bindingContext.ActionContext.HttpContext.Request;
         var scope = new BindingScope(
           request.HasFormContentType ? request.Form : FormCollection.Empty,
-          bindingContext.HttpContext.RequestServices.GetService<IModelMetadataProvider>());
+          bindingContext.HttpContext.RequestServices.GetService<IModelMetadataProvider>(),
+          bindingContext.ModelState);
         var prefix = bindingContext.ModelName ?? string.Empty;
         if (typeof(Core.IEditableCollection).IsAssignableFrom(modelType))
         {
@@ -133,9 +141,11 @@ namespace Csla.Web.Mvc
         {
           // read-only or other non-editable child objects aren't bound
         }
-        else if (isNew || form.ContainsKey(key))
+        else
         {
-          BindSingleProperty(form, obj, item, key);
+          var posted = form.ContainsKey(key);
+          if (isNew || posted)
+            BindSingleProperty(scope, obj, item, key, posted);
         }
       }
     }
@@ -190,13 +200,15 @@ namespace Csla.Web.Mvc
 
     private sealed class BindingScope
     {
-      public BindingScope(IFormCollection form, IModelMetadataProvider? metadataProvider)
+      public BindingScope(IFormCollection form, IModelMetadataProvider? metadataProvider, ModelStateDictionary modelState)
       {
         Form = form;
         MetadataProvider = metadataProvider;
+        ModelState = modelState;
       }
 
       public IFormCollection Form { get; }
+      public ModelStateDictionary ModelState { get; }
       public IModelMetadataProvider? MetadataProvider { get; }
 
       public ModelMetadata? GetMetadata(Type type) => MetadataProvider?.GetMetadataForType(type);
@@ -218,34 +230,57 @@ namespace Csla.Web.Mvc
       return result;
     }
 
-    private void BindSingleProperty(IFormCollection form, object result, Core.IPropertyInfo item, string index)
+    private static void BindSingleProperty(BindingScope scope, object obj, Core.IPropertyInfo item, string key, bool posted)
     {
+      // a property without a public setter is read-only to the UI
+      if (!HasPublicSetter(obj, item.Name))
+        return;
+
+      var value = scope.Form[key].FirstOrDefault();
+      // an unposted value type on a new object keeps its default
+      if (!posted && value is null && item.Type.IsValueType && Nullable.GetUnderlyingType(item.Type) is null)
+        return;
+
+      object? newValue;
       try
       {
-        var value = form[index].FirstOrDefault();
-        try
-        {
-          if (item.Type.Equals(typeof(string)))
-            Reflection.MethodCaller.CallPropertySetter(result, item.Name, value);
-          else if (value != null)
-            Reflection.MethodCaller.CallPropertySetter(result, item.Name, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
-          else
-            Reflection.MethodCaller.CallPropertySetter(result, item.Name, null);
-        }
-        catch
-        {
-          if (item.Type.Equals(typeof(string)))
-            LoadProperty(result, item, value);
-          else if (value != null)
-            LoadProperty(result, item, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
-          else
-            LoadProperty(result, item, null);
-        }
+        if (item.Type.Equals(typeof(string)) || value is null)
+          newValue = value;
+        else
+          newValue = Utilities.CoerceValue(item.Type, value.GetType(), null, value);
       }
       catch (Exception ex)
       {
-        throw new Exception($"Could not map {index} to model", ex);
+        throw new Exception($"Could not map {key} to model", ex);
       }
+
+      try
+      {
+        Reflection.MethodCaller.CallPropertySetter(obj, item.Name, newValue);
+      }
+      catch (Exception ex) when (posted)
+      {
+        // the setter rejected the posted value (for example, write
+        // authorization denied it), so it isn't stored
+        scope.ModelState.TryAddModelError(key, GetSetFailedMessage(item, ex));
+      }
+      catch
+      {
+        // nothing was posted for this property on a new object,
+        // so a setter that rejects null leaves the property alone
+      }
+    }
+
+    private static bool HasPublicSetter(object obj, string propertyName)
+      => obj.GetType().GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)?.SetMethod is { IsPublic: true };
+
+    private static string GetSetFailedMessage(Core.IPropertyInfo item, Exception ex)
+    {
+      if (ex is TargetInvocationException { InnerException: { } inner })
+        ex = inner;
+      if (ex is Csla.Security.SecurityException or System.Security.SecurityException)
+        return Csla.Properties.Resources.PropertySetNotAllowed;
+      return string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, item.FriendlyName, ex.Message);
     }
   }
 }

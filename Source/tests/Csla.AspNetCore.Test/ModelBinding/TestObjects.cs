@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Rules;
+using Csla.Rules.CommonRules;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Csla.AspNetCore.Test.ModelBinding;
@@ -68,6 +69,65 @@ public class Parent : BusinessBase<Parent>
     }
     Address = addressPortal.FetchChild("street");
     Children = childPortal.FetchChild(2);
+  }
+}
+
+[Serializable]
+public class Employee : BusinessBase<Employee>
+{
+  public const string BadCodeMessage = "Code can't be bad";
+
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set => SetProperty(NameProperty, value);
+  }
+
+  // only users in the HR role can write this property
+  public static readonly PropertyInfo<decimal> SalaryProperty = RegisterProperty<decimal>(nameof(Salary));
+  public decimal Salary
+  {
+    get => GetProperty(SalaryProperty);
+    set => SetProperty(SalaryProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(nameof(Code));
+  public string Code
+  {
+    get => GetProperty(CodeProperty);
+    set
+    {
+      if (value == "bad")
+        throw new ArgumentException(BadCodeMessage);
+      SetProperty(CodeProperty, value);
+    }
+  }
+
+  public static readonly PropertyInfo<int> RatingProperty = RegisterProperty<int>(nameof(Rating));
+  public int Rating
+  {
+    get => GetProperty(RatingProperty);
+    private set => LoadProperty(RatingProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> BadgeProperty = RegisterProperty<string>(nameof(Badge));
+  public string Badge => GetProperty(BadgeProperty);
+
+  protected override void AddBusinessRules()
+  {
+    base.AddBusinessRules();
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, SalaryProperty, "HR"));
+  }
+
+  [Fetch]
+  private void Fetch()
+  {
+    LoadProperty(NameProperty, "employee");
+    LoadProperty(SalaryProperty, 100m);
+    LoadProperty(CodeProperty, "code");
+    Rating = 3;
+    LoadProperty(BadgeProperty, "badge");
   }
 }
 

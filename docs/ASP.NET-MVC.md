@@ -62,6 +62,8 @@ When it binds into an existing object, the binder:
 In both approaches, the binder:
 * waits for async business rules anywhere in the graph to finish, so the object isn't busy when your action runs;
 * doesn't bind properties marked `[BindNever]`;
+* binds only properties that have a public setter. Properties with a `private` or `protected` setter, get-only properties, and registered properties with no public property aren't bound;
+* sets each value through the property's setter, so authorization and setter logic run. If the setter throws for a posted value, for example because the user isn't allowed to write the property, the value isn't stored and a ModelState error is added under that field's name. `ModelState.IsValid` (and the result of `TryUpdateModelAsync`) is then `false`;
 * binds only the root properties you allow, when you pass an include list to `TryUpdateModelAsync` (for example `TryUpdateModelAsync(order, "", o => o.Name)`) or put `[Bind]` on the action parameter. An included child list or child object is bound as a whole;
 * applies `[Bind]` on a child's class to that child's properties.
 

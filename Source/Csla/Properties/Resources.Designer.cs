@@ -691,6 +691,15 @@ namespace Csla.Properties {
         }
         
         /// <summary>
+        ///   Looks up a localized string similar to The value for {0} was not accepted: {1}.
+        /// </summary>
+        public static string ModelBinderPropertySetFailed {
+            get {
+                return ResourceManager.GetString("ModelBinderPropertySetFailed", resourceCulture);
+            }
+        }
+        
+        /// <summary>
         ///   Looks up a localized string similar to Type {0} must implement IMobileObject.
         /// </summary>
         public static string MustImplementIMobileObject {

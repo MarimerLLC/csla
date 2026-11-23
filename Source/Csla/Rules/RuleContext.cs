@@ -303,6 +303,12 @@ namespace Csla.Rules
       OutputPropertyValues[property] = CheckOutValue(property, outValue);
     }
 
+    /// <inheritdoc />
+    public void AddOutValue<T>(NotNullPropertyInfo<T> property, T value) where T : notnull
+    {
+      AddOutValue((IPropertyInfo)property, value);
+    }
+
     /// <summary>
     /// Returns the output value as the target will store it: null for a not-null
     /// string becomes <see cref="string.Empty"/>, and null for any other not-null
@@ -353,6 +359,29 @@ namespace Csla.Rules
         throw new ArgumentNullException(nameof(propertyInfo));
 
       return (T?)InputPropertyValues[propertyInfo];
+    }
+
+    /// <inheritdoc />
+    public T GetInputValue<T>(NotNullPropertyInfo<T> propertyInfo) where T : notnull
+    {
+      // null only while the object is incomplete; see the interface remarks
+      return GetInputValue<T>((IPropertyInfo)propertyInfo)!;
+    }
+
+    /// <inheritdoc />
+    public bool TryGetInputValue<T>(NotNullPropertyInfo<T> propertyInfo, [MaybeNullWhen(false)] out T value) where T : notnull
+    {
+      if (propertyInfo is null)
+        throw new ArgumentNullException(nameof(propertyInfo));
+
+      if (InputPropertyValues.TryGetValue(propertyInfo, out var propertyValue) && propertyValue is not null)
+      {
+        value = (T)propertyValue;
+        return true;
+      }
+
+      value = default;
+      return false;
     }
 
     /// <inheritdoc />

@@ -87,6 +87,7 @@ Hand-written `RegisterProperty` code keeps working as before. What to check when
 * **Object factories.** Objects an `ObjectFactory` builds by hand, and the items of a list it builds, are only checked if the factory calls `VerifyNotNullInvariant` on each one. `NotNullInvariant.GetUnsatisfiedProperties` and `NotNullInvariant.Verify` check any object.
 * **Model binding.** The `CslaModelBinder` in ASP.NET Core and ASP.NET MVC 5 no longer stores a posted null in a not-null property of a non-`string` type.
 * **`IPropertyInfoFactory` has three new members.** A custom property info factory must implement the three `CreateNotNull<T>` overloads, `(containingType, name)`, `(containingType, name, friendlyName)` and `(containingType, name, friendlyName, defaultValue)`, which return `NotNullPropertyInfo<T>`. Without a custom factory there's nothing to do.
+* **`IRuleContext` has three new members.** `GetInputValue`, `TryGetInputValue` and `AddOutValue` each get an overload that takes a `NotNullPropertyInfo<T>`. A custom `IRuleContext` implementation, such as a hand-written test double, must add them; `RuleContext` already has them. Existing rule code binds to the new `AddOutValue` when it passes a not-null property, so passing a value that may be null, such as a `string?`, now gives a nullable warning (an error with `WarningsAsErrors=nullable`). Pass a non-null value, or cast the property to `IPropertyInfo` to keep the untyped member. See [In business rules](Nullable-Reference-Types.md#in-business-rules).
 
 Analyzers help with the upgrade:
 

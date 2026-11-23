@@ -104,6 +104,22 @@ Analyzer [CSLA0033](analyzers/CSLA0033-NotNullPropertyNotLoadedAnalyzer.md) warn
 
 The `CslaModelBinder` in ASP.NET Core and ASP.NET MVC 5 doesn't store a posted null in a not-null property of a non-`string` type. It leaves the property alone.
 
+### In business rules
+
+`IRuleContext` has members that take a `NotNullPropertyInfo<T>`, so a rule needs no `!` or `object` casts:
+
+```csharp
+protected override void Execute(IRuleContext context)
+{
+  string name = context.GetInputValue(NameProperty);
+  context.AddOutValue(DisplayNameProperty, name.Trim());
+}
+```
+
+* `GetInputValue` returns `T`, with the same guarantee as the typed `GetProperty`. While the object isn't complete yet, for example in a rule that runs inside a Create before the property is loaded, a property without a default value can still be null.
+* `TryGetInputValue(property, out var value)` returns `true` only when the property is an input of the rule and its value isn't null.
+* `AddOutValue` takes a `T`, so passing a value that may be null gives a nullable warning. At run time it behaves like the untyped `AddOutValue`. Pass the property as `IPropertyInfo` to use the untyped member without the warning.
+
 ### Cases that need a default value or a nullable property
 
 * **A `string` without a default.** `RegisterNotNullProperty<string>(nameof(Name))` has a null default, not `string.Empty`. It reads null until it's loaded, it fails the data portal check if it isn't loaded, and `SetProperty(NameProperty, "")` on an unloaded property counts as a change. Register `string` properties with the `string.Empty` default, as the source generator and the migration code fix do. Analyzer [CSLA0035](analyzers/CSLA0035-NotNullPropertyEmptyFriendlyNameAnalyzer.md) warns when an empty second argument registers no default by mistake.

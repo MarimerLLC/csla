@@ -73,6 +73,28 @@ namespace Csla.Analyzers.Tests
     }
 
     [TestMethod]
+    public async Task AnalyzeWhenClassIsABusinessRuleAndCallsTypedNotNullAddOutValue()
+    {
+      var code =
+        """
+        using Csla;
+        using Csla.Rules;
+
+        public class A
+          : BusinessRule
+        {
+          public static NotNullPropertyInfo<string> NameProperty { get; set; }
+
+          protected override void Execute(IRuleContext context)
+          {
+            context.AddOutValue(NameProperty, "x");
+          }
+        }
+        """;
+      await TestHelpers.RunAnalysisAsync<BusinessRuleDoesNotUseAddMethodsOnContextAnalyzer>(code, []);
+    }
+
+    [TestMethod]
     public async Task AnalyzeWhenClassIsABusinessRuleAsyncAndDoesNotCallAnAddMethod()
     {
       var code =

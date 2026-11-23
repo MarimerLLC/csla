@@ -203,6 +203,25 @@ namespace Csla.Rules
     /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>
     void AddOutValue(IPropertyInfo property, object? value);
     /// <summary>
+    /// Add an outbound value to update a not-null property on the business
+    /// object once the rule is complete.
+    /// </summary>
+    /// <typeparam name="T">Type of the property.</typeparam>
+    /// <param name="property">Property to update.</param>
+    /// <param name="value">New property value.</param>
+    /// <remarks>
+    /// The value is typed, so passing a value that may be null gives a nullable
+    /// warning. At run time it behaves like <see cref="AddOutValue(IPropertyInfo, object?)"/>:
+    /// a null value is replaced by the property's default value, a null <see cref="string"/>
+    /// is stored as <see cref="string.Empty"/>, and any other null throws. To keep the
+    /// untyped behaviour without a warning, pass the property as <see cref="IPropertyInfo"/>.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="property"/> is <see langword="null"/>,
+    /// or <paramref name="value"/> is <see langword="null"/> and <paramref name="property"/> is a
+    /// reference-type property other than <see cref="string"/> without a default value.</exception>
+    /// <exception cref="System.ArgumentOutOfRangeException">When property is not defined in AffectedProperties list.</exception>
+    void AddOutValue<T>(NotNullPropertyInfo<T> property, T value) where T : notnull;
+    /// <summary>
     /// Adds a property name as a dirty field (changed value).
     /// </summary>
     /// <param name="property">The property.</param>
@@ -230,6 +249,22 @@ namespace Csla.Rules
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     T? GetInputValue<T>(IPropertyInfo propertyInfo);
     /// <summary>
+    /// Gets the value of a not-null input property.
+    /// </summary>
+    /// <typeparam name="T">Type of the property.</typeparam>
+    /// <param name="propertyInfo">The not-null property info.</param>
+    /// <remarks>
+    /// The value has the same guarantee as the typed <c>GetProperty</c> of a not-null
+    /// property: it isn't null on an object the data portal has completed and checked.
+    /// While the object is still incomplete, for example when a rule runs inside a
+    /// Create or Fetch before the property is loaded, a property without a default
+    /// value can still be null. Use <see cref="TryGetInputValue{T}(NotNullPropertyInfo{T}, out T)"/>
+    /// to test for that.
+    /// </remarks>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    /// <exception cref="KeyNotFoundException"><paramref name="propertyInfo"/> isn't an input property of the rule.</exception>
+    T GetInputValue<T>(NotNullPropertyInfo<T> propertyInfo) where T : notnull;
+    /// <summary>
     /// Tries to get the value. Use this method on LazyLoaded properties to test if value has been provided or not.
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -247,6 +282,20 @@ namespace Csla.Rules
     /// <returns>true if value exists else false</returns>
     /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
     bool TryGetInputValue<T>(IPropertyInfo propertyInfo, ref T? value);
+    /// <summary>
+    /// Tries to get the value of a not-null input property.
+    /// </summary>
+    /// <typeparam name="T">Type of the property.</typeparam>
+    /// <param name="propertyInfo">The not-null property info.</param>
+    /// <param name="value">The value, when the method returns <see langword="true"/>.</param>
+    /// <returns>
+    /// <see langword="true"/> if the property is an input property of the rule and its value
+    /// isn't null; otherwise <see langword="false"/>. Unlike the overloads that take a
+    /// <c>ref</c> parameter, a null value returns <see langword="false"/>, so a
+    /// <see langword="true"/> result always comes with a value.
+    /// </returns>
+    /// <exception cref="ArgumentNullException"><paramref name="propertyInfo"/> is <see langword="null"/>.</exception>
+    bool TryGetInputValue<T>(NotNullPropertyInfo<T> propertyInfo, [MaybeNullWhen(false)] out T value) where T : notnull;
     /// <summary>
     /// Gets the execution context.
     /// </summary>

@@ -9,8 +9,8 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="AwesomeAssertions" Version="8.2.0" />
-    <PackageReference Include="AwesomeAssertions.Analyzers" Version="8.0.0">
+    <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
+    <PackageReference Include="AwesomeAssertions.Analyzers" Version="9.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
@@ -22,7 +22,7 @@
     <PackageReference Include="MSTest.TestFramework" Version="3.9.1" />
     <PackageReference Include="Verify.MSTest" Version="30.3.1" />
     <PackageReference Include="Verify.SourceGenerators" Version="2.5.0" />
-    <PackageReference Include="coverlet.collector" Version="6.0.4">
+    <PackageReference Include="coverlet.collector" Version="10.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

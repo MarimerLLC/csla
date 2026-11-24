@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------
 using Csla.Generator.AutoImplementProperties.CSharp.MobileSerializers;
 using Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations;
-using FluentAssertions;
+using AwesomeAssertions;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
 {

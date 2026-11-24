@@ -10,7 +10,7 @@ using System.Security.Claims;
 using Csla.Configuration;
 using Csla.Rules;
 using Csla.Testing.Rules;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

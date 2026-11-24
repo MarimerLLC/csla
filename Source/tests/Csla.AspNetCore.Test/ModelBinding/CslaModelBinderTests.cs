@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Globalization;
-using FluentAssertions;
+using AwesomeAssertions;
 using Csla.Configuration;
 using Csla.Web.Mvc;
 using Microsoft.AspNetCore.Http;

@@ -6,14 +6,14 @@
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
     <!-- Set CslaVersion (as an environment variable, so the projects BenchmarkDotNet generates see it too) to benchmark a locally packed Csla package. -->
-    <CslaVersion Condition="'$(CslaVersion)' == ''">10.1.0</CslaVersion>
+    <CslaVersion Condition="'$(CslaVersion)' == ''">10.2.0</CslaVersion>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="BenchmarkDotNet" Version="0.15.8" />
     <PackageReference Include="Csla" Version="$(CslaVersion)" />
     <!-- CSLA 11 ships the generators inside the Csla package -->
-    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" Version="10.1.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
+    <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" Version="10.2.0" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
                       Condition="$([System.Int32]::Parse($(CslaVersion.Split('.')[0]))) &lt; 11" />
 
   </ItemGroup>

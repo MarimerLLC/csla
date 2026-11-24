@@ -13,7 +13,7 @@ using System.Collections;
 using System.Collections.Immutable;
 using System.Reflection;
 using Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.CodeAnalysis;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.Tests

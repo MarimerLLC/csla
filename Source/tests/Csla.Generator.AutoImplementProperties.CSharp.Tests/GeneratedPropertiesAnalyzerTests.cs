@@ -1,7 +1,7 @@
 using System.Collections.Immutable;
 using Csla.Analyzers;
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.CSharp.Syntax;

@@ -1,8 +1,8 @@
 ﻿using Csla.Blazor.Test.Fakes;
 using Csla.Core;
 using Csla.Testing;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Blazor.Test

@@ -9,7 +9,7 @@
 using System.Security.Claims;
 using Csla.Configuration;
 using Csla.Core;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

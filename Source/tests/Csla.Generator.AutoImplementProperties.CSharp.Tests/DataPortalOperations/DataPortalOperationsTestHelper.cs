@@ -7,8 +7,8 @@
 using System.Runtime.CompilerServices;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;

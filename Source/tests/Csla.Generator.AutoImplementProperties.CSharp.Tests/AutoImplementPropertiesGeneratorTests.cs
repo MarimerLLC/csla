@@ -1,6 +1,6 @@
 using Csla.Generator.AutoImplementProperties.CSharp.AutoImplement;
 using Csla.Generator.AutoImplementProperties.CSharp.Tests;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 

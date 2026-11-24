@@ -9,7 +9,7 @@ using System.Reflection;
 using Csla.Configuration;
 using Csla.Reflection;
 using Csla.Testing;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

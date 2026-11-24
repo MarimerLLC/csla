@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Azure.Data.Tables;
-using FluentAssertions;
+using AwesomeAssertions;
 using Csla.Configuration;
 using Csla.State;
 using Microsoft.Extensions.DependencyInjection;

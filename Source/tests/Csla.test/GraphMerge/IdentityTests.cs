@@ -9,7 +9,7 @@
 using Csla.Core;
 using Csla.Testing;
 using Csla.TestHelpers;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 

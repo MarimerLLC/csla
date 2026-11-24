@@ -9,8 +9,8 @@
 using Csla.Rules;
 using Csla.Testing;
 using Csla.TestHelpers;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

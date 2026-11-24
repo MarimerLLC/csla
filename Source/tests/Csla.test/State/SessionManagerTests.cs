@@ -8,7 +8,7 @@
 
 using Csla.Blazor.State;
 using Csla.State;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.State;

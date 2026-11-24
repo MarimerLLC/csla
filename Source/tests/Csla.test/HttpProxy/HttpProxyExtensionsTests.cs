@@ -1,7 +1,7 @@
 ﻿using Csla.Channels.Http;
 using Csla.Configuration;
 using Csla.Testing;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

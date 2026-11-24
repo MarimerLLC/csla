@@ -1,5 +1,5 @@
 ﻿using Csla.Channels.Http;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.HttpProxy;

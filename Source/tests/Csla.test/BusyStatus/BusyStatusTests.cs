@@ -11,8 +11,8 @@ using Csla.Test;
 using Csla.Testing;
 using Csla.TestHelpers;
 using Csla.Testing.Business.BusyStatus;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace cslalighttest.BusyStatus

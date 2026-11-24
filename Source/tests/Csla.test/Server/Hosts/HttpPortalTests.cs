@@ -18,7 +18,7 @@ using Csla.Server;
 using Csla.Server.Hosts;
 using Csla.Server.Hosts.DataPortalChannel;
 using Csla.Testing;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

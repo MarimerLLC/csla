@@ -9,7 +9,7 @@
 using System.Data;
 using System.Data.SQLite;
 using System.Globalization;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.SafeDataReader

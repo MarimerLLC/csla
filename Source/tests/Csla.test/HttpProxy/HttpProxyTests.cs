@@ -4,7 +4,7 @@ using Csla.Test.DataPortalTest;
 using Csla.Testing;
 using Csla.TestHelpers;
 using Csla.TestHelpers.Http;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;

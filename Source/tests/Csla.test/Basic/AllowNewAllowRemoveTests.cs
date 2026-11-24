@@ -8,7 +8,7 @@
 
 using Csla.Core;
 using Csla.Testing;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Basic

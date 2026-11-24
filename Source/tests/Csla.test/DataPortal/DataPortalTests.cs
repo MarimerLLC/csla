@@ -12,14 +12,14 @@ using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
-using FluentAssertions;
+using AwesomeAssertions;
 using Csla.Rules;
 using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Testing.Business.DataPortal;
 using Csla.Server;
 using System.Security.Principal;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace Csla.Test.DataPortal
 {

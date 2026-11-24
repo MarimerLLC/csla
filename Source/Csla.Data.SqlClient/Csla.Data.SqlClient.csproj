@@ -24,6 +24,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <!-- Not used directly: forces a newer Azure.Identity than Microsoft.Data.SqlClient brings in, so consumers avoid its security warnings. -->
     <PackageReference Include="Azure.Identity" Version="1.21.0" />
     <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.Data.SqlClient" Version="5.2.2" />

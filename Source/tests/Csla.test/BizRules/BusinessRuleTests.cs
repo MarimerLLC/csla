@@ -9,7 +9,7 @@ using System.ComponentModel.DataAnnotations;
 using Csla.Configuration;
 using Csla.Testing;
 using Csla.TestHelpers;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 

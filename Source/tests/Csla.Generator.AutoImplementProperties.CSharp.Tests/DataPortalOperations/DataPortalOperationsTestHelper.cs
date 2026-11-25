@@ -100,9 +100,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       foreach (var additionalSource in additionalSources ?? [])
         syntaxTrees.Add(CSharpSyntaxTree.ParseText(additionalSource, path: $"Source{index++}.cs"));
 
-      var references = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
-        .Select(a => MetadataReference.CreateFromFile(a.Location))
+      var references = Csla.Generator.Tests.TestCompilation.LoadedAndFrameworkReferences()
         .Concat([
           MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
           // Generated dispatch resolves [Inject] parameters with these extension methods.

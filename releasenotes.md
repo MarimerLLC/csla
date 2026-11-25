@@ -81,7 +81,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 **Data Access**
 
 * [#4975](https://github.com/MarimerLLC/csla/issues/4975) `SafeDataReader` has async members: `ReadAsync`, `NextResultAsync`, `CloseAsync`, `IsDBNullAsync`, `GetFieldValueAsync<T>`, null-safe getters such as `GetStringAsync` and `GetInt32Async`, and `DisposeAsync` ([#4976](https://github.com/MarimerLLC/csla/pull/4976))
-* `Csla.Data.SqlClient` references `Microsoft.Data.SqlClient` 7.1.2 (was 5.2.2) and no longer references `Azure.Identity` (PR_LINK)
+* `Csla.Data.SqlClient` references `Microsoft.Data.SqlClient` 7.1.2 (was 5.2.2) and no longer references `Azure.Identity` ([#5096](https://github.com/MarimerLLC/csla/pull/5096))
 
 **Properties**
 

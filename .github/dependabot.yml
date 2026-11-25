@@ -10,9 +10,15 @@ updates:
   - dependency-name: EntityFramework
     versions:
     - "< 6, >= 5.a"
+  # The analyzers, code fixes and generators bundled in the Csla package are
+  # built against these packages. The compiler won't load an analyzer or
+  # generator built against a newer Roslyn than itself (CS9057), so their
+  # version is the minimum compiler CSLA consumers need. It has to stay low
+  # enough for the .NET 10 SDK and for VS 2022 (.NET Framework 4.6.2
+  # developers). Raise it by hand, deliberately, never through Dependabot.
+  - dependency-name: Microsoft.CodeAnalysis.Common
+  - dependency-name: Microsoft.CodeAnalysis.CSharp
   - dependency-name: Microsoft.CodeAnalysis.CSharp.Workspaces
-    versions:
-    - ">= 3.a, < 4"
   - dependency-name: Microsoft.EntityFrameworkCore
     versions:
     - ">= 3.a, < 4"

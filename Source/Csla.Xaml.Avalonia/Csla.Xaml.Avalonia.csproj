@@ -18,6 +18,7 @@
 
   <ItemGroup>
     <PackageReference Include="Avalonia" Version="12.2.0" />
+    <PackageReference Include="Microsoft.Extensions.Options" Version="10.0.15" />
   </ItemGroup>
 
   <ItemGroup>

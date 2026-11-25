@@ -15,6 +15,7 @@
     <!-- CSLA 11 ships the generators inside the Csla package -->
     <PackageReference Include="Csla.Generator.AutoImplementProperties.CSharp" Version="$(CslaVersion)" OutputItemType="Analyzer" ReferenceOutputAssembly="false"
                       Condition="$([System.Int32]::Parse($(CslaVersion.Split('.')[0]))) &lt; 11" />
+    <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.15" />
 
   </ItemGroup>
 

@@ -19,6 +19,15 @@ updates:
   - dependency-name: Microsoft.CodeAnalysis.Common
   - dependency-name: Microsoft.CodeAnalysis.CSharp
   - dependency-name: Microsoft.CodeAnalysis.CSharp.Workspaces
+  # Each target framework references the Microsoft.Extensions major version
+  # that matches it (10.x for net10.0, 11.x for net11.0) and the .NET
+  # Framework and netstandard2.0 targets keep a low floor, because a library's
+  # dependency version is a minimum for its consumers. Major versions change
+  # by hand, along with the target frameworks; patch and minor updates still
+  # come through.
+  - dependency-name: Microsoft.Extensions.*
+    update-types:
+    - version-update:semver-major
   - dependency-name: Microsoft.EntityFrameworkCore
     versions:
     - ">= 3.a, < 4"

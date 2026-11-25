@@ -19,6 +19,7 @@
   <Import Project="..\Csla.Xaml.Shared\Csla.Xaml.Shared.projitems" Label="Shared" />
 
   <ItemGroup>
+    <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="10.0.15" />
     <Folder Include="Properties\" />
     <Page Include="..\Csla.Xaml.Resources\Themes\Generic.xaml">
       <Link>Themes\Generic.xaml</Link>

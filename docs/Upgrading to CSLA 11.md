@@ -407,6 +407,22 @@ These members use the underlying `DbDataReader`, which every ADO.NET provider re
 * They no longer throw `NotSupportedException` when the reader isn't a `SqlDataReader`.
 * `IsDbNullAsync` is obsolete. Use `IsDBNullAsync`.
 
+## `Microsoft.Data.SqlClient` 7 and Entra ID authentication
+
+`Csla.Data.SqlClient` now references `Microsoft.Data.SqlClient` 7.1.2, up from 5.2.2, so your application gets SqlClient 7 or later.
+
+SqlClient 7 moved Microsoft Entra ID (Azure AD) authentication out of the core package into `Microsoft.Data.SqlClient.Extensions.Azure`. If a connection string uses an `Active Directory` authentication method, such as `Active Directory Default`, `Active Directory Managed Identity` or `Active Directory Interactive`, add that package to the application:
+
+```
+dotnet add package Microsoft.Data.SqlClient.Extensions.Azure
+```
+
+Without it the application still builds, but opening the connection fails at run time with an error that names the missing package. SQL Server authentication and Windows integrated authentication don't need it.
+
+`Csla.Data.SqlClient` no longer references `Azure.Identity`. That reference only raised the version SqlClient 5 brought in, and SqlClient 7 doesn't depend on `Azure.Identity`. If your code uses `Azure.Identity` directly, reference it yourself.
+
+See the [SqlClient 7.0 release notes](https://github.com/dotnet/SqlClient/releases/tag/v7.0.0) for its other changes.
+
 ## Expired Blazor sessions are purged automatically
 
 When Blazor state management is on (`UseInMemoryApplicationContextManager = false`), the server keeps a session for each user in the `ISessionStore`. In CSLA 10, expired sessions were only removed if your app called `ISessionManager.PurgeSessions` on a schedule it set up.

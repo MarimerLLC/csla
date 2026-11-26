@@ -13,6 +13,7 @@
 
   <ItemGroup>
     <PackageReference Include="Azure.Data.Tables" Version="12.13.0" />
+    <PackageReference Include="System.Memory.Data" Version="11.0.0" />
   </ItemGroup>
 
   <ItemGroup>

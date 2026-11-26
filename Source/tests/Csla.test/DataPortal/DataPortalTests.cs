@@ -12,14 +12,14 @@ using Csla.Testing;
 using Csla.TestHelpers;
 using Microsoft.Extensions.DependencyInjection;
 using Csla.Configuration;
-using FluentAssertions;
+using AwesomeAssertions;
 using Csla.Rules;
 using Csla.Core;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 using Csla.Testing.Business.DataPortal;
 using Csla.Server;
 using System.Security.Principal;
-using FluentAssertions.Execution;
+using AwesomeAssertions.Execution;
 
 namespace Csla.Test.DataPortal
 {
@@ -173,36 +173,36 @@ namespace Csla.Test.DataPortal
       {
         DataPortalTest.Single single = NewSingle();
 
-        Assert.AreEqual(TestResults.GetResult("Single"), "Created");
-        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Create Called");
+        Assert.AreEqual("Created", TestResults.GetResult("Single"));
+        Assert.AreEqual("Create Called", TestResults.GetResult("CustomDataPortalServer"));
 
         TestResults.Reinitialise();
 
         single.Save();
 
-        Assert.AreEqual(TestResults.GetResult("Single"), "Inserted");
-        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Update Called");
+        Assert.AreEqual("Inserted", TestResults.GetResult("Single"));
+        Assert.AreEqual("Update Called", TestResults.GetResult("CustomDataPortalServer"));
 
         TestResults.Reinitialise();
 
         single = GetSingle(1);
 
-        Assert.AreEqual(TestResults.GetResult("Single"), "Fetched");
-        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Fetch Called");
+        Assert.AreEqual("Fetched", TestResults.GetResult("Single"));
+        Assert.AreEqual("Fetch Called", TestResults.GetResult("CustomDataPortalServer"));
 
         TestResults.Reinitialise();
 
         single.Save();
 
-        Assert.AreEqual(TestResults.GetResult("Single"), "Updated");
-        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Update Called");
+        Assert.AreEqual("Updated", TestResults.GetResult("Single"));
+        Assert.AreEqual("Update Called", TestResults.GetResult("CustomDataPortalServer"));
 
         TestResults.Reinitialise();
 
         DeleteSingle(1);
 
-        Assert.AreEqual(TestResults.GetResult("Single"), "Deleted");
-        Assert.AreEqual(TestResults.GetResult("CustomDataPortalServer"), "Delete Called");
+        Assert.AreEqual("Deleted", TestResults.GetResult("Single"));
+        Assert.AreEqual("Delete Called", TestResults.GetResult("CustomDataPortalServer"));
       }
       finally
       {

@@ -27,7 +27,7 @@
   <ItemGroup>
     <PackageReference Include="Nerdbank.GitVersioning" Condition="!Exists('packages.config')">
       <PrivateAssets>all</PrivateAssets>
-      <Version>3.8.118</Version>
+      <Version>3.10.94</Version>
     </PackageReference>
   </ItemGroup>
 </Project>

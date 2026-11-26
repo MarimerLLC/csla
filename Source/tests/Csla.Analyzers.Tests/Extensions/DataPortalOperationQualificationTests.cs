@@ -99,7 +99,7 @@ namespace Csla.Analyzers.Tests.Extensions
     [DataRow(true, true, false, true, true, true)]
     [DataRow(true, true, true, false, true, true)]
     [DataRow(true, true, true, true, true, true)]
-    [DataTestMethod]
+    [TestMethod]
     public void Combine(bool firstByNamingConvention, bool firstByAttribute, bool secondByNamingConvention, bool secondByAttribute,
       bool expectedByNamingConvention, bool expectedByAttribute)
     {

@@ -10,7 +10,7 @@ using System.Security.Claims;
 using Csla.Configuration;
 using Csla.Rules;
 using Csla.Testing.Rules;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -112,7 +112,7 @@ namespace Csla.Testing.Tests.Rules
       result.HasInformation.Should().BeFalse();
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RuleSeverity.Error)]
     [DataRow(RuleSeverity.Warning)]
     [DataRow(RuleSeverity.Information)]

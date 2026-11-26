@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Reflection;
-using FluentAssertions;
+using AwesomeAssertions;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Testing.Tests

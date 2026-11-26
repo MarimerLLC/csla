@@ -8,8 +8,8 @@
 
 using Csla.Serialization;
 using Csla.Testing;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -168,7 +168,6 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))] // thrown by BusinessListBase.InsertItem
     public void InsertNonChildFails()
     {
       bool changed = false;
@@ -178,9 +177,8 @@ namespace Csla.Test.BusinessListBase
         changed = true;
       };
       var nonChild = new Child(); // object is not marked as child
-      obj.Insert(0, nonChild);
-      Assert.IsTrue(changed);
-      Assert.AreEqual(nonChild, obj[0]);
+      Assert.ThrowsExactly<InvalidOperationException>(() => obj.Insert(0, nonChild)); // thrown by BusinessListBase.InsertItem
+      Assert.IsFalse(changed);
     }
 
     [TestMethod]

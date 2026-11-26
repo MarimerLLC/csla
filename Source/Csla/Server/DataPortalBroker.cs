@@ -16,6 +16,16 @@ namespace Csla.Server
   /// Allows the Data Portal call to be intercepted by
   /// a custom IDataPortalServer implementation.
   /// </summary>
+  /// <remarks>
+  /// The broker also checks the not-null property invariant of root objects
+  /// (<see cref="INotNullPropertyInfo"/>). Its exit check runs after the
+  /// operation has completed, so a root object that fails it has already had
+  /// <c>DataPortal_OnDataPortalInvokeComplete</c> called, and does not get
+  /// <c>DataPortal_OnDataPortalException</c>; the failure reaches the caller as a
+  /// <see cref="DataPortalException"/>. A child object is checked before
+  /// <c>Child_OnDataPortalInvokeComplete</c>, and a failure there raises
+  /// <c>Child_OnDataPortalException</c> instead.
+  /// </remarks>
   public class DataPortalBroker : IDataPortalServer
   {
     private readonly DataPortalSelector _dataPortalSelector;
@@ -37,7 +47,12 @@ namespace Csla.Server
     public static IDataPortalServer? DataPortalServer { get; set; }
 
     /// <inheritdoc />
-    public Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <remarks>
+    /// Except for a command, the created object must satisfy the not-null
+    /// property invariant (<see cref="INotNullPropertyInfo"/>); otherwise
+    /// <see cref="InvalidOperationException"/> is thrown after the operation ran.
+    /// </remarks>
+    public async Task<DataPortalResult> Create([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -46,18 +61,28 @@ namespace Csla.Server
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
+      DataPortalResult result;
       if (DataPortalServer != null)
       {
-        return DataPortalServer.Create(objectType, criteria, context, isSync);
+        result = await DataPortalServer.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
       }
       else
       {
-        return _dataPortalSelector.Create(objectType, criteria, context, isSync);
-      }      
+        result = await _dataPortalSelector.Create(objectType, criteria, context, isSync).ConfigureAwait(false);
+      }
+
+      if (result.ReturnObject is not ICommandObject)
+        NotNullInvariant.Check(result.ReturnObject, nameof(Create), isEntry: false);
+      return result;
     }
 
     /// <inheritdoc />
-    public Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
+    /// <remarks>
+    /// The fetched object (including a command run through Execute) must
+    /// satisfy the not-null property invariant (<see cref="INotNullPropertyInfo"/>);
+    /// otherwise <see cref="InvalidOperationException"/> is thrown after the operation ran.
+    /// </remarks>
+    public async Task<DataPortalResult> Fetch([DynamicallyAccessedMembers(DynamicallyAccessedMemberTypes.PublicConstructors)] Type objectType, object criteria, DataPortalContext context, bool isSync)
     {
       if (objectType is null)
         throw new ArgumentNullException(nameof(objectType));
@@ -66,32 +91,48 @@ namespace Csla.Server
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
+      DataPortalResult result;
       if (DataPortalServer != null)
       {
-        return DataPortalServer.Fetch(objectType, criteria, context, isSync);
+        result = await DataPortalServer.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
       }
       else
       {
-        return _dataPortalSelector.Fetch(objectType, criteria, context, isSync);
+        result = await _dataPortalSelector.Fetch(objectType, criteria, context, isSync).ConfigureAwait(false);
       }
+
+      NotNullInvariant.Check(result.ReturnObject, nameof(Fetch), isEntry: false);
+      return result;
     }
 
     /// <inheritdoc />
-    public Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
+    /// <remarks>
+    /// The object must satisfy the not-null property invariant
+    /// (<see cref="INotNullPropertyInfo"/>) before the operation starts (except
+    /// for a command) and after it ran; otherwise <see cref="InvalidOperationException"/> is thrown.
+    /// </remarks>
+    public async Task<DataPortalResult> Update(ICslaObject obj, DataPortalContext context, bool isSync)
     {
       if (obj is null)
         throw new ArgumentNullException(nameof(obj));
       if (context is null)
         throw new ArgumentNullException(nameof(context));
 
+      if (obj is not ICommandObject)
+        NotNullInvariant.Check(obj, nameof(Update), isEntry: true);
+
+      DataPortalResult result;
       if (DataPortalServer != null)
       {
-        return DataPortalServer.Update(obj, context, isSync);
+        result = await DataPortalServer.Update(obj, context, isSync).ConfigureAwait(false);
       }
       else
       {
-        return _dataPortalSelector.Update(obj, context, isSync);
+        result = await _dataPortalSelector.Update(obj, context, isSync).ConfigureAwait(false);
       }
+
+      NotNullInvariant.Check(result.ReturnObject, nameof(Update), isEntry: false);
+      return result;
     }
 
     /// <inheritdoc />

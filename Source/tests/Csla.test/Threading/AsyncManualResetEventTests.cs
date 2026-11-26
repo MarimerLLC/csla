@@ -80,7 +80,7 @@ namespace Csla.Test.Threading
       });
 
       // Assert
-      await Assert.ThrowsExceptionAsync<TaskCanceledException>(async () =>
+      await Assert.ThrowsExactlyAsync<TaskCanceledException>(async () =>
       {
         await resetEvent.WaitAsync();
       });

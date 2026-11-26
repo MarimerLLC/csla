@@ -9,8 +9,8 @@
 using Csla.Configuration;
 using Csla.Testing;
 using Csla.TestHelpers;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
@@ -108,7 +108,6 @@ namespace Csla.Test.ObjectFactory
     // TODO: fix test
     [Ignore]
     [TestMethod]
-    [ExpectedException(typeof(MissingMethodException))]
     public void CreateMissing()
     {
       using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(// TODO: What proxy can we use for this test? Old one was Remoting, now retired
@@ -117,14 +116,17 @@ namespace Csla.Test.ObjectFactory
 
       IDataPortal<Root> dataPortal = testHost.GetDataPortal<Root>();
 
-      try
+      Assert.ThrowsExactly<MissingMethodException>(() =>
       {
-        var root = dataPortal.Create("abc", 123);
-      }
-      catch (DataPortalException ex)
-      {
-        throw ex.BusinessException;
-      }
+        try
+        {
+          var root = dataPortal.Create("abc", 123);
+        }
+        catch (DataPortalException ex)
+        {
+          throw ex.BusinessException;
+        }
+      });
     }
 
     [TestMethod]
@@ -277,28 +279,30 @@ namespace Csla.Test.ObjectFactory
     // TODO: fix test
     [Ignore]
     [TestMethod]
-    [ExpectedException(typeof(DataPortalException))]
     public void DataPortalExecute_OnCommandObjectWithFalseExecuteMethod_ThrowsExeptionMehodNotFound()
     {
-      using var testHost = CslaTestHost.Create();
-      IDataPortal<CommandObjectMissingFactoryMethod> dataPortal = testHost.GetDataPortal<CommandObjectMissingFactoryMethod>();
+      Assert.ThrowsExactly<DataPortalException>(() =>
+      {
+        using var testHost = CslaTestHost.Create();
+        IDataPortal<CommandObjectMissingFactoryMethod> dataPortal = testHost.GetDataPortal<CommandObjectMissingFactoryMethod>();
 
-      try
-      {
-        var test = CommandObjectMissingFactoryMethod.Execute(dataPortal);
-      }
-      catch (DataPortalException ex)
-      {
-        // inner exception should be System.NotImplementedException and mesaage should contain methodname 
-        Assert.AreEqual(typeof(NotImplementedException), ex.InnerException.GetType());
-        Assert.IsTrue(ex.InnerException.Message.Contains("ExecuteMissingMethod"));
-        // rethrow exception 
-        throw;
-      }
-      Assert.Fail("Should throw exception");
+        try
+        {
+          var test = CommandObjectMissingFactoryMethod.Execute(dataPortal);
+        }
+        catch (DataPortalException ex)
+        {
+          // inner exception should be System.NotImplementedException and mesaage should contain methodname 
+          Assert.AreEqual(typeof(NotImplementedException), ex.InnerException.GetType());
+          Assert.IsTrue(ex.InnerException.Message.Contains("ExecuteMissingMethod"));
+          // rethrow exception 
+          throw;
+        }
+        Assert.Fail("Should throw exception");
+      });
     }
 
-    [TestMethod("The return type of an business object factory type can be of type Task<T> instead of Task<object>.")]
+    [TestMethod(DisplayName = "The return type of an business object factory type can be of type Task<T> instead of Task<object>.")]
     public async Task BusinessObbjectFactory_ReturnTypesOfAsyncMethods()
     {
       using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(options => options.DataPortal(dp => dp.AddServerSideDataPortal(
@@ -328,7 +332,7 @@ namespace Csla.Test.ObjectFactory
       });
     }
 
-    [TestMethod("Factory Create accepts multiple criteria parameters")]
+    [TestMethod(DisplayName = "Factory Create accepts multiple criteria parameters")]
     public void CreateWithMultipleParameters()
     {
       var testHost = CreateFactoryContext<MultiParamRootFactory>();
@@ -340,7 +344,7 @@ namespace Csla.Test.ObjectFactory
       Assert.IsTrue(root.IsNew);
     }
 
-    [TestMethod("Factory Fetch accepts multiple criteria parameters")]
+    [TestMethod(DisplayName = "Factory Fetch accepts multiple criteria parameters")]
     public void FetchWithMultipleParameters()
     {
       var testHost = CreateFactoryContext<MultiParamRootFactory>();
@@ -352,7 +356,7 @@ namespace Csla.Test.ObjectFactory
       Assert.IsFalse(root.IsNew);
     }
 
-    [TestMethod("Factory method resolves [Inject] parameters from the service provider")]
+    [TestMethod(DisplayName = "Factory method resolves [Inject] parameters from the service provider")]
     public void FetchWithInjectedService()
     {
       var testHost = CreateFactoryContext<InjectRootFactory>(
@@ -364,7 +368,7 @@ namespace Csla.Test.ObjectFactory
       Assert.AreEqual("id7:injected", root.Data);
     }
 
-    [TestMethod("Factory method supports multiple criteria together with [Inject]")]
+    [TestMethod(DisplayName = "Factory method supports multiple criteria together with [Inject]")]
     public void CreateWithMultipleParametersAndInjectedService()
     {
       var testHost = CreateFactoryContext<InjectRootFactory>(
@@ -377,7 +381,7 @@ namespace Csla.Test.ObjectFactory
       Assert.IsTrue(root.IsNew);
     }
 
-    [TestMethod("Factory overloads are disambiguated by criteria parameter count")]
+    [TestMethod(DisplayName = "Factory overloads are disambiguated by criteria parameter count")]
     public void FetchOverloadResolution()
     {
       var testHost = CreateFactoryContext<OverloadRootFactory>();
@@ -388,7 +392,7 @@ namespace Csla.Test.ObjectFactory
       Assert.AreEqual("Fetch2 abc 5", dataPortal.Fetch("abc", 5).Data);
     }
 
-    [TestMethod("Object factory supports constructor injection")]
+    [TestMethod(DisplayName = "Object factory supports constructor injection")]
     public void FetchWithConstructorInjectedService()
     {
       var testHost = CreateFactoryContext<CtorInjectRootFactory>(
@@ -400,7 +404,7 @@ namespace Csla.Test.ObjectFactory
       Assert.AreEqual("injected", root.Data);
     }
 
-    [TestMethod("Command object factory Execute supports criteria plus [Inject]")]
+    [TestMethod(DisplayName = "Command object factory Execute supports criteria plus [Inject]")]
     public void ExecuteCommandWithInjectedService()
     {
       using var testHost = CslaTestHost.Create(t => t.ConfigureServices(services => services.AddTransient<IFactoryTestService, FactoryTestService>()));

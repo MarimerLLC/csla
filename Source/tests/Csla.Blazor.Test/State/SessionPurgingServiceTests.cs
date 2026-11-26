@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Collections.Concurrent;
-using FluentAssertions;
+using AwesomeAssertions;
 using Csla.Blazor.State;
 using Csla.Configuration;
 using Csla.State;

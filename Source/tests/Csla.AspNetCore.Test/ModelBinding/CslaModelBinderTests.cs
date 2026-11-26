@@ -7,7 +7,7 @@
 //-----------------------------------------------------------------------
 
 using System.Globalization;
-using FluentAssertions;
+using AwesomeAssertions;
 using Csla.Configuration;
 using Csla.Web.Mvc;
 using Microsoft.AspNetCore.Http;
@@ -811,6 +811,31 @@ public class CslaModelBinderTests
     return result;
   }
 
+  [TestMethod]
+  public async Task Bind_NewRoot_NotNullPropertyNotPosted_IsLeftUnloaded()
+  {
+    var result = await BindAsync<NotNullBindTarget>(new()
+    {
+      ["Name"] = "root",
+    });
+
+    result.Name.Should().Be("root");
+    result.DataIsLoaded.Should().BeFalse();
+  }
+
+  [TestMethod]
+  public async Task Bind_NotNullPropertyPostedEmpty_IsNotStoredAndAddsModelStateError()
+  {
+    var result = await BindAsync<NotNullBindTarget>(new()
+    {
+      ["Name"] = "root",
+      ["Data"] = "",
+    });
+
+    result.DataIsLoaded.Should().BeFalse();
+    _modelState.IsValid.Should().BeFalse();
+    _modelState["Data"].Errors.Should().ContainSingle();
+  }
   private async Task<Parent> FetchParentAsync()
   {
     var portal = _scope.ServiceProvider.GetRequiredService<IDataPortal<Parent>>();

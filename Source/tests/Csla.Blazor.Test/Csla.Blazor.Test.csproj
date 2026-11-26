@@ -12,16 +12,16 @@
     <PackageReference Include="Microsoft.Extensions.Configuration" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.Configuration.Json" Version="$(DotNetPackageVersion)" />
-    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.11.0" />
-    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="17.14.1" />
-    <PackageReference Include="MSTest.TestAdapter" Version="3.9.1" />
-    <PackageReference Include="MSTest.TestFramework" Version="3.9.1" />
-    <PackageReference Include="coverlet.collector" Version="6.0.4">
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" Version="11.0.1" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="4.5.3" />
+    <PackageReference Include="MSTest.TestFramework" Version="4.5.3" />
+    <PackageReference Include="coverlet.collector" Version="10.1.1">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
-    <PackageReference Include="AwesomeAssertions" Version="8.2.0" />
-    <PackageReference Include="AwesomeAssertions.Analyzers" Version="8.0.0">
+    <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
+    <PackageReference Include="AwesomeAssertions.Analyzers" Version="9.0.8">
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>

@@ -10,9 +10,42 @@ updates:
   - dependency-name: EntityFramework
     versions:
     - "< 6, >= 5.a"
+  # The analyzers, code fixes and generators bundled in the Csla package are
+  # built against these packages. The compiler won't load an analyzer or
+  # generator built against a newer Roslyn than itself (CS9057), so their
+  # version is the minimum compiler CSLA consumers need. It has to stay low
+  # enough for the .NET 10 SDK and for VS 2022 (.NET Framework 4.6.2
+  # developers). Raise it by hand, deliberately, never through Dependabot.
+  - dependency-name: Microsoft.CodeAnalysis.Common
+  - dependency-name: Microsoft.CodeAnalysis.CSharp
   - dependency-name: Microsoft.CodeAnalysis.CSharp.Workspaces
-    versions:
-    - ">= 3.a, < 4"
+  # Each target framework references the Microsoft.Extensions major version
+  # that matches it (10.x for net10.0, 11.x for net11.0) and the .NET
+  # Framework and netstandard2.0 targets keep a low floor, because a library's
+  # dependency version is a minimum for its consumers. Major versions change
+  # by hand, along with the target frameworks; patch and minor updates still
+  # come through.
+  - dependency-name: Microsoft.Extensions.*
+    update-types:
+    - version-update:semver-major
+  # Csla's netstandard2.0 reference to Microsoft.Bcl.AsyncInterfaces stays at the
+  # Microsoft.Extensions.DependencyInjection version next to it, so its major
+  # version changes by hand too.
+  - dependency-name: Microsoft.Bcl.AsyncInterfaces
+    update-types:
+    - version-update:semver-major
+  # Same for MAUI: the net10.0 targets of Csla.Xaml.Maui use MAUI 10 and the
+  # net11.0 targets use MAUI 11.
+  - dependency-name: Microsoft.Maui.*
+    update-types:
+    - version-update:semver-major
+  # MSTest 4 removes [ExpectedException] and Assert.ThrowsException(Async),
+  # which the test projects use throughout. Moving to a new MSTest major
+  # version is a test migration done by hand; patch and minor updates still
+  # come through.
+  - dependency-name: MSTest.*
+    update-types:
+    - version-update:semver-major
   - dependency-name: Microsoft.EntityFrameworkCore
     versions:
     - ">= 3.a, < 4"

@@ -39,17 +39,15 @@ namespace Csla.Test.MethodCaller
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void PropertyGetOnlySetFail()
     {
-      Csla.Reflection.MethodCaller.CallPropertyGetter(this, "Test3");
+      Assert.ThrowsExactly<NotSupportedException>(() => Csla.Reflection.MethodCaller.CallPropertyGetter(this, "Test3"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(NotSupportedException))]
     public void PropertySetOnlyGetFail()
     {
-      Csla.Reflection.MethodCaller.CallPropertySetter(this, "Test1", "fail");
+      Assert.ThrowsExactly<NotSupportedException>(() => Csla.Reflection.MethodCaller.CallPropertySetter(this, "Test1", "fail"));
     }
 
     [TestMethod]

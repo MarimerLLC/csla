@@ -35,7 +35,7 @@
   </PropertyGroup>
 
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net11&quot;))">
-    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.0" />
+    <PackageReference Include="Microsoft.Maui.Controls" Version="11.0.10" />
     <PackageReference Include="Microsoft.Extensions.Logging.Debug" Version="11.0.0" />
   </ItemGroup>
   <ItemGroup Condition="$(TargetFramework.StartsWith(&quot;net10&quot;))">

@@ -91,7 +91,6 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void DynamicListBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
@@ -99,7 +98,7 @@ namespace Csla.Test.Serialization
       var list = dataPortal.Create();
 
       // Act
-      ((IMobileObjectMetastate)list).SetMetastate(null);
+      Assert.ThrowsExactly<ArgumentNullException>(() => ((IMobileObjectMetastate)list).SetMetastate(null));
     }
 
     #region Test Helper Classes

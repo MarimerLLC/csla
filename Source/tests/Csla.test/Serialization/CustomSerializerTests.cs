@@ -61,7 +61,6 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void CustomSerializerNotRegistered()
     {
       var services = new ServiceCollection();
@@ -72,11 +71,10 @@ namespace Csla.Test.Serialization
 
       var nonSerializable = new NonSerializableType { Name = "test" };
       var cloner = new Core.ObjectCloner(applicationContext);
-      _ = (NonSerializableType)cloner.Clone(nonSerializable);
+      Assert.ThrowsExactly<InvalidOperationException>(() => _ = (NonSerializableType)cloner.Clone(nonSerializable));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(MobileFormatterException), "CustomSerializerType:Csla.Test.Serialization.BadSerializer; objectType:Csla.Test.Serialization.NonSerializableType")]
     public void CustomSerializerRegisteredBad()
     {
       var services = new ServiceCollection();
@@ -90,7 +88,7 @@ namespace Csla.Test.Serialization
 
       var nonSerializable = new NonSerializableType { Name = "test" };
       var cloner = new Core.ObjectCloner(applicationContext);
-      _ = (NonSerializableType)cloner.Clone(nonSerializable);
+      Assert.ThrowsExactly<MobileFormatterException>(() => _ = (NonSerializableType)cloner.Clone(nonSerializable));
     }
 
     [TestMethod]

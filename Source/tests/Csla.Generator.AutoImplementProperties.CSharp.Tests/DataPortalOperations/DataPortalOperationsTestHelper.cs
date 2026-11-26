@@ -7,8 +7,8 @@
 using System.Runtime.CompilerServices;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalExtensions;
 using Csla.Generator.AutoImplementProperties.CSharp.DataPortalOperations;
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 using Microsoft.CodeAnalysis.Diagnostics;
@@ -100,9 +100,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       foreach (var additionalSource in additionalSources ?? [])
         syntaxTrees.Add(CSharpSyntaxTree.ParseText(additionalSource, path: $"Source{index++}.cs"));
 
-      var references = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
-        .Select(a => MetadataReference.CreateFromFile(a.Location))
+      var references = Csla.Generator.Tests.TestCompilation.LoadedAndFrameworkReferences()
         .Concat([
           MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
           // Generated dispatch resolves [Inject] parameters with these extension methods.

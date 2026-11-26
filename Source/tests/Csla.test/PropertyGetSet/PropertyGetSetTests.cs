@@ -605,42 +605,63 @@ namespace Csla.Test.PropertyGetSet
 // to crash if the debugger is attached to the emulator at the time this is run.
 // https://connect.microsoft.com/VisualStudio/feedback/details/606930/consistent-visual-studio-crash-on-typeinitializationexception-in-wp7-emulator
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyNotRegistered()
     {
       IDataPortal<EditableGetSet> dataPortal = _testHost.GetDataPortal<EditableGetSet>();
       IDataPortal<BadGetSet> badDataPortal = _testHost.GetDataPortal<BadGetSet>();
 
       var first = EditableGetSet.GetObject(dataPortal);
-      try
+      Assert.ThrowsExactly<InvalidOperationException>(() =>
       {
-        var root = BadGetSet.GetObject(badDataPortal);
-        var tmp = root.Id;
-      }
-      catch (TypeInitializationException ex)
-      {
-        throw ex.InnerException;
-      }
+        try
+        {
+          var root = BadGetSet.GetObject(badDataPortal);
+          var tmp = root.Id;
+        }
+        catch (TypeInitializationException ex)
+        {
+          throw ex.InnerException;
+        }
+        catch (DataPortalException ex) when (FindTypeInitializationException(ex) is { InnerException: { } inner })
+        {
+          // the not-null property check runs the type initializer inside the data portal
+          throw inner;
+        }
+      });
+    }
+
+    private static TypeInitializationException FindTypeInitializationException(Exception ex)
+    {
+      while (ex is not null and not TypeInitializationException)
+        ex = ex.InnerException;
+      return (TypeInitializationException)ex;
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void PropertyRegisteredTwice()
     {
       IDataPortal<BadGetSetTwo> dataPortal = _testHost.GetDataPortal<BadGetSetTwo>();
 
-      try
+      Assert.ThrowsExactly<InvalidOperationException>(() =>
       {
-        var root = BadGetSetTwo.GetObject(dataPortal);
-        var tmp = root.Id;
-      }
-      catch (TypeInitializationException ex)
-      {
-        if (ex.InnerException != null)
-          throw ex.InnerException;
-        else
-          throw;
-      }
+        try
+        {
+          var root = BadGetSetTwo.GetObject(dataPortal);
+          var tmp = root.Id;
+        }
+        catch (TypeInitializationException ex)
+        {
+          if (ex.InnerException != null)
+            throw ex.InnerException;
+          else
+            throw;
+        }
+        catch (DataPortalException ex) when (FindTypeInitializationException(ex) is { InnerException: { } inner })
+        {
+          // the not-null property check runs the type initializer inside the data portal
+          throw inner;
+        }
+      });
     }
 #endif
 

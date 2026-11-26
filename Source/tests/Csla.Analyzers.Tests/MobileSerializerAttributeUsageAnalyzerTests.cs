@@ -85,7 +85,7 @@ namespace Csla.Analyzers.Tests
       await TestHelpers.RunAnalysisAsync<MobileSerializerAttributeUsageAnalyzer>(code, []);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("public class Bad { }", "the serializer 'Bad' does not implement IMobileSerializer")]
     [DataRow("public abstract class Bad : S1 { }", "the serializer 'Bad' is abstract")]
     [DataRow("public class Bad : S1 { private Bad() { } }", "the serializer 'Bad' has no public constructor")]
@@ -128,7 +128,7 @@ namespace Csla.Analyzers.Tests
       await AssertInvalidAsync(code, "the type 'Money<T>' is generic, and custom serializers can be registered only for non-generic types");
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("typeof(System.Guid)", "System.Guid")]
     [DataRow("typeof(string)", "string")]
     [DataRow("typeof(int)", "int")]

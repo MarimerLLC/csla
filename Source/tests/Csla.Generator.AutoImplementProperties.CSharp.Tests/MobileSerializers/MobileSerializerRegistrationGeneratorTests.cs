@@ -6,7 +6,7 @@
 //-----------------------------------------------------------------------
 using Csla.Generator.AutoImplementProperties.CSharp.MobileSerializers;
 using Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperations;
-using FluentAssertions;
+using AwesomeAssertions;
 
 namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
 {
@@ -25,7 +25,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       }
       """;
 
-    [TestMethod("Type-side attribute")]
+    [TestMethod(DisplayName = "Type-side attribute")]
     public async Task TypeSide()
     {
       var source = """
@@ -50,7 +50,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       await Verify(source);
     }
 
-    [TestMethod("Serializer-side attribute with several types")]
+    [TestMethod(DisplayName = "Serializer-side attribute with several types")]
     public async Task SerializerSide()
     {
       var source = """
@@ -78,7 +78,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       await Verify(source);
     }
 
-    [TestMethod("Records as serializers and serialized types")]
+    [TestMethod(DisplayName = "Records as serializers and serialized types")]
     public async Task Records()
     {
       var source = """
@@ -114,7 +114,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       await Verify(source);
     }
 
-    [TestMethod("Both attributes, with a pair declared twice")]
+    [TestMethod(DisplayName = "Both attributes, with a pair declared twice")]
     public async Task Mixed()
     {
       var source = """
@@ -135,7 +135,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       await Verify(source);
     }
 
-    [TestMethod("Invalid declarations are skipped")]
+    [TestMethod(DisplayName = "Invalid declarations are skipped")]
     public async Task InvalidSkipped()
     {
       var source = """
@@ -179,7 +179,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       await Verify(source);
     }
 
-    [TestMethod("No attributes, no output")]
+    [TestMethod(DisplayName = "No attributes, no output")]
     public void NoAttributes()
     {
       var source = """
@@ -192,7 +192,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       GetGeneratedSources(source).Should().BeEmpty();
     }
 
-    [TestMethod("Only invalid declarations, no output")]
+    [TestMethod(DisplayName = "Only invalid declarations, no output")]
     public void OnlyInvalid()
     {
       var source = """
@@ -210,7 +210,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.MobileSerializers
       GetGeneratedSources(source).Should().BeEmpty();
     }
 
-    [TestMethod("Pipeline stages are cacheable")]
+    [TestMethod(DisplayName = "Pipeline stages are cacheable")]
     public void StageCaching()
     {
       var source = """

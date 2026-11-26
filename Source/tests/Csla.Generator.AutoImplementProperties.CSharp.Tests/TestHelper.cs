@@ -1,5 +1,5 @@
-using FluentAssertions;
-using FluentAssertions.Execution;
+using AwesomeAssertions;
+using AwesomeAssertions.Execution;
 using Microsoft.CodeAnalysis;
 using Microsoft.CodeAnalysis.CSharp;
 
@@ -36,14 +36,33 @@ namespace Csla.Generator.Tests
   public static class TestCompilation
   {
     /// <summary>
+    /// References the assemblies loaded in the test process plus every assembly
+    /// in the shared framework. The test host doesn't load every framework
+    /// assembly before a test runs, so the loaded assemblies alone can miss
+    /// ones such as System.ComponentModel and System.ObjectModel.
+    /// </summary>
+    public static IEnumerable<MetadataReference> LoadedAndFrameworkReferences()
+    {
+      var frameworkDirectory = Path.GetDirectoryName(typeof(object).Assembly.Location);
+      var framework = ((string?)AppContext.GetData("TRUSTED_PLATFORM_ASSEMBLIES") ?? string.Empty)
+        .Split(Path.PathSeparator, StringSplitOptions.RemoveEmptyEntries)
+        .Where(p => string.Equals(Path.GetDirectoryName(p), frameworkDirectory, StringComparison.OrdinalIgnoreCase));
+      var loaded = AppDomain.CurrentDomain.GetAssemblies()
+        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
+        .Select(a => a.Location);
+
+      return loaded.Concat(framework)
+        .Distinct(StringComparer.OrdinalIgnoreCase)
+        .Select(p => MetadataReference.CreateFromFile(p));
+    }
+
+    /// <summary>
     /// Creates a nullable-enabled compilation of the sources that references
     /// the assemblies loaded in the test process, including Csla.
     /// </summary>
     public static CSharpCompilation Create(IEnumerable<string> sources)
     {
-      var references = AppDomain.CurrentDomain.GetAssemblies()
-        .Where(a => !a.IsDynamic && !string.IsNullOrWhiteSpace(a.Location))
-        .Select(a => MetadataReference.CreateFromFile(a.Location))
+      var references = LoadedAndFrameworkReferences()
         .Concat([
                 MetadataReference.CreateFromFile(typeof(FetchAttribute).Assembly.Location),
                 MetadataReference.CreateFromFile(typeof(CslaIgnorePropertyAttribute).Assembly.Location)

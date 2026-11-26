@@ -23,7 +23,7 @@ namespace Csla.Blazor.Test
     }
     
     [TestMethod]
-    public void ValidateModel_EmptyLastName_OneValidationMessage()
+    public async Task ValidateModel_EmptyLastName_OneValidationMessage()
     {
       // Arrange
       FakePerson person = GetValidFakePerson();
@@ -34,7 +34,7 @@ namespace Csla.Blazor.Test
       person.LastName = string.Empty;
 
       // Act
-      editContext.Validate();
+      await ValidateAsync(editContext);
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
@@ -43,7 +43,28 @@ namespace Csla.Blazor.Test
     }
 
     [TestMethod]
-    public void ValidateModel_ShortFirstName_NoValidationMessages()
+    public void ValidateModel_SyncValidate_EmptyLastName_OneValidationMessage()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Set last name to an invalid value
+      person.LastName = string.Empty;
+
+      // Act: the synchronous Validate() is obsolete on net11.0 but still supported, so keep covering it.
+#pragma warning disable CS0618
+      editContext.Validate();
+#pragma warning restore CS0618
+      IEnumerable<string> messages = editContext.GetValidationMessages();
+
+      // Assert
+      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+    }
+
+    [TestMethod]
+    public async Task ValidateModel_ShortFirstName_NoValidationMessages()
     {
       // Arrange
       FakePerson person = GetValidFakePerson();
@@ -54,7 +75,7 @@ namespace Csla.Blazor.Test
       person.LastName = "A";
 
       // Act
-      editContext.Validate();
+      await ValidateAsync(editContext);
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
@@ -63,7 +84,7 @@ namespace Csla.Blazor.Test
     }
 
     [TestMethod]
-    public void ValidateModel_ShortLastName_NoValidationMessages()
+    public async Task ValidateModel_ShortLastName_NoValidationMessages()
     {
       // Arrange
       FakePerson person = GetValidFakePerson();
@@ -74,7 +95,7 @@ namespace Csla.Blazor.Test
       person.LastName = "A";
 
       // Act
-      editContext.Validate();
+      await ValidateAsync(editContext);
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
@@ -83,7 +104,7 @@ namespace Csla.Blazor.Test
     }
 
     [TestMethod]
-    public void ValidateModel_ExcessiveFirstNameEmptyLastName_TwoValidationMessages()
+    public async Task ValidateModel_ExcessiveFirstNameEmptyLastName_TwoValidationMessages()
     {
       // Arrange
       FakePerson person = GetValidFakePerson();
@@ -95,7 +116,7 @@ namespace Csla.Blazor.Test
       person.LastName = string.Empty;
 
       // Act
-      editContext.Validate();
+      await ValidateAsync(editContext);
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
@@ -104,7 +125,7 @@ namespace Csla.Blazor.Test
     }
 
     [TestMethod]
-    public void ValidateModel_NeitherTelephoneProvided_TwoValidationMessages()
+    public async Task ValidateModel_NeitherTelephoneProvided_TwoValidationMessages()
     {
       // Arrange
       FakePerson person = GetValidFakePerson();
@@ -116,7 +137,7 @@ namespace Csla.Blazor.Test
       person.MobileTelephone = "";
 
       // Act
-      editContext.Validate();
+      await ValidateAsync(editContext);
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
@@ -125,7 +146,7 @@ namespace Csla.Blazor.Test
     }
 
     [TestMethod]
-    public void ValidateModel_EmptyChildEmailAddress_OneValidationMessage()
+    public async Task ValidateModel_EmptyChildEmailAddress_OneValidationMessage()
     {
       // Arrange
       FakePerson person = GetValidFakePerson();
@@ -136,7 +157,7 @@ namespace Csla.Blazor.Test
       person.EmailAddresses.AddNew();
 
       // Act
-      editContext.Validate();
+      await ValidateAsync(editContext);
       IEnumerable<string> messages = editContext.GetValidationMessages();
 
       // Assert
@@ -293,5 +314,14 @@ namespace Csla.Blazor.Test
 
     #endregion
 
+    private static async Task ValidateAsync(EditContext editContext)
+    {
+#if NET11_0_OR_GREATER
+      await editContext.ValidateAsync(CancellationToken.None);
+#else
+      editContext.Validate();
+      await Task.CompletedTask;
+#endif
+    }
   }
 }

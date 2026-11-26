@@ -2,6 +2,7 @@
 using Csla.Testing.Business.DataPortal;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.Hosting;
@@ -9,6 +10,7 @@ namespace Csla.Test.Hosting;
 [TestClass]
 public class KestrelOrIISHostingTests {
 
+  private static IHost _host;
   private static TestServer _server;
   private static ServiceProvider _clientSideServiceProvider;
 
@@ -16,7 +18,8 @@ public class KestrelOrIISHostingTests {
   public static void Initialize(TestContext context) {
     _ = context;
 
-    var (server, clientServiceProvider) = HttpTestServerFactory.CreateHttpTestServerAndClientServiceProvider();
+    var (host, server, clientServiceProvider) = HttpTestServerFactory.CreateHttpTestServerAndClientServiceProvider();
+    _host = host;
     _server = server;
     _clientSideServiceProvider = clientServiceProvider;
   }
@@ -24,7 +27,8 @@ public class KestrelOrIISHostingTests {
   [ClassCleanup]
   public static async Task Cleanup() {
     await _clientSideServiceProvider.DisposeAsync();
-    _server.Dispose();
+    await _host.StopAsync();
+    _host.Dispose();
   }
 
   [TestMethod]

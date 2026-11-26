@@ -188,7 +188,7 @@ namespace Csla.Analyzers.Tests
       await TestHelpers.RunAnalysisAsync<FindOperationsWithNonSerializableArgumentsAnalyzer>(code, []);
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow("bool")]
     [DataRow("byte")]
     [DataRow("sbyte")]

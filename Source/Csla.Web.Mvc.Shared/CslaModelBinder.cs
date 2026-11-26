@@ -42,6 +42,11 @@ namespace Csla.Web.Mvc
   /// error, provided the user may read the property; otherwise any posted
   /// value is reported, so the response doesn't reveal the current value. Fields listed in <c>__Invariant</c> by the tag helpers, such as
   /// <c>&lt;input type="number"&gt;</c>, are parsed with the invariant culture.
+  /// A posted value that converts to null for a not-null property other than
+  /// <see cref="string"/> (<see cref="Core.INotNullPropertyInfo"/>) is rejected
+  /// by the setter, so it isn't stored and a ModelState error is added. A
+  /// not-null property that isn't posted on a new object stays unloaded, without
+  /// an error. A null string is stored as <see cref="string.Empty"/>.
   /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
   [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
@@ -313,7 +318,9 @@ namespace Csla.Web.Mvc
       {
         // a failure after the field was written (for example in a
         // PropertyChanged handler) leaves the new value, so restore it
-        if (hasOldValue && TryReadCurrentValue(obj, item, out var failedValue) && !Equals(oldValue, failedValue))
+        // (a not-null property can't hold the null default of a field that wasn't loaded)
+        if (hasOldValue && TryReadCurrentValue(obj, item, out var failedValue) && !Equals(oldValue, failedValue)
+          && !(oldValue is null && Core.NotNullGuard.RejectsNull(item)))
           LoadProperty(obj, item, oldValue);
 
         var cause = GetCause(ex);
@@ -365,15 +372,23 @@ namespace Csla.Web.Mvc
     }
 
     /// <summary>
-    /// Reads the property's current value, unless it's a lazy-loaded
-    /// property that isn't loaded, which can't be read without loading it.
+    /// Reads the property's current value without loading its field. A
+    /// lazy-loaded property that isn't loaded can't be read. Another
+    /// managed field that isn't loaded reads as the property's default
+    /// value, which <c>ReadProperty</c> would also store in the field (for
+    /// a not-null property without a default, that would store null).
     /// </summary>
     private bool TryReadCurrentValue(object obj, Core.IPropertyInfo item, out object? value)
     {
-      if ((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad && !FieldExists(obj, item))
+      if ((item.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField && !FieldExists(obj, item))
       {
-        value = null;
-        return false;
+        if ((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+        {
+          value = null;
+          return false;
+        }
+        value = item.DefaultValue;
+        return true;
       }
       value = ReadProperty(obj, item);
       return true;

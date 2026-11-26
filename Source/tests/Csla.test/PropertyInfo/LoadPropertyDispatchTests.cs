@@ -75,7 +75,7 @@ namespace Csla.Test.PropertyInfo
     {
       var obj = _testHost.GetDataPortal<LoadPropertyRoot>().Create();
 
-      Assert.ThrowsException<ArgumentException>(() => obj.LoadUntyped(LoadPropertyRoot.CountProperty, "not a number"));
+      Assert.ThrowsExactly<ArgumentException>(() => obj.LoadUntyped(LoadPropertyRoot.CountProperty, "not a number"));
     }
 
     [TestMethod]

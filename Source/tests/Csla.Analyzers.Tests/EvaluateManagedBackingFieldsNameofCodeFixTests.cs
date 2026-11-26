@@ -22,8 +22,7 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.EvaluateManagedBackingFieldsNameof,
-        nameof(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFieldsNameof));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFieldsNameof, ids[0], nameof(Constants.AnalyzerIdentifiers.EvaluateManagedBackingFieldsNameof));
     }
     [TestMethod]
     public async Task VerifyCodeFixReplacesLambdaWithNameof()

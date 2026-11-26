@@ -17,8 +17,7 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.CompleteInExecuteAsync,
-        nameof(Constants.AnalyzerIdentifiers.CompleteInExecuteAsync));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.CompleteInExecuteAsync, ids[0], nameof(Constants.AnalyzerIdentifiers.CompleteInExecuteAsync));
     }
 
     [TestMethod]

@@ -391,11 +391,11 @@ namespace Csla.Test.SmartDate
     {
       Csla.SmartDate sd = new Csla.SmartDate();
       if (Csla.SmartDate.TryParse("blah", ref sd))
-        Assert.AreEqual(true, false, "TryParse should have failed");
+        Assert.Fail("TryParse should have failed");
       if (Csla.SmartDate.TryParse("t", ref sd))
         Assert.AreEqual(DateTime.Now.Date, sd.Date.Date, "Date should have been now");
       else
-        Assert.AreEqual(true, false, "TryParse should have succeeded");
+        Assert.Fail("TryParse should have succeeded");
     }
 
     #endregion

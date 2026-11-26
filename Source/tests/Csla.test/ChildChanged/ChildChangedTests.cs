@@ -190,7 +190,7 @@ namespace Csla.Test.ChildChanged
       root.List.Add(dataPortal.FetchChild(true));
       root.PropertyChanged += (_, _) =>
       {
-        Assert.IsTrue(false, "root.PropertyChanged should not fire");
+        Assert.Fail("root.PropertyChanged should not fire");
       };
       root.ChildChanged += (_, _) =>
       {
@@ -229,7 +229,7 @@ namespace Csla.Test.ChildChanged
 
       list.PropertyChanged += (_, _) =>
       {
-        Assert.IsTrue(false, "root.PropertyChanged should not fire");
+        Assert.Fail("root.PropertyChanged should not fire");
       };
       list.ChildChanged += (_, _) =>
       {
@@ -281,7 +281,7 @@ namespace Csla.Test.ChildChanged
       };
       child.PropertyChanged += (_, _) =>
       {
-        Assert.IsTrue(false, "child.PropertyChanged should not fire");
+        Assert.Fail("child.PropertyChanged should not fire");
       };
       bool lc = false;
       child.List.CollectionChanged += (_, _) =>

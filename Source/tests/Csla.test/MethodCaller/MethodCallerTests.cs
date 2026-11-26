@@ -74,11 +74,11 @@ namespace Csla.Test.MethodCaller
     public void CallSuccessParams()
     {
       var returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", [1, 2]);
-      Assert.AreEqual(returnValue, 1);
+      Assert.AreEqual(1, returnValue);
       returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams", [123]);
-      Assert.AreEqual(returnValue, 1);
+      Assert.AreEqual(1, returnValue);
       returnValue = Csla.Reflection.MethodCaller.CallMethod(this, "MethodWithParams");
-      Assert.AreEqual(returnValue, 1);
+      Assert.AreEqual(1, returnValue);
     }
 
     [TestMethod]
@@ -86,18 +86,18 @@ namespace Csla.Test.MethodCaller
     {
 
       var returnValue1 = Csla.Reflection.MethodCaller.CallMethod(new Caller1(), "Method1");
-      Assert.AreEqual(returnValue1, 1);
+      Assert.AreEqual(1, returnValue1);
       var returnValue2 = Csla.Reflection.MethodCaller.CallMethod(new Caller2(), "Method1");
-      Assert.AreEqual(returnValue2, 2);
+      Assert.AreEqual(2, returnValue2);
       var returnValue3 = Csla.Reflection.MethodCaller.CallMethod(new Caller3(), "Method1");
-      Assert.AreEqual(returnValue3, 2);
+      Assert.AreEqual(2, returnValue3);
 
       returnValue1 = Csla.Reflection.MethodCaller.CallMethod(new Caller1(), "Method2", 0);
-      Assert.AreEqual(returnValue1, 1);
+      Assert.AreEqual(1, returnValue1);
       returnValue2 = Csla.Reflection.MethodCaller.CallMethod(new Caller2(), "Method2", 0);
-      Assert.AreEqual(returnValue2, 2);
+      Assert.AreEqual(2, returnValue2);
       returnValue3 = Csla.Reflection.MethodCaller.CallMethod(new Caller3(), "Method2", 0);
-      Assert.AreEqual(returnValue3, 2);
+      Assert.AreEqual(2, returnValue3);
     }
 
 #if DEBUG
@@ -132,13 +132,12 @@ namespace Csla.Test.MethodCaller
 #endif
 
     [TestMethod]
-    [ExpectedException(typeof(CallMethodException))]
     public void CallWithInvalidParameterTypeFails()
     {
       MemoryStream ms = new MemoryStream();
       var t = GetType();
       var foo = t.GetMethod("foo");
-      Csla.Reflection.MethodCaller.CallMethod(this, foo, "This should be a MemoryStream object not a string...");
+      Assert.ThrowsExactly<CallMethodException>(() => Csla.Reflection.MethodCaller.CallMethod(this, foo, "This should be a MemoryStream object not a string..."));
     }
 
     [TestMethod]

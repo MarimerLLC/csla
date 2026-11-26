@@ -98,7 +98,7 @@ The main NuGet package. Key subsystems:
 - `Source/Csla.Generator.DataPortalInterfaces.CSharp/` — Source generator for data portal interface generation
 
 ### Test Projects (under `Source/tests/`)
-- `Csla.test` — Main test suite (MSTest + FluentAssertions)
+- `Csla.test` — Main test suite (MSTest + AwesomeAssertions)
 - `csla.netcore.test` — .NET-specific tests (MSTest + AwesomeAssertions)
 - `Csla.Blazor.Test` / `Csla.Blazor.WebAssembly.Tests` — Blazor tests
 - `Csla.Windows.Tests` — WinForms tests

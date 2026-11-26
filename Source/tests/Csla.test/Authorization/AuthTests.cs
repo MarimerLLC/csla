@@ -290,7 +290,6 @@ namespace Csla.Test.Authorization
       prClone.FirstName = "somethiansdfasdf";
     }
 
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
     [TestMethod]
     public void TestUnauthorizedAccessToGet()
     {
@@ -299,10 +298,9 @@ namespace Csla.Test.Authorization
       PermissionsRoot pr = dataPortal.Create();
 
       //this should throw an exception, since only admins have access to this property
-      string something = pr.FirstName;
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => pr.FirstName);
     }
 
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
     [TestMethod]
     public void TestUnauthorizedAccessToSet()
     {
@@ -311,7 +309,7 @@ namespace Csla.Test.Authorization
       PermissionsRoot pr = dataPortal.Create();
 
       //will cause an exception, because only admins can write to property
-      pr.FirstName = "test";
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => pr.FirstName = "test");
     }
 
     [TestMethod]
@@ -357,7 +355,6 @@ namespace Csla.Test.Authorization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestUnAuthExecute()
     {
       IDataPortal<PermissionsRoot> dataPortal = _anonymousHost.GetDataPortal<PermissionsRoot>();
@@ -367,7 +364,7 @@ namespace Csla.Test.Authorization
 
       PermissionsRoot pr = dataPortal.Create();
       //should fail, because we're not an admin
-      pr.DoWork();
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => pr.DoWork());
 
     }
 
@@ -518,7 +515,7 @@ namespace Csla.Test.Authorization
       using var testHost = CslaTestHost.Create(t => t.ConfigureServices(UseUnitTestContextManager));
       ApplicationContext applicationContext = testHost.ApplicationContext;
 
-      Assert.ThrowsException<InvalidOperationException>(() => BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootDelayedAsync)));
+      Assert.ThrowsExactly<InvalidOperationException>(() => BusinessRules.HasPermission(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootDelayedAsync)));
       Assert.IsFalse(await BusinessRules.HasPermissionAsync(applicationContext, AuthorizationActions.EditObject, typeof(PerTypeAuthRootDelayedAsync), CancellationToken.None));
     }
 

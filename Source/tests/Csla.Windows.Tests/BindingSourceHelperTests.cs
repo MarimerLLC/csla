@@ -14,15 +14,14 @@ using Csla.Windows;
 public class BindingSourceHelperTests
 {
     [TestMethod]
-    [ExpectedException(typeof(ApplicationException))]
-    public void InitializeBindingSourceTree_NullRootSource_ThrowsException()
+  public void InitializeBindingSourceTree_NullRootSource_ThrowsException()
     {
         // Arrange
         using IContainer container = new Container();
 
-        // Act
-        BindingSourceHelper.InitializeBindingSourceTree(container, null);
-    }
+    // Act
+    Assert.ThrowsExactly<ApplicationException>(() => BindingSourceHelper.InitializeBindingSourceTree(container, null));
+  }
 
     [TestMethod]
     public void InitializeBindingSourceTree_ValidRootSource_ReturnsRootNode()

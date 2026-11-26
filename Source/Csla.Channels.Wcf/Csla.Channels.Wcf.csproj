@@ -35,8 +35,10 @@
 
   <!-- CoreWCF libraries are only needed for modern .net targets. -->
   <ItemGroup Condition="'$(TargetFramework)'=='net10.0' or '$(TargetFramework)'=='net11.0'">
-    <PackageReference Include="CoreWCF.Http" Version="1.8.1" />
-    <PackageReference Include="CoreWCF.Primitives" Version="1.8.1" />
+    <PackageReference Include="CoreWCF.Http" Version="1.9.2" />
+    <PackageReference Include="CoreWCF.Primitives" Version="1.9.2" />
+    <!-- CoreWCF brings in Microsoft.AspNetCore.WebUtilities 2.3.10; force the version that fixes GHSA-6527-9fp8-r4x6. -->
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.3.14" />
   </ItemGroup>
 
   <!-- There is no 11.x version of the client side System.ServiceModel packages, so .NET 11 uses the 10.x version. -->

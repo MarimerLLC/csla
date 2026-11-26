@@ -53,16 +53,9 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
-      try
-      {
-        // get the required property and verify that it has the value that it was set to.
-        var result = egsv.MemberBackedIdWithNoRelationshipTypes;
-        Assert.Fail("This property has a backing feild and an exception should of been thrown.");
-      }
-      catch (Exception)
-      {
-        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
-      }
+      // The property has a private backing field but isn't registered with RelationshipTypes.PrivateField.
+      var ex = Assert.ThrowsExactly<InvalidOperationException>(() => egsv.MemberBackedIdWithNoRelationshipTypes);
+      Assert.Contains(nameof(RelationshipTypes.PrivateField), ex.Message);
     }
 
     [TestMethod]
@@ -72,16 +65,10 @@ namespace Csla.Test.PropertyGetSet
 
       EditableGetSetRuleValidation egsv = EditableGetSetRuleValidation.NewEditableGetSetValidation(dataPortal);
 
-      try
-      {
-        // Set the required property and verify that it has the value that it was set to.
-        egsv.MemberBackedIdWithNoRelationshipTypes = ID;
-        Assert.Fail("This property has a backing feild and an exception should of been thrown.");
-      }
-      catch (Exception)
-      {
-        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
-      }
+      // The property has a private backing field but isn't registered with RelationshipTypes.PrivateField.
+      // SetProperty wraps the InvalidOperationException in a PropertyLoadException.
+      var ex = Assert.ThrowsExactly<PropertyLoadException>(() => egsv.MemberBackedIdWithNoRelationshipTypes = ID);
+      Assert.IsInstanceOfType<InvalidOperationException>(ex.InnerException);
     }
 
     [TestMethod]
@@ -95,15 +82,8 @@ namespace Csla.Test.PropertyGetSet
       Assert.IsTrue(egsv.Id.Equals(string.Empty));
       Assert.IsTrue(egsv.MemberBackedId.Equals(string.Empty));
 
-      try
-      {
-        Assert.IsTrue(egsv.MemberBackedIdWithNoRelationshipTypes.Equals(string.Empty));
-        Assert.Fail("This property has a backing feild and an exception should of been thrown.");
-      }
-      catch (Exception)
-      {
-        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
-      }
+      // A private backing field without RelationshipTypes.PrivateField can't be read.
+      Assert.ThrowsExactly<InvalidOperationException>(() => egsv.MemberBackedIdWithNoRelationshipTypes);
 
       // Verify that the object is not valid.
       Assert.IsFalse(egsv.IsValid, egsv.BrokenRulesCollection.ToString());
@@ -116,16 +96,9 @@ namespace Csla.Test.PropertyGetSet
       egsv.MemberBackedId = ID;
       Assert.IsTrue(ID.Equals(egsv.MemberBackedId));
 
-      try
-      {
-        // Set the required property and verify that it has the value that it was set to.
-        egsv.MemberBackedIdWithNoRelationshipTypes = ID;
-        Assert.IsTrue(ID.Equals(egsv.MemberBackedIdWithNoRelationshipTypes));
-      }
-      catch (Exception)
-      {
-        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
-      }
+      // It can't be set either, so its required rule stays broken.
+      var ex = Assert.ThrowsExactly<PropertyLoadException>(() => egsv.MemberBackedIdWithNoRelationshipTypes = ID);
+      Assert.IsInstanceOfType<InvalidOperationException>(ex.InnerException);
 
       // Verify that the object is not valid.
       Assert.IsFalse(egsv.IsValid, egsv.BrokenRulesCollection.ToString());

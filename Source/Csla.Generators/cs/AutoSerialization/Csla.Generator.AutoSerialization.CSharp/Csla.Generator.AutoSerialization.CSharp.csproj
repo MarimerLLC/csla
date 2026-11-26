@@ -35,6 +35,6 @@
     <None Include="$(OutputPath)\$(AssemblyName).dll" Pack="true" PackagePath="analyzers/dotnet/cs" Visible="false" />
     <None Include="$(OutputPath)\Csla.Generator.AutoSerialization.Attributes.CSharp.dll" Pack="true" PackagePath="lib\netstandard2.0" Visible="true" />
     <ProjectReference Include="..\Csla.Generator.AutoSerialization.Attributes.CSharp\Csla.Generator.AutoSerialization.Attributes.CSharp.csproj" PrivateAssets="All" />
-    <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
+    <PackageReference Include="Polyfill" Version="12.0.0" PrivateAssets="all" />
   </ItemGroup>
 </Project>

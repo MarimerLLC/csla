@@ -111,7 +111,7 @@
   <ItemGroup>
     <PackageReference Include="System.Text.Json" Version="8.0.5" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
-    <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
+    <PackageReference Include="Polyfill" Version="12.0.0" PrivateAssets="all" />
     <!-- Build order only; the analyzers are packed by CslaPackBundledAnalyzers -->
     <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers\Csla.Analyzers.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" />
     <ProjectReference Include="..\Csla.Analyzers\Csla.Analyzers.CodeFixes\Csla.Analyzers.CodeFixes.csproj" ReferenceOutputAssembly="false" PrivateAssets="all" />

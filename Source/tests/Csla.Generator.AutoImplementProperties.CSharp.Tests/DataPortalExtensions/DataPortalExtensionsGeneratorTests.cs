@@ -13,7 +13,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
   [TestClass]
   public class DataPortalExtensionsGeneratorTests : VerifyBase
   {
-    [TestMethod("Async and sync extensions for root operations")]
+    [TestMethod(DisplayName = "Async and sync extensions for root operations")]
     public async Task RootOperations()
     {
       var source = """
@@ -46,7 +46,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Extensions for child operations")]
+    [TestMethod(DisplayName = "Extensions for child operations")]
     public async Task ChildOperations()
     {
       var source = """
@@ -69,7 +69,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Inherited operation methods get no extensions")]
+    [TestMethod(DisplayName = "Inherited operation methods get no extensions")]
     public async Task InheritedOperations()
     {
       var source = """
@@ -104,7 +104,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Execute operation on a command object")]
+    [TestMethod(DisplayName = "Execute operation on a command object")]
     public async Task ExecuteCommand()
     {
       var source = """
@@ -124,7 +124,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Prefix gives extensions distinct names")]
+    [TestMethod(DisplayName = "Prefix gives extensions distinct names")]
     public async Task Prefix()
     {
       var source = """
@@ -147,7 +147,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Names that would be hidden by data portal instance methods are reported")]
+    [TestMethod(DisplayName = "Names that would be hidden by data portal instance methods are reported")]
     public async Task HiddenNames()
     {
       var source = """
@@ -174,7 +174,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Hidden names are checked against the receiving portal interface only")]
+    [TestMethod(DisplayName = "Hidden names are checked against the receiving portal interface only")]
     public async Task ReceiverSpecificHiddenNames()
     {
       var source = """
@@ -197,7 +197,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Keyword method names and parameters colliding with generated names")]
+    [TestMethod(DisplayName = "Keyword method names and parameters colliding with generated names")]
     public async Task KeywordAndCollidingNames()
     {
       var source = """
@@ -217,7 +217,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("A prefix that is not a valid identifier is reported")]
+    [TestMethod(DisplayName = "A prefix that is not a valid identifier is reported")]
     public async Task InvalidPrefix()
     {
       var source = """
@@ -237,7 +237,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("NoDataPortalExtension excludes a method")]
+    [TestMethod(DisplayName = "NoDataPortalExtension excludes a method")]
     public async Task NoDataPortalExtension()
     {
       var source = """
@@ -261,7 +261,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Internal parameter types make the extension internal and private types are reported")]
+    [TestMethod(DisplayName = "Internal parameter types make the extension internal and private types are reported")]
     public async Task ParameterAccessibility()
     {
       var source = """
@@ -288,7 +288,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Default parameter values including enums")]
+    [TestMethod(DisplayName = "Default parameter values including enums")]
     public async Task DefaultValues()
     {
       var source = """
@@ -310,7 +310,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Array and params criteria")]
+    [TestMethod(DisplayName = "Array and params criteria")]
     public async Task ArrayCriteria()
     {
       var source = """
@@ -333,7 +333,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Nested business type")]
+    [TestMethod(DisplayName = "Nested business type")]
     public async Task NestedType()
     {
       var source = """
@@ -356,7 +356,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Business types mapping to the same extension class name merge into one partial class")]
+    [TestMethod(DisplayName = "Business types mapping to the same extension class name merge into one partial class")]
     public async Task ExtensionClassNameCollision()
     {
       var source = """
@@ -386,7 +386,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Internal business type generates an internal extension class")]
+    [TestMethod(DisplayName = "Internal business type generates an internal extension class")]
     public async Task InternalType()
     {
       var source = """
@@ -406,7 +406,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await Verify(source);
     }
 
-    [TestMethod("Generic business type is skipped")]
+    [TestMethod(DisplayName = "Generic business type is skipped")]
     public async Task GenericTypeSkipped()
     {
       var source = """
@@ -426,7 +426,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Abstract and non-CSLA types are reported")]
+    [TestMethod(DisplayName = "Abstract and non-CSLA types are reported")]
     public async Task InvalidTargets()
     {
       var source = """
@@ -453,7 +453,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Operations producing the same extension signature are reported")]
+    [TestMethod(DisplayName = "Operations producing the same extension signature are reported")]
     public async Task DuplicateExtension()
     {
       var source = """
@@ -476,7 +476,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Pipeline stages are cached when the compilation does not change")]
+    [TestMethod(DisplayName = "Pipeline stages are cached when the compilation does not change")]
     public void StageCaching()
     {
       var source = """
@@ -500,7 +500,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       StageCachingTester.VerifyStageCaching<IncrementalDataPortalExtensionsGenerator>(source, typeof(TrackingNames));
     }
 
-    [TestMethod("Only async extensions are generated when CslaGenerateSyncDataPortalExtensions is false")]
+    [TestMethod(DisplayName = "Only async extensions are generated when CslaGenerateSyncDataPortalExtensions is false")]
     public async Task AsyncOnly()
     {
       var source = """
@@ -532,7 +532,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source, SyncDisabled);
     }
 
-    [TestMethod("The assembly attribute requests extensions for every eligible type")]
+    [TestMethod(DisplayName = "The assembly attribute requests extensions for every eligible type")]
     public async Task AssemblyAttribute()
     {
       var source = """
@@ -592,7 +592,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("An invalid assembly prefix is reported on the assembly attribute")]
+    [TestMethod(DisplayName = "An invalid assembly prefix is reported on the assembly attribute")]
     public async Task AssemblyAttributeInvalidPrefix()
     {
       var source = """
@@ -619,7 +619,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("CslaDataPortalExtensionsAsyncSuffix sets the async method name suffix")]
+    [TestMethod(DisplayName = "CslaDataPortalExtensionsAsyncSuffix sets the async method name suffix")]
     public async Task CustomAsyncSuffix()
     {
       var source = """
@@ -639,7 +639,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source, Options(("CslaDataPortalExtensionsAsyncSuffix", "Task")));
     }
 
-    [TestMethod("With no async suffix and sync methods turned off, async methods have no suffix")]
+    [TestMethod(DisplayName = "With no async suffix and sync methods turned off, async methods have no suffix")]
     public async Task NoAsyncSuffix()
     {
       var source = """
@@ -662,7 +662,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source, Options(("CslaDataPortalExtensionsAsyncSuffix", "none"), ("CslaGenerateSyncDataPortalExtensions", "false")));
     }
 
-    [TestMethod("With no async suffix, sync methods are not generated and a warning is reported")]
+    [TestMethod(DisplayName = "With no async suffix, sync methods are not generated and a warning is reported")]
     public async Task NoAsyncSuffixWithSync()
     {
       var source = """
@@ -682,7 +682,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalExtensio
       await VerifyWithDiagnostics(source, Options(("CslaDataPortalExtensionsAsyncSuffix", "none")));
     }
 
-    [TestMethod("An invalid async suffix is reported and the Async suffix is used")]
+    [TestMethod(DisplayName = "An invalid async suffix is reported and the Async suffix is used")]
     public async Task InvalidAsyncSuffix()
     {
       var source = """

@@ -855,8 +855,7 @@ namespace Csla.Test.ValidationRules
                                                  {TwoPropertyRules.Value1Property, "a"},
                                                  {TwoPropertyRules.Value2Property, "b"}
                                                });
-      ctx.AddErrorResult(string.Empty, false);
-      Assert.ThrowsExactly<ArgumentException>(() => Assert.Fail("Must throw exception."));
+      Assert.ThrowsExactly<ArgumentException>(() => ctx.AddErrorResult(string.Empty, false));
     }
 
     [TestMethod]
@@ -872,8 +871,7 @@ namespace Csla.Test.ValidationRules
                                                  {TwoPropertyRules.Value1Property, "a"},
                                                  {TwoPropertyRules.Value2Property, "b"}
                                                });
-      ctx.AddErrorResult(TwoPropertyRules.Value1Property, string.Empty);
-      Assert.ThrowsExactly<ArgumentException>(() => Assert.Fail("Must throw exception."));
+      Assert.ThrowsExactly<ArgumentException>(() => ctx.AddErrorResult(TwoPropertyRules.Value1Property, string.Empty));
     }
 
     [TestMethod]
@@ -889,8 +887,7 @@ namespace Csla.Test.ValidationRules
                                                  {TwoPropertyRules.Value1Property, "a"},
                                                  {TwoPropertyRules.Value2Property, "b"}
                                                });
-      ctx.AddWarningResult(string.Empty, false);
-      Assert.ThrowsExactly<ArgumentException>(() => Assert.Fail("Must throw exception."));
+      Assert.ThrowsExactly<ArgumentException>(() => ctx.AddWarningResult(string.Empty, false));
     }
 
     [TestMethod]
@@ -906,8 +903,7 @@ namespace Csla.Test.ValidationRules
                                                  {TwoPropertyRules.Value1Property, "a"},
                                                  {TwoPropertyRules.Value2Property, "b"}
                                                });
-      ctx.AddWarningResult(TwoPropertyRules.Value1Property, string.Empty);
-      Assert.ThrowsExactly<ArgumentException>(() => Assert.Fail("Must throw exception."));
+      Assert.ThrowsExactly<ArgumentException>(() => ctx.AddWarningResult(TwoPropertyRules.Value1Property, string.Empty));
     }
 
     [TestMethod]
@@ -923,8 +919,7 @@ namespace Csla.Test.ValidationRules
                                                  {TwoPropertyRules.Value1Property, "a"},
                                                  {TwoPropertyRules.Value2Property, "b"}
                                                });
-      ctx.AddInformationResult(string.Empty, false);
-      Assert.ThrowsExactly<ArgumentException>(() => Assert.Fail("Must throw exception."));
+      Assert.ThrowsExactly<ArgumentException>(() => ctx.AddInformationResult(string.Empty, false));
     }
 
     [TestMethod]
@@ -940,8 +935,7 @@ namespace Csla.Test.ValidationRules
                                                  {TwoPropertyRules.Value1Property, "a"},
                                                  {TwoPropertyRules.Value2Property, "b"}
                                                });
-      ctx.AddInformationResult(TwoPropertyRules.Value1Property, string.Empty);
-      Assert.ThrowsExactly<ArgumentException>(() => Assert.Fail("Must throw exception."));
+      Assert.ThrowsExactly<ArgumentException>(() => ctx.AddInformationResult(TwoPropertyRules.Value1Property, string.Empty));
     }
 
 
@@ -959,7 +953,6 @@ namespace Csla.Test.ValidationRules
                                                  {TwoPropertyRules.Value2Property, "b"}
                                                });
       ctx.AddSuccessResult(false);
-      Assert.IsTrue(true, "Must not fail.");
     }
   }
 

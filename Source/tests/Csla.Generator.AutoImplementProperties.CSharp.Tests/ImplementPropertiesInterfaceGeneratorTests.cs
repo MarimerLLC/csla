@@ -139,7 +139,7 @@ namespace Csla.Generator.Tests
 
     // Uses the member attributes with typeof, nameof, enum and constant arguments,
     // which are the values most likely to hold Roslyn objects that can't be cached
-    [TestMethod("Pipeline stages are cacheable")]
+    [TestMethod(DisplayName = "Pipeline stages are cacheable")]
     public void StageCaching()
     {
       StageCachingTester.VerifyStageCaching<IncrementalAutoImplementInterfacePartialsGenerator>(QualifiedArgumentsSource, typeof(TrackingNames), [QualifiedArgumentsAttributes]);

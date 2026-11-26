@@ -75,25 +75,28 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassReadWriteNoRightsTurnNotificationBackOn()
     {
-      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
-      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
-
-      bool propertyChangedFired = false;
-
-      BypassBusinessBase testObj = dataPortal.Fetch();
-      testObj.PropertyChanged += (_, _) =>
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() =>
       {
-        propertyChangedFired = true;
-      };
-      testObj.LoadId2ByPass(1);
-      int actual = testObj.ReadId2ByPass();
-      Assert.AreEqual(1, actual);
-      Assert.AreEqual(false, propertyChangedFired);
-      Assert.AreEqual(false, testObj.IsDirty);
-      testObj.LoadId2(2);
-      int actual1 = testObj.ReadId2ByPass();
-      Assert.AreEqual(1, actual1); // still one becuase set failed
-      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => Assert.AreEqual(true, testObj.IsDirty));
+        using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+        IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
+
+        bool propertyChangedFired = false;
+
+        BypassBusinessBase testObj = dataPortal.Fetch();
+        testObj.PropertyChanged += (_, _) =>
+        {
+          propertyChangedFired = true;
+        };
+        testObj.LoadId2ByPass(1);
+        int actual = testObj.ReadId2ByPass();
+        Assert.AreEqual(1, actual);
+        Assert.AreEqual(false, propertyChangedFired);
+        Assert.AreEqual(false, testObj.IsDirty);
+        testObj.LoadId2(2);
+        int actual1 = testObj.ReadId2ByPass();
+        Assert.AreEqual(1, actual1); // still one becuase set failed
+        Assert.AreEqual(true, testObj.IsDirty);
+      });
     }
 
     // TODO: fix test
@@ -144,20 +147,23 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassWriteNoRightsDoNotBypass()
     {
-      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
-      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
-
-      BypassBusinessBase testObj = dataPortal.Fetch();
-      bool propertyChangedFired = false;
-      testObj.PropertyChanged += (_, _) =>
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() =>
       {
-        propertyChangedFired = true;
-      };
-      testObj.LoadId2(1);
-      int actual = testObj.ReadId2ByPass();
-      Assert.AreEqual(1, actual);
-      Assert.AreEqual(true, propertyChangedFired);
-      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => Assert.AreEqual(true, testObj.IsDirty));
+        using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+        IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
+
+        BypassBusinessBase testObj = dataPortal.Fetch();
+        bool propertyChangedFired = false;
+        testObj.PropertyChanged += (_, _) =>
+        {
+          propertyChangedFired = true;
+        };
+        testObj.LoadId2(1);
+        int actual = testObj.ReadId2ByPass();
+        Assert.AreEqual(1, actual);
+        Assert.AreEqual(true, propertyChangedFired);
+        Assert.AreEqual(true, testObj.IsDirty);
+      });
     }
 
     // TODO: fix test
@@ -231,20 +237,23 @@ namespace Csla.Test.BypassPropertyChecks
     [TestMethod]
     public void TestBypassWriteNoRightsDoNotBypassBackingField()
     {
-      using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
-      IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
-
-      BypassBusinessBase testObj = dataPortal.Fetch();
-      bool propertyChangedFired = false;
-      testObj.PropertyChanged += (_, _) =>
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() =>
       {
-        propertyChangedFired = true;
-      };
-      testObj.LoadId4(1);
-       Assert.AreEqual(true, testObj.IsDirty);
-       int actual = testObj.ReadId4ByPass();
-       Assert.AreEqual(1, actual);
-      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => Assert.AreEqual(true, propertyChangedFired));
+        using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
+        IDataPortal<BypassBusinessBase> dataPortal = testHost.GetDataPortal<BypassBusinessBase>();
+
+        BypassBusinessBase testObj = dataPortal.Fetch();
+        bool propertyChangedFired = false;
+        testObj.PropertyChanged += (_, _) =>
+        {
+          propertyChangedFired = true;
+        };
+        testObj.LoadId4(1);
+         Assert.AreEqual(true, testObj.IsDirty);
+         int actual = testObj.ReadId4ByPass();
+         Assert.AreEqual(1, actual);
+        Assert.AreEqual(true, propertyChangedFired);
+      });
     }
 
     // TODO: fix test

@@ -13,7 +13,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
   [TestClass]
   public class AutoSerializationGeneratorTests : VerifyBase
   {
-    [TestMethod("User class uses file scoped namespace which should be possible to use.")]
+    [TestMethod(DisplayName = "User class uses file scoped namespace which should be possible to use.")]
     public async Task Case01()
     {
       var source = """
@@ -30,7 +30,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       await TestHelperVerify(source);
     }
 
-    [TestMethod("User class uses non file scoped namespace which should be possible to use.")]
+    [TestMethod(DisplayName = "User class uses non file scoped namespace which should be possible to use.")]
     public async Task Case02()
     {
       var source = """
@@ -47,7 +47,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       await TestHelperVerify(source);
     }
 
-    [TestMethod("A generic class, and a class nested in a generic class, keep their type parameters (#5042).")]
+    [TestMethod(DisplayName = "A generic class, and a class nested in a generic class, keep their type parameters (#5042).")]
     public async Task GenericTypes()
     {
       var source = """
@@ -91,7 +91,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Property with a type containing generics must be generated correctly to be used.")]
+    [TestMethod(DisplayName = "Property with a type containing generics must be generated correctly to be used.")]
     public async Task Case03()
     {
       var additionalSources = """
@@ -140,7 +140,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       }
     }
 
-    [TestMethod("Property with built in type should be generated as expected.")]
+    [TestMethod(DisplayName = "Property with built in type should be generated as expected.")]
     [DynamicData(nameof(Case04TestData))]
     public async Task Case04(string typeToTest, bool notNull)
     {

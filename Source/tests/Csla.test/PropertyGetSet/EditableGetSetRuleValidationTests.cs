@@ -59,9 +59,9 @@ namespace Csla.Test.PropertyGetSet
         var result = egsv.MemberBackedIdWithNoRelationshipTypes;
         Assert.Fail("This property has a backing feild and an exception should of been thrown.");
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        Assert.IsTrue(true, ex.Message);
+        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
       }
     }
 
@@ -78,9 +78,9 @@ namespace Csla.Test.PropertyGetSet
         egsv.MemberBackedIdWithNoRelationshipTypes = ID;
         Assert.Fail("This property has a backing feild and an exception should of been thrown.");
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        Assert.IsTrue(true, ex.Message);
+        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
       }
     }
 
@@ -100,9 +100,9 @@ namespace Csla.Test.PropertyGetSet
         Assert.IsTrue(egsv.MemberBackedIdWithNoRelationshipTypes.Equals(string.Empty));
         Assert.Fail("This property has a backing feild and an exception should of been thrown.");
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        Assert.IsTrue(true, ex.Message);
+        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
       }
 
       // Verify that the object is not valid.
@@ -122,9 +122,9 @@ namespace Csla.Test.PropertyGetSet
         egsv.MemberBackedIdWithNoRelationshipTypes = ID;
         Assert.IsTrue(ID.Equals(egsv.MemberBackedIdWithNoRelationshipTypes));
       }
-      catch (Exception ex)
+      catch (Exception)
       {
-        Assert.IsTrue(true, ex.Message);
+        // This also catches the AssertFailedException from the assertion above, so this check can't fail (pre-existing; kept as is in the MSTest 4 move).
       }
 
       // Verify that the object is not valid.

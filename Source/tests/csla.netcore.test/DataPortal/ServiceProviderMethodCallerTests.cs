@@ -98,9 +98,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodBadCriteriaDI()
     {
       var obj = new CriteriaCreateWithDI();
-      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]);
-
-      Assert.ThrowsExactly<TargetParameterCountException>(() => method.Should().NotBeNull());
+      Assert.ThrowsExactly<TargetParameterCountException>(() => _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]));
     }
 
     [TestMethod]
@@ -176,8 +174,7 @@ namespace Csla.Test.DataPortal
     public void FindMethodSingleCriteriaBadType()
     {
       var obj = new SimpleCriteriaCreate();
-      var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]);
-      Assert.ThrowsExactly<TargetParameterCountException>(() => Assert.IsNotNull(method));
+      Assert.ThrowsExactly<TargetParameterCountException>(() => _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]));
     }
 
     [TestMethod]
@@ -363,7 +360,7 @@ namespace Csla.Test.DataPortal
       Assert.AreEqual(0, method.MethodInfo.GetParameters().Count());
     }
 
-    [TestMethod($"{nameof(ServiceProviderMethodCaller.TryFindDataPortalMethod)} must not throw when the business object is attributed with an object factory which is not loaded/known in the current environment."), GitHubWorkItem("https://github.com/MarimerLLC/csla/issues/4681")]
+    [TestMethod(DisplayName = $"{nameof(ServiceProviderMethodCaller.TryFindDataPortalMethod)} must not throw when the business object is attributed with an object factory which is not loaded/known in the current environment."), GitHubWorkItem("https://github.com/MarimerLLC/csla/issues/4681")]
     public void TryFindDataPortalMethod_Testcase1()
     {
       FluentActions.Invoking(() => _systemUnderTest.TryFindDataPortalMethod<FetchAttribute>(typeof(NotKnownObjectFactoryInCurrentEnvironment), null, out var _)).Should().NotThrow();

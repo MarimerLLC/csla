@@ -177,9 +177,8 @@ namespace Csla.Test.BusinessListBase
         changed = true;
       };
       var nonChild = new Child(); // object is not marked as child
-      obj.Insert(0, nonChild);
-      Assert.IsTrue(changed);
-      Assert.ThrowsExactly<InvalidOperationException>(() => Assert.AreEqual(nonChild, obj[0]));
+      Assert.ThrowsExactly<InvalidOperationException>(() => obj.Insert(0, nonChild)); // thrown by BusinessListBase.InsertItem
+      Assert.IsFalse(changed);
     }
 
     [TestMethod]

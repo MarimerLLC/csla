@@ -105,7 +105,6 @@ public class SessionManagerTests
 
     var timeout = TimeSpan.FromHours(1);
     await _sessionManager.SendSession(timeout);
-    Assert.IsTrue(true);
   }
 
   [TestMethod]
@@ -124,7 +123,6 @@ public class SessionManagerTests
 
     var cts = new CancellationTokenSource();
     await _sessionManager.SendSession(cts.Token);
-    Assert.IsTrue(true);
   }
 
   [TestMethod]

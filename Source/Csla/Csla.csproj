@@ -98,6 +98,10 @@
     <PackageReference Include="Microsoft.Extensions.Configuration.Binder" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="10.0.15" />
+    <!-- Csla.dll is compiled against the Microsoft.Bcl.AsyncInterfaces that DependencyInjection brings in on
+         netstandard2.0. Consumers that resolve DependencyInjection's netstandard2.1 or net8.0+ dependency group
+         don't get it from there, so list it directly. Keep it at the DependencyInjection version above. -->
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.15" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1" />

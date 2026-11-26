@@ -8,26 +8,31 @@ using Microsoft.Extensions.Hosting;
 namespace Csla.TestHelpers.Http;
 public static class HttpTestServerFactory {
 
-  public static TestServer CreateHttpTestServer() {
-    // Callers dispose the returned TestServer in their cleanup. The host isn't disposed and lives until the test process ends.
-    var host = new HostBuilder()
+  /// <summary>
+  /// Starts a host that serves the test data portal through a <see cref="TestServer"/>
+  /// (<c>host.GetTestServer()</c>). Callers stop and dispose the host, which also disposes the server.
+  /// </summary>
+  public static IHost CreateHttpTestHost() {
+    return new HostBuilder()
       .ConfigureWebHost(webHost => webHost
         .UseTestServer()
-        .ConfigureServices((IServiceCollection services) => {
+        .ConfigureServices((IServiceCollection services) =>
+        {
           services.AddControllers();
           services.AddHttpContextAccessor();
           services.AddCsla(o => o.AddAspNetCore());
         })
-        .Configure(app => {
+        .Configure(app =>
+        {
           app.UseRouting();
           app.UseEndpoints(endpoints => endpoints.MapControllers());
         }))
       .Start();
-    return host.GetTestServer();
   }
 
-  public static (TestServer Server, ServiceProvider ClientServiceProvider) CreateHttpTestServerAndClientServiceProvider() {
-    var testServer = CreateHttpTestServer();
+  public static (IHost Host, TestServer Server, ServiceProvider ClientServiceProvider) CreateHttpTestServerAndClientServiceProvider() {
+    var host = CreateHttpTestHost();
+    var testServer = host.GetTestServer();
 
     string controllerName = nameof(TestDataPortalController).Replace("Controller", "");
     var clientServices = new ServiceCollection()
@@ -44,6 +49,6 @@ public static class HttpTestServerFactory {
     clientServices.AddSingleton(testServer.CreateClient());
     var clientServiceProvider = clientServices.BuildServiceProvider();
 
-    return (testServer, clientServiceProvider);
+    return (host, testServer, clientServiceProvider);
   }
 }

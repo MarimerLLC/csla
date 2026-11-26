@@ -27,11 +27,4 @@
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
 
-  <!-- Csla's netstandard2.0 build is compiled against Microsoft.Bcl.AsyncInterfaces 10.0.15 (through
-       Microsoft.Extensions.DependencyInjection), but this project's netstandard2.1 package graph resolves it
-       to 8.0.0 (through System.Text.Json 8.0.5 and RabbitMQ.Client), which causes MSB3277. -->
-  <ItemGroup Condition="'$(TargetFramework)' == 'netstandard2.1'">
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.15" />
-  </ItemGroup>
-
 </Project>

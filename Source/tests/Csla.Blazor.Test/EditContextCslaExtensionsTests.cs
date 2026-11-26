@@ -43,6 +43,27 @@ namespace Csla.Blazor.Test
     }
 
     [TestMethod]
+    public void ValidateModel_SyncValidate_EmptyLastName_OneValidationMessage()
+    {
+      // Arrange
+      FakePerson person = GetValidFakePerson();
+      EditContext editContext = new EditContext(person);
+      editContext.AddCslaValidation();
+
+      // Set last name to an invalid value
+      person.LastName = string.Empty;
+
+      // Act: the synchronous Validate() is obsolete on net11.0 but still supported, so keep covering it.
+#pragma warning disable CS0618
+      editContext.Validate();
+#pragma warning restore CS0618
+      IEnumerable<string> messages = editContext.GetValidationMessages();
+
+      // Assert
+      Assert.AreEqual(1, messages.Count(), "Incorrect number of validation messages returned! " + ConcatenateMessages(messages));
+    }
+
+    [TestMethod]
     public async Task ValidateModel_ShortFirstName_NoValidationMessages()
     {
       // Arrange

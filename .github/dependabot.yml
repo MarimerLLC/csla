@@ -28,6 +28,12 @@ updates:
   - dependency-name: Microsoft.Extensions.*
     update-types:
     - version-update:semver-major
+  # Csla's netstandard2.0 reference to Microsoft.Bcl.AsyncInterfaces stays at the
+  # Microsoft.Extensions.DependencyInjection version next to it, so its major
+  # version changes by hand too.
+  - dependency-name: Microsoft.Bcl.AsyncInterfaces
+    update-types:
+    - version-update:semver-major
   # Same for MAUI: the net10.0 targets of Csla.Xaml.Maui use MAUI 10 and the
   # net11.0 targets use MAUI 11.
   - dependency-name: Microsoft.Maui.*

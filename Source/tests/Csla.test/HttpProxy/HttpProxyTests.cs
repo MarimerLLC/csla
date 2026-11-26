@@ -7,6 +7,7 @@ using Csla.TestHelpers.Http;
 using AwesomeAssertions;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace Csla.Test.HttpProxy;
@@ -17,6 +18,7 @@ public class HttpProxyTests
   private CslaTestHost _testHost;
   private TestHttpProxy _systemUnderTest;
   private TestHttpClientHandler _testHttClientHandler;
+  private static IHost _host;
   private static TestServer _server;
   private static ServiceProvider _clientSideServiceProvider;
 
@@ -32,9 +34,17 @@ public class HttpProxyTests
     _testHttClientHandler = new TestHttpClientHandler();
     _systemUnderTest.TestHttpClientHandlerToReturn = _testHttClientHandler;
 
-    var (server, clientServiceProvider) = HttpTestServerFactory.CreateHttpTestServerAndClientServiceProvider();
+    var (host, server, clientServiceProvider) = HttpTestServerFactory.CreateHttpTestServerAndClientServiceProvider();
+    _host = host;
     _server = server;
     _clientSideServiceProvider = clientServiceProvider;
+  }
+
+  [TestCleanup]
+  public async Task Cleanup()
+  {
+    await _host.StopAsync();
+    _host.Dispose();
   }
 
   [TestMethod]

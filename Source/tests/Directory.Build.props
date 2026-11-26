@@ -8,7 +8,7 @@
 
   <!-- Version of the runtime-aligned packages (Microsoft.Extensions.*, etc.) that matches each test target framework -->
   <PropertyGroup>
-    <DotNetPackageVersion>10.0.0</DotNetPackageVersion>
+    <DotNetPackageVersion>10.0.15</DotNetPackageVersion>
     <DotNetPackageVersion Condition="$(TargetFramework.StartsWith('net11'))">11.0.0</DotNetPackageVersion>
   </PropertyGroup>
 </Project>

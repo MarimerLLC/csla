@@ -1,6 +1,7 @@
 ﻿using BusinessLibrary;
 using Csla;
 using Csla.AspNetCore.RazorPages;
+using Microsoft.AspNetCore.Mvc;
 
 namespace RazorPagesExample.Pages.People
 {
@@ -22,9 +23,16 @@ namespace RazorPagesExample.Pages.People
         Item = await _portal.FetchAsync(id);
     }
 
-    public async Task OnPost()
+    public async Task<IActionResult> OnPost(int id)
     {
-      await SaveAsync((Item.Id > -1));
+      // Id has a private setter, so the binder doesn't set it from the
+      // form (a posted Id could point the save at another person). Load
+      // the person the route names, then bind the posted fields into it.
+      Item = id == -1 ? await _portal.CreateAsync() : await _portal.FetchAsync(id);
+      ModelState.Clear();
+      if (await TryUpdateModelAsync(Item, nameof(Item)) && await SaveAsync())
+        return RedirectToPage(new { id = Item.Id });
+      return Page();
     }
   }
 }

@@ -11,6 +11,10 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET ASP.NET MVC 5</Title>
     <PackageTags>CSLA;ASP.NET;MVC</PackageTags>
+    <!-- Csla's net462 build references the netstandard support facade System.Net.Http 4.2.0.0, while Web API
+         (and so this project) uses the 4.0.0.0 framework assembly. Keep 4.0.0.0 here so MVC 5 / Web API apps
+         need no new binding redirect, and report the resulting MSB3277 as a message instead of a warning. -->
+    <MSBuildWarningsAsMessages>$(MSBuildWarningsAsMessages);MSB3277</MSBuildWarningsAsMessages>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj" />

@@ -947,7 +947,9 @@ namespace Csla.Test.DataPortal
     {
     }
 
+#pragma warning disable CS0618 // CriteriaBase<T> is obsolete; it's only this test's existing criteria type (#2287 is about finding a private [Fetch] declared in a base class).
     public class Criteria : Csla.CriteriaBase<Criteria>
+#pragma warning restore CS0618
     {
     }
   }

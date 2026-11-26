@@ -34,7 +34,7 @@ namespace Csla.Test.LazySingleton
     [TestMethod]
     public void NullDelegateThrowsArgumentNullException()
     {
-      Assert.ThrowsException<ArgumentNullException>(() => new LazySingleton<Dictionary<string, object>>(null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => new LazySingleton<Dictionary<string, object>>(null));
     }
 
     [TestMethod]

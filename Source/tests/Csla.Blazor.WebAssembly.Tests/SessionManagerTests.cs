@@ -80,7 +80,7 @@ public class SessionManagerTests
   public async Task RetrieveSession_WithZeroTimeout_ShouldThrowTimeoutException()
   {
     var timeout = TimeSpan.Zero;
-    await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.RetrieveSession(timeout));
+    await Assert.ThrowsExactlyAsync<TimeoutException>(() => _sessionManager.RetrieveSession(timeout));
   }
 
   [TestMethod]
@@ -95,7 +95,7 @@ public class SessionManagerTests
   {
     var cts = new CancellationTokenSource();
     cts.Cancel();
-    await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _sessionManager.RetrieveSession(cts.Token));
+    await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => _sessionManager.RetrieveSession(cts.Token));
   }
 
   [TestMethod]
@@ -114,7 +114,7 @@ public class SessionManagerTests
     await _sessionManager.RetrieveSession(TimeSpan.FromHours(1));
 
     var timeout = TimeSpan.Zero;
-    await Assert.ThrowsExceptionAsync<TimeoutException>(() => _sessionManager.SendSession(timeout));
+    await Assert.ThrowsExactlyAsync<TimeoutException>(() => _sessionManager.SendSession(timeout));
   }
 
   [TestMethod]
@@ -134,7 +134,7 @@ public class SessionManagerTests
 
     var cts = new CancellationTokenSource();
     cts.Cancel();
-    await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => _sessionManager.SendSession(cts.Token));
+    await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => _sessionManager.SendSession(cts.Token));
   }
 
 

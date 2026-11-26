@@ -145,7 +145,6 @@ namespace Csla.Test.SafeDataReader
     }
 
     [TestMethod]
-    [ExpectedException(typeof(SQLiteException))]
     public void ThrowSqlException()
     {
       var cn = new SQLiteConnection(CONNECTION_STRING);
@@ -154,7 +153,7 @@ namespace Csla.Test.SafeDataReader
       using var cm = cn.CreateCommand();
       cm.CommandText = "SELECT FirstName FROM NonExistantTable";
 
-      Csla.Data.SafeDataReader dr = new Csla.Data.SafeDataReader(cm.ExecuteReader());
+      Assert.ThrowsExactly<SQLiteException>(() => new Csla.Data.SafeDataReader(cm.ExecuteReader()));
     }
 
     [TestMethod]

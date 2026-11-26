@@ -532,7 +532,7 @@ namespace Csla.Generator.Tests
       }
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DynamicData(nameof(Case09TestData))]
     public async Task Case09(string type)
     {

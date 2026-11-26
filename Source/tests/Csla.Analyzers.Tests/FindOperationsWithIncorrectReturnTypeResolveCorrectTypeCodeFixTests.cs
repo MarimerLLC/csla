@@ -17,8 +17,7 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes,
-        nameof(Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes, ids[0], nameof(Constants.AnalyzerIdentifiers.FindOperationsWithIncorrectReturnTypes));
     }
 
     [TestMethod]

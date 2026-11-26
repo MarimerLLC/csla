@@ -192,21 +192,19 @@ namespace Csla.Test.SortedBindingList
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void ApplySort_ThrowException_WhenPropertyNameNotFound()
     {
       int[] intArray = [5, 7, 1, 3, 5, 44, 32];
       SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
-      sortedList.ApplySort("NotAProperty", ListSortDirection.Ascending);
+      Assert.ThrowsExactly<ArgumentException>(() => sortedList.ApplySort("NotAProperty", ListSortDirection.Ascending));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void Find_ThrowException_WhenPropertyNameNotFound()
     {
       int[] intArray = [5, 7, 1, 3, 5, 44, 32];
       SortedBindingList<int> sortedList = new SortedBindingList<int>(intArray);
-      sortedList.Find("NotAProperty", 7);
+      Assert.ThrowsExactly<ArgumentException>(() => sortedList.Find("NotAProperty", 7));
     }
 
     [TestMethod]

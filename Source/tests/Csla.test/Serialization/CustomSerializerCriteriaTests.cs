@@ -101,7 +101,7 @@ namespace Csla.Test.Serialization
       var applicationContext = CreateApplicationContext(registerPocoSerializer: false);
       var criteria = new PrimitiveCriteria(new SerializablePoco { Name = "test" });
 
-      Assert.ThrowsException<NotSupportedException>(() => RoundTrip(applicationContext, criteria));
+      Assert.ThrowsExactly<NotSupportedException>(() => RoundTrip(applicationContext, criteria));
     }
 
     [TestMethod]

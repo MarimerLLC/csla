@@ -105,7 +105,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       var args = CreateUpdateArgsOfRoot(rootObject);
 
       // Act and Assert
-      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
+      await Assert.ThrowsExactlyAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
     }
 
     [TestMethod]
@@ -118,7 +118,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       var args = CreateUpdateArgsOfRoot(rootObject);
 
       // Act and Assert
-      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
+      await Assert.ThrowsExactlyAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
     }
 
     [TestMethod]
@@ -133,7 +133,7 @@ namespace Csla.Test.Server.Interceptors.ServerSide
       var args = CreateUpdateArgsOfRoot(rootObject);
 
       // Act and Assert
-      await Assert.ThrowsExceptionAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
+      await Assert.ThrowsExactlyAsync<Rules.ValidationException>(async () => await _systemUnderTest.InitializeAsync(args));
     }
 
     [TestMethod]

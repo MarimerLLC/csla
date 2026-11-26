@@ -98,33 +98,29 @@ namespace csla.netcore.test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void RoutingTagWithHyphenThrowsException()
     {
-      var tag = new DataPortalServerRoutingTagAttribute("my-tag");
+      Assert.ThrowsExactly<ArgumentException>(() => new DataPortalServerRoutingTagAttribute("my-tag"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void RoutingTagWithSlashThrowsException()
     {
-      var tag = new DataPortalServerRoutingTagAttribute("my/tag");
+      Assert.ThrowsExactly<ArgumentException>(() => new DataPortalServerRoutingTagAttribute("my/tag"));
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void RoutingTagPropertyWithHyphenThrowsException()
     {
       var tag = new DataPortalServerRoutingTagAttribute("validtag");
-      tag.RoutingTag = "invalid-tag";
+      Assert.ThrowsExactly<ArgumentException>(() => tag.RoutingTag = "invalid-tag");
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void RoutingTagPropertyWithSlashThrowsException()
     {
       var tag = new DataPortalServerRoutingTagAttribute("validtag");
-      tag.RoutingTag = "invalid/tag";
+      Assert.ThrowsExactly<ArgumentException>(() => tag.RoutingTag = "invalid/tag");
     }
 
     [TestMethod]
@@ -149,23 +145,21 @@ namespace csla.netcore.test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void VersionRoutingTagWithHyphenThrowsException()
     {
       var applicationContext = _testHost.ApplicationContext;
       var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
       var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
-      dataPortalOptions.VersionRoutingTag = "v1-beta";
+      Assert.ThrowsExactly<ArgumentException>(() => dataPortalOptions.VersionRoutingTag = "v1-beta");
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void VersionRoutingTagWithSlashThrowsException()
     {
       var applicationContext = _testHost.ApplicationContext;
       var cslaOptions = applicationContext.GetRequiredService<Csla.Configuration.CslaOptions>();
       var dataPortalOptions = new Csla.Configuration.DataPortalOptions(cslaOptions);
-      dataPortalOptions.VersionRoutingTag = "v1/beta";
+      Assert.ThrowsExactly<ArgumentException>(() => dataPortalOptions.VersionRoutingTag = "v1/beta");
     }
 
     [TestMethod]

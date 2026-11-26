@@ -108,7 +108,6 @@ namespace Csla.Test.ObjectFactory
     // TODO: fix test
     [Ignore]
     [TestMethod]
-    [ExpectedException(typeof(MissingMethodException))]
     public void CreateMissing()
     {
       using var testHost = CslaTestHost.Create(t => t.ConfigureCsla(// TODO: What proxy can we use for this test? Old one was Remoting, now retired
@@ -117,14 +116,17 @@ namespace Csla.Test.ObjectFactory
 
       IDataPortal<Root> dataPortal = testHost.GetDataPortal<Root>();
 
-      try
+      Assert.ThrowsExactly<MissingMethodException>(() =>
       {
-        var root = dataPortal.Create("abc", 123);
-      }
-      catch (DataPortalException ex)
-      {
-        throw ex.BusinessException;
-      }
+        try
+        {
+          var root = dataPortal.Create("abc", 123);
+        }
+        catch (DataPortalException ex)
+        {
+          throw ex.BusinessException;
+        }
+      });
     }
 
     [TestMethod]
@@ -277,7 +279,6 @@ namespace Csla.Test.ObjectFactory
     // TODO: fix test
     [Ignore]
     [TestMethod]
-    [ExpectedException(typeof(DataPortalException))]
     public void DataPortalExecute_OnCommandObjectWithFalseExecuteMethod_ThrowsExeptionMehodNotFound()
     {
       using var testHost = CslaTestHost.Create();
@@ -295,7 +296,7 @@ namespace Csla.Test.ObjectFactory
         // rethrow exception 
         throw;
       }
-      Assert.Fail("Should throw exception");
+      Assert.ThrowsExactly<DataPortalException>(() => Assert.Fail("Should throw exception"));
     }
 
     [TestMethod("The return type of an business object factory type can be of type Task<T> instead of Task<object>.")]

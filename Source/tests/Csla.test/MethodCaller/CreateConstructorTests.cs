@@ -41,7 +41,6 @@ namespace Csla.Test.MethodCaller
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public void CreateInstanceNotClassFail()
     {
       var services = new ServiceCollection();
@@ -49,7 +48,7 @@ namespace Csla.Test.MethodCaller
       services.AddScoped<Csla.Core.IContextManager, Csla.Core.ApplicationContextManagerAsyncLocal>();
       var provider = services.BuildServiceProvider();
       var applicationContext = provider.GetService<ApplicationContext>();
-      var obj = applicationContext.CreateInstanceDI(typeof(TestStruct));
+      Assert.ThrowsExactly<InvalidOperationException>(() => applicationContext.CreateInstanceDI(typeof(TestStruct)));
     }
 
     public class NonPublic1

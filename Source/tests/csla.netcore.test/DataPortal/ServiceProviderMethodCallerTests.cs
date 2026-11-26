@@ -95,13 +95,12 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.Reflection.TargetParameterCountException))]
     public void FindMethodBadCriteriaDI()
     {
       var obj = new CriteriaCreateWithDI();
       var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]);
 
-      method.Should().NotBeNull();
+      Assert.ThrowsExactly<TargetParameterCountException>(() => method.Should().NotBeNull());
     }
 
     [TestMethod]
@@ -174,12 +173,11 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(System.Reflection.TargetParameterCountException))]
     public void FindMethodSingleCriteriaBadType()
     {
       var obj = new SimpleCriteriaCreate();
       var method = _systemUnderTest.FindDataPortalMethod<CreateAttribute>(obj, ["hi"]);
-      Assert.IsNotNull(method);
+      Assert.ThrowsExactly<TargetParameterCountException>(() => Assert.IsNotNull(method));
     }
 
     [TestMethod]

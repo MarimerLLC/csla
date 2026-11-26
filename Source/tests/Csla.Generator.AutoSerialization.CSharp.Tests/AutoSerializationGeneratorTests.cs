@@ -140,7 +140,7 @@ namespace Csla.Generator.AutoSerialization.CSharp.Tests
       }
     }
 
-    [DataTestMethod("Property with built in type should be generated as expected.")]
+    [TestMethod("Property with built in type should be generated as expected.")]
     [DynamicData(nameof(Case04TestData))]
     public async Task Case04(string typeToTest, bool notNull)
     {

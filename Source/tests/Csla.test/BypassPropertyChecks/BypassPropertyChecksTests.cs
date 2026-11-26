@@ -73,7 +73,6 @@ namespace Csla.Test.BypassPropertyChecks
     // TODO: fix test
     [Ignore]
     [TestMethod]
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassReadWriteNoRightsTurnNotificationBackOn()
     {
       using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
@@ -94,7 +93,7 @@ namespace Csla.Test.BypassPropertyChecks
       testObj.LoadId2(2);
       int actual1 = testObj.ReadId2ByPass();
       Assert.AreEqual(1, actual1); // still one becuase set failed
-      Assert.AreEqual(true, testObj.IsDirty);
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => Assert.AreEqual(true, testObj.IsDirty));
     }
 
     // TODO: fix test
@@ -143,7 +142,6 @@ namespace Csla.Test.BypassPropertyChecks
     // TODO: fix test
     [Ignore]
     [TestMethod]
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassWriteNoRightsDoNotBypass()
     {
       using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
@@ -159,7 +157,7 @@ namespace Csla.Test.BypassPropertyChecks
       int actual = testObj.ReadId2ByPass();
       Assert.AreEqual(1, actual);
       Assert.AreEqual(true, propertyChangedFired);
-      Assert.AreEqual(true, testObj.IsDirty);
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => Assert.AreEqual(true, testObj.IsDirty));
     }
 
     // TODO: fix test
@@ -231,7 +229,6 @@ namespace Csla.Test.BypassPropertyChecks
     // TODO: fix test
     [Ignore]
     [TestMethod]
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void TestBypassWriteNoRightsDoNotBypassBackingField()
     {
       using var testHost = CslaTestHost.Create(t => t.AsPrincipal(GetPrincipal("Admin")));
@@ -247,7 +244,7 @@ namespace Csla.Test.BypassPropertyChecks
        Assert.AreEqual(true, testObj.IsDirty);
        int actual = testObj.ReadId4ByPass();
        Assert.AreEqual(1, actual);
-      Assert.AreEqual(true, propertyChangedFired);
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => Assert.AreEqual(true, propertyChangedFired));
     }
 
     // TODO: fix test

@@ -55,7 +55,7 @@ namespace Csla.Server.Tests
       TimeSpan timeout = TimeSpan.FromSeconds(0);
       // Assert
 
-      await Assert.ThrowsExceptionAsync<TimeoutException>(() => target.WaitForIdle(timeout));
+      await Assert.ThrowsExactlyAsync<TimeoutException>(() => target.WaitForIdle(timeout));
       // Add assertion for idle state
     }
 
@@ -75,7 +75,7 @@ namespace Csla.Server.Tests
 
       // Assert
       // Add assertion for idle state
-      await Assert.ThrowsExceptionAsync<TaskCanceledException>(() => target.WaitForIdle(cancellationToken.Token));
+      await Assert.ThrowsExactlyAsync<TaskCanceledException>(() => target.WaitForIdle(cancellationToken.Token));
     }
   }
 }

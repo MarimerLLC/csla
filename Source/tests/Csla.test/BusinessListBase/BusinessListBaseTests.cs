@@ -168,7 +168,6 @@ namespace Csla.Test.BusinessListBase
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))] // thrown by BusinessListBase.InsertItem
     public void InsertNonChildFails()
     {
       bool changed = false;
@@ -180,7 +179,7 @@ namespace Csla.Test.BusinessListBase
       var nonChild = new Child(); // object is not marked as child
       obj.Insert(0, nonChild);
       Assert.IsTrue(changed);
-      Assert.AreEqual(nonChild, obj[0]);
+      Assert.ThrowsExactly<InvalidOperationException>(() => Assert.AreEqual(nonChild, obj[0]));
     }
 
     [TestMethod]

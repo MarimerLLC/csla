@@ -66,8 +66,8 @@ namespace Csla.Test.LazyLoad
     {
       var obj = _testHost.GetDataPortal<LazyAsyncEdit>().Create();
 
-      Assert.ThrowsException<ArgumentNullException>(() => obj.GetWithNullFactory());
-      Assert.ThrowsException<ArgumentNullException>(() => obj.ReadWithNullFactory());
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.GetWithNullFactory());
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.ReadWithNullFactory());
     }
 
     [TestMethod]
@@ -120,8 +120,8 @@ namespace Csla.Test.LazyLoad
     {
       var obj = _testHost.GetDataPortal<LazyAsyncInfo>().Fetch();
 
-      Assert.ThrowsException<ArgumentNullException>(() => obj.GetWithNullFactory());
-      Assert.ThrowsException<ArgumentNullException>(() => obj.ReadWithNullFactory());
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.GetWithNullFactory());
+      Assert.ThrowsExactly<ArgumentNullException>(() => obj.ReadWithNullFactory());
     }
 
     [TestMethod]

@@ -65,7 +65,7 @@ namespace Csla.Test.DataPortal
       }
       catch (DataPortalException e)
       {
-        Assert.AreEqual(e.BusinessException.Message.Substring(0, expected.Length), expected);
+        Assert.AreEqual(expected, e.BusinessException.Message.Substring(0, expected.Length));
       }
     }
   }

@@ -17,8 +17,7 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute,
-        nameof(Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute, ids[0], nameof(Constants.AnalyzerIdentifiers.DoesOperationHaveAttribute));
     }
 
     [DataRow(CslaMemberConstants.Operations.DataPortalCreate,
@@ -125,7 +124,7 @@ namespace Csla.Analyzers.Tests
         CslaMemberConstants.OperationAttributes.ExecuteChild, false,
         "Add attribute and using statement",
       DisplayName = "VerifyGetFixesWhenOperationIsExecuteChildAndDoesNotHasUsing")]
-    [DataTestMethod]
+    [TestMethod]
     public async Task VerifyGetFixes(string operationName, string attributeName, bool includeUsingCsla,
       string expectedDescription)
     {

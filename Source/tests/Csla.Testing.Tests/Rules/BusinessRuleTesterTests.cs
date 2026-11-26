@@ -112,7 +112,7 @@ namespace Csla.Testing.Tests.Rules
       result.HasInformation.Should().BeFalse();
     }
 
-    [DataTestMethod]
+    [TestMethod]
     [DataRow(RuleSeverity.Error)]
     [DataRow(RuleSeverity.Warning)]
     [DataRow(RuleSeverity.Information)]

@@ -189,7 +189,6 @@ namespace cslalighttest.BusyStatus
     }
 
     [TestMethod]
-    [ExpectedException(typeof(InvalidOperationException))]
     public async Task TestSaveWhileBusyNetOnly()
     {
       IDataPortal<ItemWithAsynchRule> dataPortal = _testHost.GetDataPortal<ItemWithAsynchRule>();
@@ -198,7 +197,7 @@ namespace cslalighttest.BusyStatus
       item.RuleField = "some value";
       Assert.IsTrue(item.IsBusy);
       Assert.IsFalse(item.IsSavable);
-      item.Save();
+      Assert.ThrowsExactly<InvalidOperationException>(() => item.Save());
     }
 
     [TestMethod]

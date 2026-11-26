@@ -19,14 +19,13 @@ namespace Csla.Test.Authorization
   public class PerTypeAuthorizationTests
   {
     [TestMethod]
-    [ExpectedException(typeof(Csla.Security.SecurityException))]
     public void DenyWritePerType()
     {
       using var testHost = CslaTestHost.Create(t => t.AsPrincipal(new System.Security.Claims.ClaimsPrincipal()));
       IDataPortal<PerTypeAuthorization> dataPortal = testHost.GetDataPortal<PerTypeAuthorization>();
 
       PerTypeAuthorization root = dataPortal.Create();
-      root.Test = "test";
+      Assert.ThrowsExactly<Csla.Security.SecurityException>(() => root.Test = "test");
     }
   }
 

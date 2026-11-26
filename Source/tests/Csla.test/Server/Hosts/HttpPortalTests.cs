@@ -57,7 +57,7 @@ public class HttpPortalTests
     ApplicationContext nullApplicationContext = null;
 
     // Act & Assert
-    Assert.ThrowsException<ArgumentNullException>(
+    Assert.ThrowsExactly<ArgumentNullException>(
       () => new HttpPortal(nullApplicationContext, _fakeDataPortalServer));
   }
 
@@ -68,7 +68,7 @@ public class HttpPortalTests
     IDataPortalServer nullDataPortalServer = null;
 
     // Act & Assert
-    Assert.ThrowsException<ArgumentNullException>(
+    Assert.ThrowsExactly<ArgumentNullException>(
       () => new HttpPortal(_applicationContext, nullDataPortalServer));
   }
 
@@ -90,7 +90,7 @@ public class HttpPortalTests
     CriteriaRequest nullRequest = null;
 
     // Act & Assert
-    await Assert.ThrowsExceptionAsync<ArgumentNullException>(
+    await Assert.ThrowsExactlyAsync<ArgumentNullException>(
       () => _systemUnderTest.Create(nullRequest));
   }
 
@@ -243,7 +243,7 @@ public class HttpPortalTests
     CriteriaRequest nullRequest = null;
 
     // Act & Assert
-    await Assert.ThrowsExceptionAsync<ArgumentNullException>(
+    await Assert.ThrowsExactlyAsync<ArgumentNullException>(
       () => _systemUnderTest.Fetch(nullRequest));
   }
 
@@ -321,7 +321,7 @@ public class HttpPortalTests
     UpdateRequest nullRequest = null;
 
     // Act & Assert
-    await Assert.ThrowsExceptionAsync<ArgumentNullException>(
+    await Assert.ThrowsExactlyAsync<ArgumentNullException>(
       () => _systemUnderTest.Update(nullRequest));
   }
 
@@ -340,7 +340,7 @@ public class HttpPortalTests
       Array.Empty<byte>());
 
     // Act & Assert
-    await Assert.ThrowsExceptionAsync<SerializationException>(
+    await Assert.ThrowsExactlyAsync<SerializationException>(
       () => _systemUnderTest.Update(request));
   }
 
@@ -412,7 +412,7 @@ public class HttpPortalTests
     CriteriaRequest nullRequest = null;
 
     // Act & Assert
-    await Assert.ThrowsExceptionAsync<ArgumentNullException>(
+    await Assert.ThrowsExactlyAsync<ArgumentNullException>(
       () => _systemUnderTest.Delete(nullRequest));
   }
 

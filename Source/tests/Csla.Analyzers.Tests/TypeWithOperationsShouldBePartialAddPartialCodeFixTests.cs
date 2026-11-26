@@ -18,8 +18,7 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.TypeWithOperationsShouldBePartial,
-        nameof(Constants.AnalyzerIdentifiers.TypeWithOperationsShouldBePartial));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.TypeWithOperationsShouldBePartial, ids[0], nameof(Constants.AnalyzerIdentifiers.TypeWithOperationsShouldBePartial));
     }
 
     [TestMethod]

@@ -74,11 +74,10 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentException))]
     public void ObjectRuleThrowsExceptionIfPrimareyPropertyIsSet()
     {
       var rule = new ValidateRootObject();
-      rule.PrimaryProperty = RuleBaseClassesRoot.NameProperty;
+      Assert.ThrowsExactly<ArgumentException>(() => rule.PrimaryProperty = RuleBaseClassesRoot.NameProperty);
     }
 
     // TODO: fix test

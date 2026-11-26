@@ -153,7 +153,7 @@ namespace Csla.Test.AppContext
 
       contextDectionary[key] = value;
 
-      Assert.ThrowsException<System.ArgumentException>(() => contextDectionary.Add(key, value));
+      Assert.ThrowsExactly<System.ArgumentException>(() => contextDectionary.Add(key, value));
     }
 
     /// <summary>
@@ -187,7 +187,7 @@ namespace Csla.Test.AppContext
     {
       var contextDictionary = new ContextDictionary();
       string key = "key1";
-      Assert.ThrowsException<System.NotSupportedException>(() => contextDictionary.Remove(key));
+      Assert.ThrowsExactly<System.NotSupportedException>(() => contextDictionary.Remove(key));
     }
 
     #region FailCreateContext

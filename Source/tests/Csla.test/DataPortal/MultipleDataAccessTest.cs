@@ -44,19 +44,21 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(AmbiguousMatchException), "Should throw 'AmbiguousMatchException'")]
     public void TestDpFetchNullable()
     {
       IDataPortal<MultipleDataAccess> dataPortal = _testHost.GetDataPortal<MultipleDataAccess>();
 
-      try
+      Assert.ThrowsExactly<AmbiguousMatchException>(() =>
       {
-        var result = dataPortal.Fetch(1, default(bool?));
-      }
-      catch (DataPortalException ex)
-      {
-        throw ex.GetBaseException();
-      }
+        try
+        {
+          var result = dataPortal.Fetch(1, default(bool?));
+        }
+        catch (DataPortalException ex)
+        {
+          throw ex.GetBaseException();
+        }
+      });
     }
   }
 }

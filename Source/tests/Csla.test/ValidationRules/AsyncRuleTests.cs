@@ -168,7 +168,7 @@ namespace Csla.Test.ValidationRules
       }
     }
 
-    [TestMethod($"When an async rule throws an exception the framework must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.CanHandle)}.")]
+    [TestMethod(DisplayName = $"When an async rule throws an exception the framework must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.CanHandle)}.")]
     public async Task AsyncRuleException_Testcase01()
     {
       var testHost = CreateHostForAsyncRuleExceptions();
@@ -187,7 +187,7 @@ namespace Csla.Test.ValidationRules
       await tcs.Task.WaitAsync(TimeSpan.FromSeconds(5));
     }
 
-    [TestMethod($"When an async rules exception can be handled by {nameof(IUnhandledAsyncRuleExceptionHandler)} it must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.Handle)}.")]
+    [TestMethod(DisplayName = $"When an async rules exception can be handled by {nameof(IUnhandledAsyncRuleExceptionHandler)} it must invoke {nameof(IUnhandledAsyncRuleExceptionHandler)}.{nameof(IUnhandledAsyncRuleExceptionHandler.Handle)}.")]
     public async Task AsyncRuleException_Testcase02()
     {
       var testHost = CreateHostForAsyncRuleExceptions();
@@ -207,7 +207,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [Ignore("This test can be run but will crash the test host, so this is failing any CI build. But for completness it's here and can be run if necessary.")]
-    [TestMethod($"When the default {nameof(IUnhandledAsyncRuleExceptionHandler)} is used the exception must be handled by a global unhandled exception handler (for this test it's the {nameof(AppDomain)}.{nameof(AppDomain.CurrentDomain)}.{nameof(AppDomain.CurrentDomain.UnhandledException)} event).")]
+    [TestMethod(DisplayName = $"When the default {nameof(IUnhandledAsyncRuleExceptionHandler)} is used the exception must be handled by a global unhandled exception handler (for this test it's the {nameof(AppDomain)}.{nameof(AppDomain.CurrentDomain)}.{nameof(AppDomain.CurrentDomain.UnhandledException)} event).")]
     public async Task AsyncRuleException_Testcase03()
     {
       var testHost = CreateHostForAsyncRuleExceptions();

@@ -17,8 +17,7 @@ namespace Csla.Analyzers.Tests
       var ids = fix.FixableDiagnosticIds.ToList();
 
       Assert.AreEqual(1, ids.Count, nameof(ids.Count));
-      Assert.AreEqual(ids[0], Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal,
-        nameof(Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal));
+      Assert.AreEqual(Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal, ids[0], nameof(Constants.AnalyzerIdentifiers.DoesChildOperationHaveRunLocal));
     }
 
     [TestMethod]

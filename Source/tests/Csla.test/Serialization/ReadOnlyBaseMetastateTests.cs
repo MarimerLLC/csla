@@ -88,7 +88,6 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void ReadOnlyBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
@@ -96,7 +95,7 @@ namespace Csla.Test.Serialization
       var obj = dataPortal.Create();
 
       // Act
-      ((IMobileObjectMetastate)obj).SetMetastate(null);
+      Assert.ThrowsExactly<ArgumentNullException>(() => ((IMobileObjectMetastate)obj).SetMetastate(null));
     }
 
     [TestMethod]

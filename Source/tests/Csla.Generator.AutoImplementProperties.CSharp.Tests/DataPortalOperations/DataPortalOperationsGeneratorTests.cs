@@ -11,7 +11,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
   [TestClass]
   public class DataPortalOperationsGeneratorTests : VerifyBase
   {
-    [TestMethod("Single Create operation with no parameters")]
+    [TestMethod(DisplayName = "Single Create operation with no parameters")]
     public async Task SingleCreateNoParams()
     {
       var source = """
@@ -30,7 +30,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Single Fetch operation with one criteria parameter")]
+    [TestMethod(DisplayName = "Single Fetch operation with one criteria parameter")]
     public async Task SingleFetchWithCriteria()
     {
       var source = """
@@ -49,7 +49,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Operation method with Inject parameter")]
+    [TestMethod(DisplayName = "Operation method with Inject parameter")]
     public async Task OperationWithInjectParam()
     {
       var source = """
@@ -71,7 +71,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Operation method with Inject AllowNull parameter")]
+    [TestMethod(DisplayName = "Operation method with Inject AllowNull parameter")]
     public async Task OperationWithInjectAllowNull()
     {
       var source = """
@@ -93,7 +93,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Multiple overloads of same Fetch operation")]
+    [TestMethod(DisplayName = "Multiple overloads of same Fetch operation")]
     public async Task MultipleOverloads()
     {
       var source = """
@@ -115,7 +115,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Method with both root and child attributes")]
+    [TestMethod(DisplayName = "Method with both root and child attributes")]
     public async Task RootAndChildAttributes()
     {
       var source = """
@@ -135,7 +135,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Async method returning Task")]
+    [TestMethod(DisplayName = "Async method returning Task")]
     public async Task AsyncMethod()
     {
       var source = """
@@ -155,7 +155,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("File-scoped namespace")]
+    [TestMethod(DisplayName = "File-scoped namespace")]
     public async Task FileScopedNamespace()
     {
       var source = """
@@ -176,7 +176,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Complete CRUD operations")]
+    [TestMethod(DisplayName = "Complete CRUD operations")]
     public async Task CompleteCrud()
     {
       var source = """
@@ -210,7 +210,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Delete operation with criteria")]
+    [TestMethod(DisplayName = "Delete operation with criteria")]
     public async Task DeleteWithCriteria()
     {
       var source = """
@@ -229,7 +229,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Child operations")]
+    [TestMethod(DisplayName = "Child operations")]
     public async Task ChildOperations()
     {
       var source = """
@@ -263,7 +263,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Execute operation on command object")]
+    [TestMethod(DisplayName = "Execute operation on command object")]
     public async Task ExecuteCommand()
     {
       var source = """
@@ -282,7 +282,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Nested class with data portal operations")]
+    [TestMethod(DisplayName = "Nested class with data portal operations")]
     public async Task NestedClass()
     {
       var source = """
@@ -304,7 +304,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Inject parameter declared before criteria keeps parameter order")]
+    [TestMethod(DisplayName = "Inject parameter declared before criteria keeps parameter order")]
     public async Task InjectBeforeCriteria()
     {
       var source = """
@@ -325,7 +325,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Array, nullable, generic and tuple criteria")]
+    [TestMethod(DisplayName = "Array, nullable, generic and tuple criteria")]
     public async Task ArrayNullableGenericCriteria()
     {
       var source = """
@@ -357,7 +357,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Partial class with operation methods spread across two files")]
+    [TestMethod(DisplayName = "Partial class with operation methods spread across two files")]
     public async Task PartialClassAcrossFiles()
     {
       var source1 = """
@@ -389,7 +389,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source1, source2);
     }
 
-    [TestMethod("Abstract class gets the operations interface only")]
+    [TestMethod(DisplayName = "Abstract class gets the operations interface only")]
     public async Task AbstractClass()
     {
       var source = """
@@ -409,7 +409,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Derived class hides the operations interface of a base class in the same assembly")]
+    [TestMethod(DisplayName = "Derived class hides the operations interface of a base class in the same assembly")]
     public async Task DerivedFromBaseWithOperations()
     {
       var source = """
@@ -435,7 +435,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Derived class dispatches operation methods inherited from a generic base class")]
+    [TestMethod(DisplayName = "Derived class dispatches operation methods inherited from a generic base class")]
     public async Task InheritedOperationsFromGenericBase()
     {
       var source = """
@@ -472,7 +472,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Inherited method with the name of a method declared by the type is called through base")]
+    [TestMethod(DisplayName = "Inherited method with the name of a method declared by the type is called through base")]
     public async Task InheritedOverloadHiddenByDerived()
     {
       var source = """
@@ -498,7 +498,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Inherited method hidden by a member of an intermediate class is left to reflection")]
+    [TestMethod(DisplayName = "Inherited method hidden by a member of an intermediate class is left to reflection")]
     public async Task InheritedOverloadHiddenByIntermediate()
     {
       var source = """
@@ -537,7 +537,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Inherited method overridden without the attribute is called virtually at the level of the override")]
+    [TestMethod(DisplayName = "Inherited method overridden without the attribute is called virtually at the level of the override")]
     public async Task InheritedOverriddenWithoutAttribute()
     {
       var source = """
@@ -567,7 +567,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Inherited method with the criteria count of a method declared by the type is left to reflection")]
+    [TestMethod(DisplayName = "Inherited method with the criteria count of a method declared by the type is left to reflection")]
     public async Task InheritedSameShapeAcrossLevels()
     {
       var source = """
@@ -593,7 +593,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Inherited and declared methods with the same operation name are scored like reflection")]
+    [TestMethod(DisplayName = "Inherited and declared methods with the same operation name are scored like reflection")]
     public async Task InheritedOperationNameScoring()
     {
       var source = """
@@ -627,7 +627,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await DataPortalOperationsTestHelper<IncrementalDataPortalOperationsGenerator>.VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Inherited method taking a protected nested type is left to reflection")]
+    [TestMethod(DisplayName = "Inherited method taking a protected nested type is left to reflection")]
     public async Task InheritedProtectedNestedCriteria()
     {
       var source = """
@@ -658,7 +658,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Declared method taking a private nested type is left to reflection")]
+    [TestMethod(DisplayName = "Declared method taking a private nested type is left to reflection")]
     public async Task PrivateNestedCriteria()
     {
       var source = """
@@ -683,7 +683,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Injected parameters of a method further up the chain can outscore a closer method")]
+    [TestMethod(DisplayName = "Injected parameters of a method further up the chain can outscore a closer method")]
     public async Task InheritedInjectionScoring()
     {
       var source = """
@@ -722,7 +722,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Inherited method marked with a subclass of an operation attribute is dispatched")]
+    [TestMethod(DisplayName = "Inherited method marked with a subclass of an operation attribute is dispatched")]
     public async Task InheritedDerivedOperationAttribute()
     {
       var source = """
@@ -751,7 +751,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Declared method marked with a subclass of an operation attribute leaves its kind to reflection")]
+    [TestMethod(DisplayName = "Declared method marked with a subclass of an operation attribute leaves its kind to reflection")]
     public async Task DeclaredDerivedOperationAttribute()
     {
       var source = """
@@ -775,7 +775,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Child list dispatches the inherited params object array update")]
+    [TestMethod(DisplayName = "Child list dispatches the inherited params object array update")]
     public async Task InheritedParamsArrayUpdateChild()
     {
       var source = """
@@ -800,7 +800,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Generic business object excludes type parameter criteria from name dispatch")]
+    [TestMethod(DisplayName = "Generic business object excludes type parameter criteria from name dispatch")]
     public async Task GenericBusinessObject()
     {
       var source = """
@@ -822,7 +822,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("RunLocal and ValueTask operation methods")]
+    [TestMethod(DisplayName = "RunLocal and ValueTask operation methods")]
     public async Task RunLocalAndValueTask()
     {
       var source = """
@@ -849,7 +849,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Keyed inject parameters")]
+    [TestMethod(DisplayName = "Keyed inject parameters")]
     public async Task KeyedInject()
     {
       var source = """
@@ -875,7 +875,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Overloads with the same operation name report a diagnostic")]
+    [TestMethod(DisplayName = "Overloads with the same operation name report a diagnostic")]
     public async Task DuplicateOperationName()
     {
       var source = """
@@ -902,7 +902,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await DataPortalOperationsTestHelper<IncrementalDataPortalOperationsGenerator>.VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Overloads tied on injected parameters are left to reflection and reported")]
+    [TestMethod(DisplayName = "Overloads tied on injected parameters are left to reflection and reported")]
     public async Task AmbiguousOperationName()
     {
       var source = """
@@ -929,7 +929,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await DataPortalOperationsTestHelper<IncrementalDataPortalOperationsGenerator>.VerifyWithDiagnostics(source);
     }
 
-    [TestMethod("Overloads with the same criteria count require exact types in type-based dispatch")]
+    [TestMethod(DisplayName = "Overloads with the same criteria count require exact types in type-based dispatch")]
     public async Task AmbiguousOverloads()
     {
       var source = """
@@ -956,7 +956,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Params object array and keyword parameter names")]
+    [TestMethod(DisplayName = "Params object array and keyword parameter names")]
     public async Task ParamsArrayAndKeywordNames()
     {
       var source = """
@@ -978,7 +978,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("In criteria parameters and nullable inject parameters")]
+    [TestMethod(DisplayName = "In criteria parameters and nullable inject parameters")]
     public async Task InCriteriaAndNullableInject()
     {
       var source = """
@@ -1002,7 +1002,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Non-partial class generates nothing")]
+    [TestMethod(DisplayName = "Non-partial class generates nothing")]
     public async Task NonPartialClass()
     {
       var source = """
@@ -1021,7 +1021,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Business objects without operation methods generate nothing")]
+    [TestMethod(DisplayName = "Business objects without operation methods generate nothing")]
     public async Task NoOperationMethods()
     {
       var source = """
@@ -1043,7 +1043,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Class that implements the named mapping itself only gets the operations interface and type mapping")]
+    [TestMethod(DisplayName = "Class that implements the named mapping itself only gets the operations interface and type mapping")]
     public async Task ExistingNamedMapping()
     {
       var source = """
@@ -1067,7 +1067,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.Tests.DataPortalOperatio
       await TestHelperVerify(source);
     }
 
-    [TestMethod("Pipeline stages are cached when the compilation does not change")]
+    [TestMethod(DisplayName = "Pipeline stages are cached when the compilation does not change")]
     public void StageCaching()
     {
       var source = """

@@ -86,7 +86,6 @@ namespace Csla.Test.ValidationRules
     {
       var prop = new PropertyInfo<string>("Изилдр");
       var rule = new ИзилдрRule(prop);
-      Assert.IsTrue(true);
     }
   }
 }

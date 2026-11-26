@@ -67,7 +67,6 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void CommandBase_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
@@ -75,7 +74,7 @@ namespace Csla.Test.Serialization
       var command = dataPortal.Create();
 
       // Act
-      ((IMobileObjectMetastate)command).SetMetastate(null);
+      Assert.ThrowsExactly<ArgumentNullException>(() => ((IMobileObjectMetastate)command).SetMetastate(null));
     }
 
     [TestMethod]
@@ -101,14 +100,13 @@ namespace Csla.Test.Serialization
     }
 
     [TestMethod]
-    [ExpectedException(typeof(ArgumentNullException))]
     public void BrokenRule_SetMetastate_ThrowsOnNullMetastate()
     {
       // Arrange
       var brokenRule = CreateEmptyBrokenRule();
 
       // Act
-      ((IMobileObjectMetastate)brokenRule).SetMetastate(null);
+      Assert.ThrowsExactly<ArgumentNullException>(() => ((IMobileObjectMetastate)brokenRule).SetMetastate(null));
     }
 
     [TestMethod]

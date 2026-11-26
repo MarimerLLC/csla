@@ -57,41 +57,45 @@ namespace Csla.Test.DataPortal
     }
 
     [TestMethod]
-    [ExpectedException(typeof(AmbiguousMatchException))]
     public void Test_DataPortal_Int_Null()
     {
       IDataPortal<ArrayDataPortalClass> dataPortal = _testHost.GetDataPortal<ArrayDataPortalClass>();
 
-      try
+      Assert.ThrowsExactly<AmbiguousMatchException>(() =>
       {
-        _ = ArrayDataPortalClass.Get(dataPortal, default(int[]));
-      }
-      catch (DataPortalException ex)
-      {
-        if (ex.InnerException != null)
-          throw ex.InnerException;
-        else
-          throw;
-      }
+        try
+        {
+          _ = ArrayDataPortalClass.Get(dataPortal, default(int[]));
+        }
+        catch (DataPortalException ex)
+        {
+          if (ex.InnerException != null)
+            throw ex.InnerException;
+          else
+            throw;
+        }
+      });
     }
 
     [TestMethod]
-    [ExpectedException(typeof(AmbiguousMatchException))]
     public void Test_DataPortal_String_Null()
     {
       IDataPortal<ArrayDataPortalClass> dataPortal = _testHost.GetDataPortal<ArrayDataPortalClass>();
 
-      try
+      Assert.ThrowsExactly<AmbiguousMatchException>(() =>
       {
-        _ = ArrayDataPortalClass.Get(dataPortal, default(string[]));
-      }
-      catch (DataPortalException ex)
-      {
-        if (ex.InnerException != null)
-          throw ex.InnerException;
-        else
-          throw;
-      }
+        try
+        {
+          _ = ArrayDataPortalClass.Get(dataPortal, default(string[]));
+        }
+        catch (DataPortalException ex)
+        {
+          if (ex.InnerException != null)
+            throw ex.InnerException;
+          else
+            throw;
+        }
+      });
     }
 
     [TestMethod]

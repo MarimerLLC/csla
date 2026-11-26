@@ -154,7 +154,7 @@ namespace Csla.Test.Serialization
     {
       var applicationContext = CreateApplicationContext(scanTestAssembly: false);
 
-      Assert.ThrowsException<InvalidOperationException>(() => Clone(applicationContext, new DeclaredType { Name = "test" }));
+      Assert.ThrowsExactly<InvalidOperationException>(() => Clone(applicationContext, new DeclaredType { Name = "test" }));
     }
 
     [TestMethod]
@@ -162,7 +162,7 @@ namespace Csla.Test.Serialization
     {
       var applicationContext = CreateApplicationContext();
 
-      Assert.ThrowsException<InvalidOperationException>(() => Clone(applicationContext, new DerivedDeclaredType { Name = "test" }));
+      Assert.ThrowsExactly<InvalidOperationException>(() => Clone(applicationContext, new DerivedDeclaredType { Name = "test" }));
     }
 
     [TestMethod]
@@ -195,8 +195,8 @@ namespace Csla.Test.Serialization
     {
       var options = new MobileFormatterOptions();
 
-      Assert.ThrowsException<ArgumentNullException>(() => options.AddCustomSerializers(null));
-      Assert.ThrowsException<ArgumentNullException>(() => options.AddCustomSerializers([null]));
+      Assert.ThrowsExactly<ArgumentNullException>(() => options.AddCustomSerializers(null));
+      Assert.ThrowsExactly<ArgumentNullException>(() => options.AddCustomSerializers([null]));
     }
   }
 

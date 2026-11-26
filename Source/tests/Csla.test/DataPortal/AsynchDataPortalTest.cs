@@ -60,7 +60,7 @@ namespace Csla.Test.DataPortal
       IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       var created = await dataPortal.CreateAsync();
-      Assert.AreEqual(created.Id, 0);
+      Assert.AreEqual(0, created.Id);
     }
 
     [TestMethod]
@@ -69,16 +69,15 @@ namespace Csla.Test.DataPortal
       IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
       var created = await dataPortal.CreateAsync(100);
-      Assert.AreEqual(created.Id, 100);
+      Assert.AreEqual(100, created.Id);
     }
 
     [TestMethod]
-    [ExpectedException(typeof(DataPortalException))]
     public async Task BeginCreate_with_exception()
     {
       IDataPortal<Single> dataPortal = _testHost.GetDataPortal<Single>();
 
-      await dataPortal.CreateAsync(9999);
+      await Assert.ThrowsExactlyAsync<DataPortalException>(async () => await dataPortal.CreateAsync(9999));
     }
 
     [TestMethod]

@@ -39,6 +39,16 @@ updates:
   - dependency-name: Microsoft.Maui.*
     update-types:
     - version-update:semver-major
+  # The System.* packages that the .NET Framework and netstandard2.0 targets
+  # reference (System.Text.Json, System.Diagnostics.DiagnosticSource,
+  # System.Resources.Extensions and others) keep a low floor for the same
+  # reason as Microsoft.Extensions.*. Dependabot also pins vulnerable or
+  # outdated transitive System.* packages by adding new direct references to
+  # shipped projects, at the newest major version. Major versions change by
+  # hand; patch and minor updates still come through.
+  - dependency-name: System.*
+    update-types:
+    - version-update:semver-major
   # MSTest 4 removes [ExpectedException] and Assert.ThrowsException(Async),
   # which the test projects use throughout. Moving to a new MSTest major
   # version is a test migration done by hand; patch and minor updates still

@@ -48,11 +48,12 @@
 
   <ItemGroup>
     <PackageReference Include="AwesomeAssertions" Version="9.6.0" />
-    <PackageReference Include="Microsoft.CSharp" Version="4.7.0" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" Version="18.12.0" />
     <PackageReference Include="MSTest.TestAdapter" Version="4.5.3" />
     <PackageReference Include="MSTest.TestFramework" Version="4.5.3" />
     <PackageReference Include="System.Data.Common" Version="4.3.0" />
+    <PackageReference Include="MSTest.TestAdapter" Version="3.9.1" />
+    <PackageReference Include="MSTest.TestFramework" Version="3.9.1" />
     <PackageReference Include="SourceGear.sqlite3" Version="3.53.4" />
     <PackageReference Include="System.Data.SQLite" Version="2.0.4" />
     <PackageReference Include="System.Resources.Extensions" Version="$(DotNetPackageVersion)" />
@@ -63,7 +64,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
-    <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
   </ItemGroup>
 
   <ItemGroup>

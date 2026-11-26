@@ -3,22 +3,27 @@ using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Csla.TestHelpers.Http;
 public static class HttpTestServerFactory {
 
   public static TestServer CreateHttpTestServer() {
-    return new TestServer(new WebHostBuilder()
-      .ConfigureServices((IServiceCollection services) => {
-        services.AddControllers();
-        services.AddHttpContextAccessor();
-        services.AddCsla(o => o.AddAspNetCore());
-      })
-      .Configure(app => {
-        app.UseRouting();
-        app.UseEndpoints(endpoints => endpoints.MapControllers());
-      })
-    );
+    // Callers dispose the returned TestServer in their cleanup. The host isn't disposed and lives until the test process ends.
+    var host = new HostBuilder()
+      .ConfigureWebHost(webHost => webHost
+        .UseTestServer()
+        .ConfigureServices((IServiceCollection services) => {
+          services.AddControllers();
+          services.AddHttpContextAccessor();
+          services.AddCsla(o => o.AddAspNetCore());
+        })
+        .Configure(app => {
+          app.UseRouting();
+          app.UseEndpoints(endpoints => endpoints.MapControllers());
+        }))
+      .Start();
+    return host.GetTestServer();
   }
 
   public static (TestServer Server, ServiceProvider ClientServiceProvider) CreateHttpTestServerAndClientServiceProvider() {

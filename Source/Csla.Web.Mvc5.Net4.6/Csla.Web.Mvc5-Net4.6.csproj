@@ -11,6 +11,9 @@
     <GenerateDocumentationFile>True</GenerateDocumentationFile>
     <Title>CSLA .NET ASP.NET MVC 5</Title>
     <PackageTags>CSLA;ASP.NET;MVC</PackageTags>
+    <!-- Csla's net462 build is compiled against the netstandard support facades (System.Net.Http 4.2.0.0).
+         Reference the same facades here instead of the 4.0.0.0 framework assembly, which avoids MSB3277. -->
+    <DependsOnNETStandard>true</DependsOnNETStandard>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj" />

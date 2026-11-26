@@ -947,7 +947,9 @@ namespace Csla.Test.DataPortal
     {
     }
 
+#pragma warning disable CS0618 // CriteriaBase<T> is obsolete; this regression test for #2287 uses it as the original report did.
     public class Criteria : Csla.CriteriaBase<Criteria>
+#pragma warning restore CS0618
     {
     }
   }

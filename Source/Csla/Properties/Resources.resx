@@ -577,6 +577,14 @@
     <value>CheckRules stopped after {0} rerun passes because rule output values were still changing these properties: {1}. Look for rules whose output values feed each other, or raise MaxRerunPasses with RuleOptions.UseBatchCheckRules.</value>
     <comment>0 - number of passes, 1 - comma-separated property names</comment>
   </data>
+  <data name="ModelBinderPropertySetFailed" xml:space="preserve">
+    <value>The value for {0} was not accepted: {1}</value>
+    <comment>0 - property display name, 1 - message from the property setter</comment>
+  </data>
+  <data name="ModelBinderPropertyValueNotAccepted" xml:space="preserve">
+    <value>The value for {0} was not accepted.</value>
+    <comment>0 - property display name</comment>
+  </data>
   <data name="NotNullInvariantViolated" xml:space="preserve">
     <value>{0} does not satisfy the not-null invariant; these not-null properties are null: {1}.</value>
     <comment>0 - business object type, 1 - comma-separated property names</comment>

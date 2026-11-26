@@ -9,6 +9,7 @@
 using System.Collections;
 using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
+using System.Reflection;
 using System.Text.RegularExpressions;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
@@ -31,12 +32,21 @@ namespace Csla.Web.Mvc
   /// only sets the values that were posted. Otherwise it creates a
   /// new object graph. New list items are created using the list's
   /// declared child type.
-  /// A posted value that is null (or converts to null) for a not-null property
-  /// other than <see cref="string"/> (<see cref="Core.INotNullPropertyInfo"/>) is
-  /// ignored: the property keeps its current value, or stays unloaded on a new
-  /// object, and no ModelState error is added. Validate such input with a
-  /// business rule, or declare the property nullable. A null string is stored
-  /// as <see cref="string.Empty"/>.
+  /// Only properties with a public, non-<c>init</c> setter are bound, and
+  /// values are set through that setter, so authorization rules and setter
+  /// logic run. When a posted value can't be converted to the property's
+  /// type, the user isn't allowed to change the property, or the setter
+  /// throws, the value isn't stored (a value written before the setter
+  /// failed is restored) and a ModelState error is added under that field's
+  /// key. A read-only property posted back with its current value isn't an
+  /// error, provided the user may read the property; otherwise any posted
+  /// value is reported, so the response doesn't reveal the current value. Fields listed in <c>__Invariant</c> by the tag helpers, such as
+  /// <c>&lt;input type="number"&gt;</c>, are parsed with the invariant culture.
+  /// A posted value that converts to null for a not-null property other than
+  /// <see cref="string"/> (<see cref="Core.INotNullPropertyInfo"/>) is rejected
+  /// by the setter, so it isn't stored and a ModelState error is added. A
+  /// not-null property that isn't posted on a new object stays unloaded, without
+  /// an error. A null string is stored as <see cref="string.Empty"/>.
   /// </remarks>
   [UnconditionalSuppressMessage("Trimming", "IL2026", Justification = Core.TrimmingMessages.MvcJustification)]
   [UnconditionalSuppressMessage("Trimming", "IL2072", Justification = Core.TrimmingMessages.MvcJustification)]
@@ -77,7 +87,8 @@ namespace Csla.Web.Mvc
         var request = bindingContext.ActionContext.HttpContext.Request;
         var scope = new BindingScope(
           request.HasFormContentType ? request.Form : FormCollection.Empty,
-          bindingContext.HttpContext.RequestServices.GetService<IModelMetadataProvider>());
+          bindingContext.HttpContext.RequestServices.GetService<IModelMetadataProvider>(),
+          bindingContext.ModelState);
         var prefix = bindingContext.ModelName ?? string.Empty;
         if (typeof(Core.IEditableCollection).IsAssignableFrom(modelType))
         {
@@ -139,9 +150,11 @@ namespace Csla.Web.Mvc
         {
           // read-only or other non-editable child objects aren't bound
         }
-        else if (isNew || form.ContainsKey(key))
+        else
         {
-          BindSingleProperty(form, obj, item, key);
+          var posted = form.ContainsKey(key);
+          if (isNew || posted)
+            BindSingleProperty(scope, obj, item, key, posted);
         }
       }
     }
@@ -196,16 +209,46 @@ namespace Csla.Web.Mvc
 
     private sealed class BindingScope
     {
-      public BindingScope(IFormCollection form, IModelMetadataProvider? metadataProvider)
+      public BindingScope(IFormCollection form, IModelMetadataProvider? metadataProvider, ModelStateDictionary modelState)
       {
         Form = form;
         MetadataProvider = metadataProvider;
+        ModelState = modelState;
+        // the tag helpers list fields rendered with the invariant culture
+        // (such as <input type="number">) in __Invariant, as MVC's FormValueProvider expects
+        _invariantKeys = new HashSet<string>(
+          form.TryGetValue("__Invariant", out var keys) ? keys.Where(k => k is not null).Select(k => k!) : [],
+          StringComparer.OrdinalIgnoreCase);
       }
 
+      private readonly HashSet<string> _invariantKeys;
+
+      public bool IsInvariant(string key) => _invariantKeys.Contains(key);
+
       public IFormCollection Form { get; }
+      public ModelStateDictionary ModelState { get; }
       public IModelMetadataProvider? MetadataProvider { get; }
 
       public ModelMetadata? GetMetadata(Type type) => MetadataProvider?.GetMetadataForType(type);
+
+      private readonly Dictionary<(Type, string), bool> _publicSetters = [];
+
+      [UnconditionalSuppressMessage("Trimming", "IL2075", Justification = Core.TrimmingMessages.MvcJustification)]
+      public bool HasPublicSetter(object obj, string propertyName)
+      {
+        var type = obj.GetType();
+        if (!_publicSetters.TryGetValue((type, propertyName), out var result))
+        {
+          var setter = type.GetProperty(propertyName, BindingFlags.Public | BindingFlags.Instance | BindingFlags.FlattenHierarchy)?.SetMethod;
+          // an init accessor only sets the value while the object is created
+          result = setter is { IsPublic: true } && !IsInitOnly(setter);
+          _publicSetters.Add((type, propertyName), result);
+        }
+        return result;
+      }
+
+      private static bool IsInitOnly(System.Reflection.MethodInfo setter)
+        => setter.ReturnParameter.GetRequiredCustomModifiers().Any(m => m.FullName == "System.Runtime.CompilerServices.IsExternalInit");
     }
 
     private static bool HasKeysWithPrefix(IFormCollection form, string prefix)
@@ -224,42 +267,204 @@ namespace Csla.Web.Mvc
       return result;
     }
 
-    private void BindSingleProperty(IFormCollection form, object result, Core.IPropertyInfo item, string index)
+    private void BindSingleProperty(BindingScope scope, object obj, Core.IPropertyInfo item, string key, bool posted)
     {
+      // a property without a public setter is read-only to the UI
+      if (!scope.HasPublicSetter(obj, item.Name))
+        return;
+
+      var value = scope.Form[key].FirstOrDefault();
+      // an unposted value type on a new object keeps its default
+      if (!posted && value is null && item.Type.IsValueType && Nullable.GetUnderlyingType(item.Type) is null)
+        return;
+
+      object? newValue;
       try
       {
-        var value = form[index].FirstOrDefault();
-        try
-        {
-          if (item.Type.Equals(typeof(string)))
-            Reflection.MethodCaller.CallPropertySetter(result, item.Name, value);
-          else if (value != null)
-            Reflection.MethodCaller.CallPropertySetter(result, item.Name, Utilities.CoerceValue(item.Type, value.GetType(), null, value));
-          else
-            Reflection.MethodCaller.CallPropertySetter(result, item.Name, null);
-        }
-        catch
-        {
-          object? loadValue;
-          if (item.Type.Equals(typeof(string)))
-            loadValue = value;
-          else if (value != null)
-            loadValue = Utilities.CoerceValue(item.Type, value.GetType(), null, value);
-          else
-            loadValue = null;
+        if (item.Type.Equals(typeof(string)) || value is null)
+          newValue = value;
+        else
+          newValue = CoerceValue(item.Type, value, scope.IsInvariant(key));
+      }
+      catch
+      {
+        // only a posted (non-null) value is converted, so this is user input
+        // that doesn't fit the property's type
+        AddError(scope, key, GetValueNotAcceptedMessage(item));
+        return;
+      }
 
-          // a not-null property can't hold null: leave it as it is (no ModelState
-          // error is added; see the class remarks)
-          if (loadValue is null && Core.NotNullGuard.RejectsNull(item))
-            return;
-          LoadProperty(result, item, loadValue);
+      if (obj is Csla.Security.IAuthorizeReadWrite auth && !IsAllowed(() => auth.CanWriteProperty(item)))
+      {
+        // a read-only field posted back unchanged isn't an error; the value is
+        // only compared when the user may read it, so a guess can't be confirmed
+        if (posted)
+        {
+          var unchanged = IsAllowed(() => auth.CanReadProperty(item))
+            && TryReadCurrentValue(obj, item, out var currentValue)
+            && IsUnchanged(item, value, newValue, currentValue);
+          if (!unchanged)
+            AddError(scope, key, Csla.Properties.Resources.PropertySetNotAllowed);
         }
+        return;
+      }
+
+      var hasOldValue = TryReadCurrentValue(obj, item, out var oldValue);
+      try
+      {
+        Reflection.MethodCaller.CallPropertySetterCore(obj, item.Name, newValue);
       }
       catch (Exception ex)
       {
-        throw new Exception($"Could not map {index} to model", ex);
+        // a failure after the field was written (for example in a
+        // PropertyChanged handler) leaves the new value, so restore it
+        // (a not-null property can't hold the null default of a field that wasn't loaded)
+        if (hasOldValue && TryReadCurrentValue(obj, item, out var failedValue) && !Equals(oldValue, failedValue)
+          && !(oldValue is null && Core.NotNullGuard.RejectsNull(item)))
+          LoadProperty(obj, item, oldValue);
+
+        var cause = GetCause(ex);
+        if (posted)
+        {
+          // the setter rejected the posted value, so it isn't stored
+          AddError(scope, key, GetSetFailedMessage(item, cause));
+        }
+        else if (!IsSecurityException(cause) && cause is not ArgumentException)
+        {
+          // nothing was posted, so a setter rejecting null leaves the
+          // property alone; any other failure is a real error
+          throw;
+        }
       }
     }
+
+    private static object? CoerceValue(Type type, string value, bool invariant)
+    {
+      if (!invariant)
+        return Utilities.CoerceValue(type, typeof(string), null, value);
+
+      // the field was rendered with the invariant culture (for example
+      // <input type="number">), so parse it that way
+      var culture = CultureInfo.CurrentCulture;
+      CultureInfo.CurrentCulture = CultureInfo.InvariantCulture;
+      try
+      {
+        return Utilities.CoerceValue(type, typeof(string), null, value);
+      }
+      finally
+      {
+        CultureInfo.CurrentCulture = culture;
+      }
+    }
+
+    private static bool IsAllowed(Func<bool> authorizationCheck)
+    {
+      try
+      {
+        return authorizationCheck();
+      }
+      catch
+      {
+        // the check couldn't complete (for example an async rule that's
+        // still running), so treat the action as not allowed
+        return false;
+      }
+    }
+
+    /// <summary>
+    /// Reads the property's current value without loading its field. A
+    /// lazy-loaded property that isn't loaded can't be read. Another
+    /// managed field that isn't loaded reads as the property's default
+    /// value, which <c>ReadProperty</c> would also store in the field (for
+    /// a not-null property without a default, that would store null).
+    /// </summary>
+    private bool TryReadCurrentValue(object obj, Core.IPropertyInfo item, out object? value)
+    {
+      if ((item.RelationshipType & RelationshipTypes.PrivateField) != RelationshipTypes.PrivateField && !FieldExists(obj, item))
+      {
+        if ((item.RelationshipType & RelationshipTypes.LazyLoad) == RelationshipTypes.LazyLoad)
+        {
+          value = null;
+          return false;
+        }
+        value = item.DefaultValue;
+        return true;
+      }
+      value = ReadProperty(obj, item);
+      return true;
+    }
+
+    /// <summary>
+    /// Gets whether a posted value matches the current value, allowing for
+    /// what's lost when a value is rendered and posted back.
+    /// </summary>
+    private static bool IsUnchanged(Core.IPropertyInfo item, string? postedText, object? newValue, object? currentValue)
+    {
+      if (Equals(newValue, currentValue))
+        return true;
+      if (item.Type.Equals(typeof(string)))
+        return string.IsNullOrEmpty((string?)newValue) && string.IsNullOrEmpty((string?)currentValue);
+      if (newValue is DateTime postedDate && currentValue is DateTime currentDate)
+        return MatchesAtPostedPrecision(postedDate, currentDate);
+      if (newValue is DateTimeOffset postedOffset && currentValue is DateTimeOffset currentOffset)
+        return postedOffset.Offset == currentOffset.Offset && MatchesAtPostedPrecision(postedOffset.DateTime, currentOffset.DateTime);
+      // the current value may have been rendered in another culture
+      return postedText is not null && currentValue is not null
+        && (postedText == Convert.ToString(currentValue, CultureInfo.InvariantCulture)
+          || postedText == Convert.ToString(currentValue, CultureInfo.CurrentCulture));
+    }
+
+    /// <summary>
+    /// Compares a posted date with the current one at the precision the
+    /// posted text has: a date input drops the time, a datetime-local
+    /// input drops the seconds or milliseconds.
+    /// </summary>
+    private static bool MatchesAtPostedPrecision(DateTime posted, DateTime current)
+    {
+      long unit;
+      if (posted.Ticks % TimeSpan.TicksPerDay == 0)
+        unit = TimeSpan.TicksPerDay;
+      else if (posted.Ticks % TimeSpan.TicksPerMinute == 0)
+        unit = TimeSpan.TicksPerMinute;
+      else if (posted.Ticks % TimeSpan.TicksPerSecond == 0)
+        unit = TimeSpan.TicksPerSecond;
+      else if (posted.Ticks % TimeSpan.TicksPerMillisecond == 0)
+        unit = TimeSpan.TicksPerMillisecond;
+      else
+        unit = 1;
+      return posted.Ticks == current.Ticks - current.Ticks % unit;
+    }
+
+    private static void AddError(BindingScope scope, string key, string message)
+    {
+      // keep what was posted so the form shows it again next to the error
+      scope.ModelState.SetModelValue(key, new ValueProviderResult(scope.Form[key], CultureInfo.CurrentCulture));
+      scope.ModelState.TryAddModelError(key, message);
+    }
+
+    private static Exception GetCause(Exception ex)
+    {
+      while (ex is TargetInvocationException or PropertyLoadException && ex.InnerException is { } inner)
+        ex = inner;
+      return ex;
+    }
+
+    private static bool IsSecurityException(Exception ex)
+      => ex is Csla.Security.SecurityException or System.Security.SecurityException;
+
+    private static string GetSetFailedMessage(Core.IPropertyInfo item, Exception cause)
+    {
+      if (IsSecurityException(cause))
+        return Csla.Properties.Resources.PropertySetNotAllowed;
+      // argument and validation exceptions carry messages meant for the user;
+      // other exceptions can hold internal details, so they get a generic message
+      if (cause is ArgumentException or System.ComponentModel.DataAnnotations.ValidationException)
+        return string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, item.FriendlyName, cause.Message);
+      return GetValueNotAcceptedMessage(item);
+    }
+
+    private static string GetValueNotAcceptedMessage(Core.IPropertyInfo item)
+      => string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertyValueNotAccepted, item.FriendlyName);
   }
 }
 #elif !NETSTANDARD

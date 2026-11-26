@@ -101,7 +101,7 @@
     <!-- Csla.dll is compiled against the Microsoft.Bcl.AsyncInterfaces that DependencyInjection brings in on
          netstandard2.0. Consumers that resolve DependencyInjection's netstandard2.1 or net8.0+ dependency group
          don't get it from there, so list it directly. Keep it at the DependencyInjection version above. -->
-    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="10.0.15" />
+    <PackageReference Include="Microsoft.Bcl.AsyncInterfaces" Version="11.0.0" />
     <PackageReference Include="Microsoft.Extensions.Hosting.Abstractions" Version="6.0.1" />
     <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="6.0.4" />
     <PackageReference Include="Microsoft.Extensions.Options" Version="6.0.1" />
@@ -109,7 +109,7 @@
     <PackageReference Include="System.Diagnostics.DiagnosticSource" Version="8.0.0" />
   </ItemGroup>
   <ItemGroup>
-    <PackageReference Include="System.Text.Json" Version="8.0.5" />
+    <PackageReference Include="System.Text.Json" Version="11.0.0" />
     <PackageReference Include="System.Text.RegularExpressions" Version="4.3.1" />
     <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
     <!-- Build order only; the analyzers are packed by CslaPackBundledAnalyzers -->

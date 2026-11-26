@@ -7,6 +7,7 @@
 //-----------------------------------------------------------------------
 
 using Csla.Rules;
+using Csla.Rules.CommonRules;
 using Microsoft.AspNetCore.Mvc.ModelBinding;
 
 namespace Csla.AspNetCore.Test.ModelBinding;
@@ -68,6 +69,254 @@ public class Parent : BusinessBase<Parent>
     }
     Address = addressPortal.FetchChild("street");
     Children = childPortal.FetchChild(2);
+  }
+}
+
+[Serializable]
+public class Employee : BusinessBase<Employee>
+{
+  public const string BadCodeMessage = "Code can't be bad";
+  public const string BadTagMessage = "Tag can't be bad";
+  public const string InternalErrorMessage = "connection string xyz failed";
+
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set => SetProperty(NameProperty, value);
+  }
+
+  // only users in the HR role can write this property
+  public static readonly PropertyInfo<decimal> SalaryProperty = RegisterProperty<decimal>(nameof(Salary));
+  public decimal Salary
+  {
+    get => GetProperty(SalaryProperty);
+    set => SetProperty(SalaryProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(nameof(Code));
+  public string Code
+  {
+    get => GetProperty(CodeProperty);
+    set
+    {
+      if (value == "bad")
+        throw new ArgumentException(BadCodeMessage);
+      SetProperty(CodeProperty, value);
+    }
+  }
+
+  // rejected from inside SetProperty, which wraps the exception in a PropertyLoadException
+  public static readonly PropertyInfo<string> TagProperty = RegisterProperty<string>(nameof(Tag));
+  private string _pendingTag;
+  public string Tag
+  {
+    get => GetProperty(TagProperty);
+    set
+    {
+      _pendingTag = value;
+      SetProperty((Core.IPropertyInfo)TagProperty, value);
+    }
+  }
+
+  protected override void OnPropertyChanging(Core.IPropertyInfo propertyInfo)
+  {
+    if (ReferenceEquals(propertyInfo, TagProperty) && _pendingTag == "bad")
+      throw new ArgumentException(BadTagMessage);
+    base.OnPropertyChanging(propertyInfo);
+  }
+
+  // fails with an exception whose message isn't meant for users
+  public static readonly PropertyInfo<string> NotesProperty = RegisterProperty<string>(nameof(Notes));
+  public string Notes
+  {
+    get => GetProperty(NotesProperty);
+    set
+    {
+      if (value == "boom")
+        throw new InvalidOperationException(InternalErrorMessage);
+      SetProperty(NotesProperty, value);
+    }
+  }
+
+  // write-denied like Salary, for checking values posted back unchanged
+  public static readonly PropertyInfo<DateTime> HiredOnProperty = RegisterProperty<DateTime>(nameof(HiredOn));
+  public DateTime HiredOn
+  {
+    get => GetProperty(HiredOnProperty);
+    set => SetProperty(HiredOnProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> GradeProperty = RegisterProperty<string>(nameof(Grade));
+  public string Grade
+  {
+    get => GetProperty(GradeProperty);
+    set => SetProperty(GradeProperty, value);
+  }
+
+  public static readonly PropertyInfo<decimal> RateProperty = RegisterProperty<decimal>(nameof(Rate));
+  public decimal Rate
+  {
+    get => GetProperty(RateProperty);
+    set => SetProperty(RateProperty, value);
+  }
+
+  public static readonly PropertyInfo<decimal> BonusProperty = RegisterProperty<decimal>(nameof(Bonus));
+  public decimal Bonus
+  {
+    get => GetProperty(BonusProperty);
+    set => SetProperty(BonusProperty, value);
+  }
+
+  // fails after the value is written, in OnPropertyChanged
+  public static readonly PropertyInfo<string> MoodProperty = RegisterProperty<string>(nameof(Mood));
+  public string Mood
+  {
+    get => GetProperty(MoodProperty);
+    set => SetProperty(MoodProperty, value);
+  }
+
+  protected override void OnPropertyChanged(Core.IPropertyInfo propertyInfo)
+  {
+    base.OnPropertyChanged(propertyInfo);
+    if (ReferenceEquals(propertyInfo, MoodProperty) && ReadProperty(MoodProperty) == "angry")
+      throw new InvalidOperationException("handler failed");
+  }
+
+  // the user can neither read nor write this property
+  public static readonly PropertyInfo<string> SsnProperty = RegisterProperty<string>(nameof(Ssn));
+  public string Ssn
+  {
+    get => GetProperty(SsnProperty);
+    set => SetProperty(SsnProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> PhotoProperty = RegisterProperty<string>(nameof(Photo), RelationshipTypes.LazyLoad);
+  public string Photo
+  {
+    get => LazyGetProperty(PhotoProperty, () => "loaded");
+    set => SetProperty(PhotoProperty, value);
+  }
+
+  // lazy-loaded and write-denied
+  public static readonly PropertyInfo<string> AvatarProperty = RegisterProperty<string>(nameof(Avatar), RelationshipTypes.LazyLoad);
+  public string Avatar
+  {
+    get => LazyGetProperty(AvatarProperty, () => "loaded");
+    set => SetProperty(AvatarProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> ExternalIdProperty = RegisterProperty<string>(nameof(ExternalId));
+  public string ExternalId
+  {
+    get => GetProperty(ExternalIdProperty);
+    init => LoadProperty(ExternalIdProperty, value);
+  }
+
+  public static readonly PropertyInfo<int> RatingProperty = RegisterProperty<int>(nameof(Rating));
+  public int Rating
+  {
+    get => GetProperty(RatingProperty);
+    private set => LoadProperty(RatingProperty, value);
+  }
+
+  public static readonly PropertyInfo<string> BadgeProperty = RegisterProperty<string>(nameof(Badge));
+  public string Badge => GetProperty(BadgeProperty);
+
+  protected override void AddBusinessRules()
+  {
+    base.AddBusinessRules();
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, SalaryProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, HiredOnProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, GradeProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, RateProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.ReadProperty, SsnProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, SsnProperty, "HR"));
+    BusinessRules.AddRule(new IsInRole(AuthorizationActions.WriteProperty, AvatarProperty, "HR"));
+  }
+
+  public static readonly DateTime FetchedHiredOn = new(2026, 11, 23, 14, 5, 30, 123);
+
+  [Fetch]
+  private void Fetch()
+  {
+    LoadProperty(NameProperty, "employee");
+    LoadProperty(SalaryProperty, 100m);
+    LoadProperty(CodeProperty, "code");
+    Rating = 3;
+    LoadProperty(BadgeProperty, "badge");
+    LoadProperty(HiredOnProperty, FetchedHiredOn);
+    LoadProperty(GradeProperty, null);
+    LoadProperty(RateProperty, 100.5m);
+    LoadProperty(MoodProperty, "calm");
+    LoadProperty(ExternalIdProperty, "external");
+    LoadProperty(SsnProperty, "123-45-6789");
+  }
+}
+
+[Serializable]
+public class AsyncAuthEmployee : BusinessBase<AsyncAuthEmployee>
+{
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set => SetProperty(NameProperty, value);
+  }
+
+  public static readonly PropertyInfo<decimal> SalaryProperty = RegisterProperty<decimal>(nameof(Salary));
+  public decimal Salary
+  {
+    get => GetProperty(SalaryProperty);
+    set => SetProperty(SalaryProperty, value);
+  }
+
+  // a reference type, so an unposted value still reaches the write check
+  public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(nameof(Code));
+  public string Code
+  {
+    get => GetProperty(CodeProperty);
+    set => SetProperty(CodeProperty, value);
+  }
+
+  protected override void AddBusinessRules()
+  {
+    base.AddBusinessRules();
+    BusinessRules.AddRule(new SlowWriteRule(SalaryProperty));
+    BusinessRules.AddRule(new SlowWriteRule(CodeProperty));
+  }
+
+  /// <summary>
+  /// Async write rule that doesn't complete synchronously, so the
+  /// synchronous CanWriteProperty throws.
+  /// </summary>
+  private sealed class SlowWriteRule : AuthorizationRuleAsync
+  {
+    public SlowWriteRule(Core.IMemberInfo element)
+      : base(AuthorizationActions.WriteProperty, element)
+    { }
+
+    protected override async Task ExecuteAsync(IAuthorizationContext context, CancellationToken ct)
+    {
+      await Task.Delay(TimeSpan.FromMilliseconds(50), ct);
+      context.HasPermission = true;
+    }
+  }
+}
+
+[Serializable]
+public class NullRejectingSetter : BusinessBase<NullRejectingSetter>
+{
+  public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+  public string Name
+  {
+    get => GetProperty(NameProperty);
+    set
+    {
+      if (value is null)
+        throw new InvalidOperationException("setter bug");
+      SetProperty(NameProperty, value);
+    }
   }
 }
 

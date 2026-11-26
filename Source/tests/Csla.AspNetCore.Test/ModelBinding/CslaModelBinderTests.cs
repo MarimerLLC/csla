@@ -27,6 +27,7 @@ public class CslaModelBinderTests
   private ServiceProvider _rootProvider;
   private IServiceScope _scope;
   private DefaultHttpContext _httpContext;
+  private ModelStateDictionary _modelState;
 
   [TestInitialize]
   public void Setup()
@@ -258,6 +259,7 @@ public class CslaModelBinderTests
     });
 
     result.Should().BeEmpty();
+    _modelState.ErrorCount.Should().Be(0);
   }
 
   [TestMethod]
@@ -370,6 +372,446 @@ public class CslaModelBinderTests
   }
 
   [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedOnNewObject_IsNotStoredAndAddsModelStateError()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Name"] = "employee",
+      ["Salary"] = "999999",
+    });
+
+    result.Name.Should().Be("employee");
+    result.Salary.Should().Be(0m);
+    _modelState.IsValid.Should().BeFalse();
+    _modelState["Salary"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedOnExistingObject_IsNotStoredAndAddsModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Salary"] = "999999",
+    }, model: existing);
+
+    existing.Salary.Should().Be(100m);
+    existing.IsDirty.Should().BeFalse();
+    _modelState["Salary"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_NotPostedOnNewObject_AddsNoModelStateError()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Name"] = "employee",
+    });
+
+    result.Name.Should().Be("employee");
+    result.Salary.Should().Be(0m);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterThrows_PostedValueIsNotStoredAndAddsModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Name"] = "updated",
+      ["Code"] = "bad",
+    }, model: existing);
+
+    existing.Name.Should().Be("updated");
+    existing.Code.Should().Be("code");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, "Code", Employee.BadCodeMessage);
+    _modelState["Code"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterAccepts_PostedValueIsStored()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Code"] = "good",
+    });
+
+    result.Code.Should().Be("good");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_PrivateSetterProperty_IsNotBound()
+  {
+    var created = await BindAsync<Employee>(new()
+    {
+      ["Rating"] = "5",
+    });
+    created.Rating.Should().Be(0);
+
+    var existing = await FetchEmployeeAsync();
+    await BindAsync(new()
+    {
+      ["Rating"] = "5",
+    }, model: existing);
+    existing.Rating.Should().Be(3);
+    existing.IsDirty.Should().BeFalse();
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_GetOnlyProperty_IsNotBound()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Badge"] = "posted",
+    }, model: existing);
+
+    existing.Badge.Should().Be("badge");
+    existing.IsDirty.Should().BeFalse();
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedPropertyWithPrefix_ModelStateKeyIncludesPrefix()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["emp.Salary"] = "999999",
+    }, "emp");
+
+    result.Salary.Should().Be(0m);
+    _modelState.ContainsKey("emp.Salary").Should().BeTrue();
+    _modelState["emp.Salary"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedUnchanged_AddsNoModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Name"] = "updated",
+      ["Salary"] = "100",
+    }, model: existing);
+
+    existing.Name.Should().Be("updated");
+    existing.Salary.Should().Be(100m);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedProperty_PostedDefaultOnNewObject_AddsNoModelStateError()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Salary"] = "0",
+    });
+
+    result.Salary.Should().Be(0m);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetPropertyThrows_MessageIsUnwrapped()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Tag"] = "bad",
+    });
+
+    result.Tag.Should().NotBe("bad");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, "Tag", Employee.BadTagMessage);
+    _modelState["Tag"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterThrowsWithReflectionFallback_MessageIsUnwrapped()
+  {
+    var original = ApplicationContext.UseReflectionFallback;
+    ApplicationContext.UseReflectionFallback = true;
+    try
+    {
+      var result = await BindAsync<Employee>(new()
+      {
+        ["Code"] = "bad",
+      });
+
+      result.Code.Should().NotBe("bad");
+      var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertySetFailed, "Code", Employee.BadCodeMessage);
+      _modelState["Code"].Errors.Should().ContainSingle()
+        .Which.ErrorMessage.Should().Be(expected);
+    }
+    finally
+    {
+      ApplicationContext.UseReflectionFallback = original;
+    }
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterThrowsUnexpectedException_MessageHidesDetails()
+  {
+    var result = await BindAsync<Employee>(new()
+    {
+      ["Notes"] = "boom",
+    });
+
+    result.Notes.Should().NotBe("boom");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertyValueNotAccepted, "Notes");
+    _modelState["Notes"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
+  }
+
+  [TestMethod]
+  public async Task Bind_UnpostedSetterThrowsUnexpectedException_Throws()
+  {
+    var act = () => BindAsync<NullRejectingSetter>(new());
+
+    await act.Should().ThrowAsync<InvalidOperationException>();
+  }
+
+  [TestMethod]
+  public async Task Bind_ValueNotConvertible_AddsModelStateError()
+  {
+    var result = await BindAsync<Parent>(new()
+    {
+      ["Id"] = "not a number",
+      ["Name"] = "root",
+    });
+
+    result.Id.Should().Be(0);
+    result.Name.Should().Be("root");
+    var expected = string.Format(CultureInfo.CurrentCulture, Csla.Properties.Resources.ModelBinderPropertyValueNotAccepted, "Id");
+    _modelState["Id"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(expected);
+  }
+
+  [TestMethod]
+  public async Task Bind_AsyncWriteRule_NewObjectBindsWithoutThrowing()
+  {
+    var result = await BindAsync<AsyncAuthEmployee>(new()
+    {
+      ["Name"] = "employee",
+    });
+
+    result.Name.Should().Be("employee");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_AsyncWriteRule_PostedChangeIsNotStored()
+  {
+    var result = await BindAsync<AsyncAuthEmployee>(new()
+    {
+      ["Salary"] = "999999",
+    });
+
+    result.Salary.Should().Be(0m);
+    _modelState["Salary"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+  }
+
+  [TestMethod]
+  [DataRow("2026-11-23")]
+  [DataRow("2026-11-23T14:05")]
+  [DataRow("2026-11-23T14:05:30")]
+  [DataRow("2026-11-23T14:05:30.123")]
+  public async Task Bind_WriteDeniedDate_PostedBackAtLowerPrecision_AddsNoModelStateError(string posted)
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["HiredOn"] = posted,
+    }, model: existing);
+
+    existing.HiredOn.Should().Be(Employee.FetchedHiredOn);
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  [DataRow("2026-11-24")]
+  [DataRow("2026-11-23T14:06")]
+  public async Task Bind_WriteDeniedDate_PostedChanged_AddsModelStateError(string posted)
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["HiredOn"] = posted,
+    }, model: existing);
+
+    existing.HiredOn.Should().Be(Employee.FetchedHiredOn);
+    _modelState["HiredOn"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedNullString_PostedBackEmpty_AddsNoModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Grade"] = "",
+    }, model: existing);
+
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_WriteDeniedDecimal_PostedBackInOtherCulture_AddsNoModelStateError()
+  {
+    var culture = CultureInfo.CurrentCulture;
+    CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+    try
+    {
+      var existing = await FetchEmployeeAsync();
+
+      await BindAsync(new()
+      {
+        ["Rate"] = "100.5",
+      }, model: existing);
+
+      existing.Rate.Should().Be(100.5m);
+      _modelState.ErrorCount.Should().Be(0);
+    }
+    finally
+    {
+      CultureInfo.CurrentCulture = culture;
+    }
+  }
+
+  [TestMethod]
+  public async Task Bind_InvariantField_ParsedWithInvariantCulture()
+  {
+    var culture = CultureInfo.CurrentCulture;
+    CultureInfo.CurrentCulture = new CultureInfo("de-DE");
+    try
+    {
+      var invariant = await BindAsync<Employee>(new()
+      {
+        ["Bonus"] = "12.5",
+        ["__Invariant"] = "Bonus",
+      });
+      invariant.Bonus.Should().Be(12.5m);
+
+      var local = await BindAsync<Employee>(new()
+      {
+        ["Bonus"] = "12,5",
+      });
+      local.Bonus.Should().Be(12.5m);
+    }
+    finally
+    {
+      CultureInfo.CurrentCulture = culture;
+    }
+  }
+
+  [TestMethod]
+  public async Task Bind_SetterFailsAfterWritingValue_ValueIsRestored()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Mood"] = "angry",
+    }, model: existing);
+
+    existing.Mood.Should().Be("calm");
+    _modelState["Mood"].Errors.Should().ContainSingle();
+  }
+
+  [TestMethod]
+  public async Task Bind_ModelStateError_KeepsAttemptedValue()
+  {
+    await BindAsync<Parent>(new()
+    {
+      ["Id"] = "not a number",
+    });
+
+    _modelState["Id"].AttemptedValue.Should().Be("not a number");
+    _modelState["Id"].RawValue.Should().NotBeNull();
+  }
+
+  [TestMethod]
+  public async Task Bind_InitOnlyProperty_IsNotBound()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["ExternalId"] = "evil",
+    }, model: existing);
+
+    existing.ExternalId.Should().Be("external");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  [DataRow("123-45-6789")]
+  [DataRow("000-00-0000")]
+  public async Task Bind_ReadAndWriteDeniedProperty_AnyPostedValueAddsModelStateError(string guess)
+  {
+    // a correct guess and a wrong one get the same response, so the
+    // current value can't be found by guessing
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Ssn"] = guess,
+    }, model: existing);
+
+    _modelState["Ssn"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+  }
+
+  [TestMethod]
+  public async Task Bind_UnloadedLazyProperty_PostedValueIsBound()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Photo"] = "posted",
+    }, model: existing);
+
+    existing.Photo.Should().Be("posted");
+    _modelState.ErrorCount.Should().Be(0);
+  }
+
+  [TestMethod]
+  public async Task Bind_UnloadedLazyWriteDeniedProperty_PostedValueAddsModelStateError()
+  {
+    var existing = await FetchEmployeeAsync();
+
+    await BindAsync(new()
+    {
+      ["Avatar"] = "posted",
+    }, model: existing);
+
+    _modelState["Avatar"].Errors.Should().ContainSingle()
+      .Which.ErrorMessage.Should().Be(Csla.Properties.Resources.PropertySetNotAllowed);
+    existing.Avatar.Should().Be("loaded");
+  }
+
+  private async Task<Employee> FetchEmployeeAsync()
+  {
+    var portal = _scope.ServiceProvider.GetRequiredService<IDataPortal<Employee>>();
+    var result = await portal.FetchAsync();
+    result.IsDirty.Should().BeFalse();
+    return result;
+  }
+
+  [TestMethod]
   public async Task Bind_NewRoot_NotNullPropertyNotPosted_IsLeftUnloaded()
   {
     var result = await BindAsync<NotNullBindTarget>(new()
@@ -379,6 +821,20 @@ public class CslaModelBinderTests
 
     result.Name.Should().Be("root");
     result.DataIsLoaded.Should().BeFalse();
+  }
+
+  [TestMethod]
+  public async Task Bind_NotNullPropertyPostedEmpty_IsNotStoredAndAddsModelStateError()
+  {
+    var result = await BindAsync<NotNullBindTarget>(new()
+    {
+      ["Name"] = "root",
+      ["Data"] = "",
+    });
+
+    result.DataIsLoaded.Should().BeFalse();
+    _modelState.IsValid.Should().BeFalse();
+    _modelState["Data"].Errors.Should().ContainSingle();
   }
   private async Task<Parent> FetchParentAsync()
   {
@@ -411,6 +867,7 @@ public class CslaModelBinderTests
     var binder = new CslaModelBinder(_scope.ServiceProvider.GetRequiredService<ApplicationContext>());
     await binder.BindModelAsync(bindingContext);
 
+    _modelState = bindingContext.ModelState;
     bindingContext.Result.IsModelSet.Should().BeTrue();
     return (T)bindingContext.Result.Model;
   }

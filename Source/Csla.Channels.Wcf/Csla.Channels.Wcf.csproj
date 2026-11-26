@@ -43,7 +43,7 @@
 
   <!-- There is no 11.x version of the client side System.ServiceModel packages, so .NET 11 uses the 10.x version. -->
   <ItemGroup Condition="'$(TargetFramework)'=='net10.0' or '$(TargetFramework)'=='net11.0'">
-    <PackageReference Include="System.ServiceModel.Primitives" Version="10.0.652802" />
+    <PackageReference Include="System.ServiceModel.Primitives" Version="10.1.0" />
     <PackageReference Include="System.ServiceModel.Http" Version="10.0.652802" />
   </ItemGroup>
 

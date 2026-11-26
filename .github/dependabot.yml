@@ -33,6 +33,13 @@ updates:
   - dependency-name: Microsoft.Maui.*
     update-types:
     - version-update:semver-major
+  # MSTest 4 removes [ExpectedException] and Assert.ThrowsException(Async),
+  # which the test projects use throughout. Moving to a new MSTest major
+  # version is a test migration done by hand; patch and minor updates still
+  # come through.
+  - dependency-name: MSTest.*
+    update-types:
+    - version-update:semver-major
   - dependency-name: Microsoft.EntityFrameworkCore
     versions:
     - ">= 3.a, < 4"

@@ -1,5 +1,4 @@
 ﻿{
-  target: null,
   Diagnostics: [
     {
       Message: The CslaDataPortalExtensionsAsyncSuffix value 'As-ync' is not valid in a C# identifier; generated async data portal extension methods use the 'Async' suffix,

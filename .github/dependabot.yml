@@ -56,6 +56,12 @@ updates:
   - dependency-name: MSTest.*
     update-types:
     - version-update:semver-major
+  # Verify versions released after 2026-09-01 are covered by the Open Source
+  # Maintenance Fee, and from v33 the build fails without a sponsorship
+  # declaration (SC021). The generator snapshot tests stay on the last release
+  # before that date (Verify.MSTest 32.0.0, Verify.SourceGenerators 2.5.0).
+  # Any move off these versions is a deliberate, hand-made decision.
+  - dependency-name: Verify*
   - dependency-name: Microsoft.EntityFrameworkCore
     versions:
     - ">= 3.a, < 4"

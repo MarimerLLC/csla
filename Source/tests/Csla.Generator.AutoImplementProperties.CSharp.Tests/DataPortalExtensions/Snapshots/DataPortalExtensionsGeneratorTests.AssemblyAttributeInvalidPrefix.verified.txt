@@ -1,5 +1,4 @@
 ﻿{
-  target: null,
   Diagnostics: [
     {
       Location: /*

@@ -1,5 +1,4 @@
 ﻿{
-  target: null,
   Diagnostics: [
     {
       Message: Synchronous data portal extension methods are not generated because CslaDataPortalExtensionsAsyncSuffix is 'none', so they would have the same names as the async methods; set CslaGenerateSyncDataPortalExtensions to false,

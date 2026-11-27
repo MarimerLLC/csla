@@ -4,6 +4,10 @@
 # Shell scripts should always use line feed not crlf
 *.sh text eol=lf
 
+# Verify (generator snapshot tests) rejects verified files with \r\n line endings
+*.verified.cs  text eol=lf
+*.verified.txt text eol=lf
+
 # Custom for Visual Studio
 *.cs     diff=csharp
 *.csproj merge=union

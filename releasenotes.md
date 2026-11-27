@@ -82,7 +82,7 @@ The new `Csla.Mvvm.ViewModel<T>` in the `Csla` package has the view model behavi
 
 * [#4975](https://github.com/MarimerLLC/csla/issues/4975) `SafeDataReader` has async members: `ReadAsync`, `NextResultAsync`, `CloseAsync`, `IsDBNullAsync`, `GetFieldValueAsync<T>`, null-safe getters such as `GetStringAsync` and `GetInt32Async`, and `DisposeAsync` ([#4976](https://github.com/MarimerLLC/csla/pull/4976))
 * `Csla.Data.SqlClient` references `Microsoft.Data.SqlClient` 8.0.0 (was 5.2.2) and no longer references `Azure.Identity` ([#5096](https://github.com/MarimerLLC/csla/pull/5096), [#5138](https://github.com/MarimerLLC/csla/pull/5138))
-* The .NET 11 targets use the .NET 11 versions of their package dependencies. `Csla` no longer references the `System.Text.Json`, `System.Text.RegularExpressions` and `System.ComponentModel.Annotations` packages on .NET 10 and 11, which include them, and `Csla.Channels.Wcf` references the `Microsoft.AspNetCore.WebUtilities` and `System.Security.Cryptography.Xml` versions that match each target framework
+* The .NET 11 targets use the .NET 11 versions of their package dependencies, and the .NET 10 targets use the latest .NET 10 servicing versions (10.0.15; 10.0.130 for MAUI). `Csla` no longer references the `System.Text.Json`, `System.Text.RegularExpressions` and `System.ComponentModel.Annotations` packages on .NET 10 and 11, which include them, and `Csla.Channels.Wcf` references the `Microsoft.AspNetCore.WebUtilities` and `System.Security.Cryptography.Xml` versions that match each target framework
 
 **Properties**
 

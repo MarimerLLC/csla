@@ -34,7 +34,7 @@
     <Resource Include="..\Csla.Xaml.Resources\Resources\Warning.png">
       <Link>Resources\Warning.png</Link>
     </Resource>
-    <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
+    <PackageReference Include="Polyfill" Version="12.0.0" PrivateAssets="all" />
     <ProjectReference Include="..\Csla\Csla.csproj" />
   </ItemGroup>
   

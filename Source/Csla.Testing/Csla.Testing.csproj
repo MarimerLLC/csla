@@ -29,7 +29,7 @@
 
   <ItemGroup>
     <ProjectReference Include="..\Csla\Csla.csproj" />
-    <PackageReference Include="Polyfill" Version="9.22.0" PrivateAssets="all" />
+    <PackageReference Include="Polyfill" Version="12.0.0" PrivateAssets="all" />
   </ItemGroup>
 
   <ItemGroup>

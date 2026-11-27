@@ -43,51 +43,51 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
-    public void TestAsyncRulesValid()
+    public async Task TestAsyncRulesValid()
     {
       IDataPortal<HasAsyncRule> dataPortal = _testHost.GetDataPortal<HasAsyncRule>();
 
       HasAsyncRule har = dataPortal.Create();
       Assert.IsTrue(har.IsValid, "IsValid 1");
 
-      har.ValidationComplete += (_, _) =>
-      {
-        Assert.IsTrue(har.IsValid, "IsValid 2");
-      };
+      var validationComplete = WhenValidationComplete(har);
       har.Name = "success";
+      await validationComplete;
+
+      Assert.IsTrue(har.IsValid, "IsValid 2");
     }
 
     [TestMethod]
-    public void TestAsyncRuleError()
+    public async Task TestAsyncRuleError()
     {
       IDataPortal<HasAsyncRule> dataPortal = _testHost.GetDataPortal<HasAsyncRule>();
 
       HasAsyncRule har = dataPortal.Create();
       Assert.IsTrue(har.IsValid, "IsValid 1");
 
-      har.ValidationComplete += (_, _) =>
-      {
-        Assert.IsFalse(har.IsValid, "IsValid 2");
-        Assert.AreEqual(1, har.BrokenRulesCollection.Count);
-      };
+      var validationComplete = WhenValidationComplete(har);
       har.Name = "error";
+      await validationComplete;
+
+      Assert.IsFalse(har.IsValid, "IsValid 2");
+      Assert.AreEqual(1, har.BrokenRulesCollection.Count);
     }
 
     [TestMethod]
-    public void InvalidAsyncRule()
+    public async Task InvalidAsyncRule()
     {
       IDataPortal<HasInvalidAsyncRule> dataPortal = _testHost.GetDataPortal<HasInvalidAsyncRule>();
 
       var root = dataPortal.Create();
-      root.ValidationComplete += (_, _) =>
-        {
-          Assert.IsFalse(root.IsValid);
-          int actual = root.GetBrokenRules().Count;
-          Assert.AreEqual(1, actual);
-          string actual1 = root.GetBrokenRules()[0].Description;
-          Assert.AreEqual("Operation is not valid due to the current state of the object.", actual1);
-        };
+      var validationComplete = WhenValidationComplete(root);
       root.Validate();
+      await validationComplete;
+
+      Assert.IsFalse(root.IsValid);
+      int actual = root.GetBrokenRules().Count;
+      Assert.AreEqual(1, actual);
+      string actual1 = root.GetBrokenRules()[0].Description;
+      Assert.AreEqual("Operation is not valid due to the current state of the object.", actual1);
     }
 
     [Ignore] // frequently times out on appveyor server
@@ -116,7 +116,7 @@ namespace Csla.Test.ValidationRules
     }
 
     [TestMethod]
-    public void TestAsyncRulesAndSyncRulesValid()
+    public async Task TestAsyncRulesAndSyncRulesValid()
     {
       IDataPortal<AsyncRuleRoot> dataPortal = _testHost.GetDataPortal<AsyncRuleRoot>();
 
@@ -125,14 +125,13 @@ namespace Csla.Test.ValidationRules
       Assert.IsTrue(string.IsNullOrEmpty(har.CustomerName));
       Assert.IsFalse(har.IsValid, "IsValid 1");
 
-      har.ValidationComplete += (_, _) =>
-      {
-        Assert.IsFalse(string.IsNullOrEmpty(har.CustomerNumber));
-        Assert.IsFalse(string.IsNullOrEmpty(har.CustomerName));
-
-        Assert.IsTrue(har.IsValid, "IsValid 2");
-      };
+      var validationComplete = WhenValidationComplete(har);
       har.CustomerNumber = "123456";
+      await validationComplete;
+
+      Assert.IsFalse(string.IsNullOrEmpty(har.CustomerNumber));
+      Assert.IsFalse(string.IsNullOrEmpty(har.CustomerName));
+      Assert.IsTrue(har.IsValid, "IsValid 2");
     }
 
     [TestMethod]
@@ -141,14 +140,11 @@ namespace Csla.Test.ValidationRules
       IDataPortal<AsyncRuleRoot> dataPortal = _testHost.GetDataPortal<AsyncRuleRoot>();
 
       var har = dataPortal.Create();
-      var tcs = new TaskCompletionSource<bool>();
-      har.ValidationComplete += (_, _) =>
-      {
-        Assert.AreEqual("abc", har.AsyncAwait, "ends with value");
-        tcs.SetResult(true);
-      };
+      var validationComplete = WhenValidationComplete(har);
       har.AsyncAwait = "123456";
-      await tcs.Task;
+      await validationComplete;
+
+      Assert.AreEqual("abc", har.AsyncAwait, "ends with value");
     }
 
 
@@ -235,6 +231,20 @@ namespace Csla.Test.ValidationRules
       void CurrentDomain_UnhandledException(object sender, UnhandledExceptionEventArgs e) => unobservedTaskExceptionFound = true;
     }
 
+
+    /// <summary>
+    /// Completes when <paramref name="obj"/> raises ValidationComplete and is no longer busy.
+    /// Tests must await this before they assert or return: an async rule finishes on a
+    /// thread-pool thread, and if the test has already returned, the shared test host can
+    /// be disposed under it, which crashes the test host process.
+    /// </summary>
+    private static async Task WhenValidationComplete(Core.BusinessBase obj)
+    {
+      var tcs = new TaskCompletionSource(TaskCreationOptions.RunContinuationsAsynchronously);
+      obj.ValidationComplete += (_, _) => tcs.TrySetResult();
+      await tcs.Task.WaitAsync(TimeSpan.FromSeconds(10));
+      await obj.WaitForIdle(TimeSpan.FromSeconds(10));
+    }
 
     private static CslaTestHost CreateHostForAsyncRuleExceptions() => CslaTestHost.Create(t => t.ConfigureServices(services => services.AddSingleton<IUnhandledAsyncRuleExceptionHandler, TestUnhandledAsyncRuleExceptionHandler>()));
     private static async Task ForceThreadSwitch(DelayedAsyncRuleExceptionRoot root, TimeSpan exceptionDelay)

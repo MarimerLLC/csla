@@ -60,7 +60,6 @@
     <PackageReference Include="Microsoft.Extensions.DependencyInjection" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="$(DotNetPackageVersion)" />
     <PackageReference Include="System.Configuration.ConfigurationManager" Version="$(DotNetPackageVersion)" />
-    <PackageReference Include="System.ComponentModel.Annotations" Version="5.0.0" />
   </ItemGroup>
 
   <ItemGroup>

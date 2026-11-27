@@ -14,22 +14,22 @@ public partial class Measure<T, @class>
 		get => GetProperty(AmountProperty);
 		set => SetProperty(AmountProperty, value);
 	}
-	public static readonly PropertyInfo<T[]> ItemsProperty = RegisterProperty<T[]>(nameof(Items));
+	public static readonly NotNullPropertyInfo<T[]> ItemsProperty = RegisterNotNullProperty<T[]>(nameof(Items));
 	public partial T[] Items
 	{
-		get => GetProperty(ItemsProperty)!;
+		get => GetProperty(ItemsProperty);
 		set => SetProperty(ItemsProperty, value);
 	}
-	public static readonly PropertyInfo<T[][]> JaggedProperty = RegisterProperty<T[][]>(nameof(Jagged));
+	public static readonly NotNullPropertyInfo<T[][]> JaggedProperty = RegisterNotNullProperty<T[][]>(nameof(Jagged));
 	public partial T[][] Jagged
 	{
-		get => GetProperty(JaggedProperty)!;
+		get => GetProperty(JaggedProperty);
 		set => SetProperty(JaggedProperty, value);
 	}
-	public static readonly PropertyInfo<int[,]> GridProperty = RegisterProperty<int[,]>(nameof(Grid));
+	public static readonly NotNullPropertyInfo<int[,]> GridProperty = RegisterNotNullProperty<int[,]>(nameof(Grid));
 	public partial int[,] Grid
 	{
-		get => GetProperty(GridProperty)!;
+		get => GetProperty(GridProperty);
 		set => SetProperty(GridProperty, value);
 	}
 	public static readonly PropertyInfo<string?[]?> TagsProperty = RegisterProperty<string?[]?>(nameof(Tags));

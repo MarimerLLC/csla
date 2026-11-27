@@ -8,7 +8,7 @@ namespace Test;
 
 public partial class BusinessBaseTestClass
 {
-	public static readonly PropertyInfo<ulong> NameProperty = RegisterProperty<ulong>(nameof(Name));
+	public static readonly NotNullPropertyInfo<ulong> NameProperty = RegisterNotNullProperty<ulong>(nameof(Name));
 	public partial ulong Name
 	{
 		get => GetProperty(NameProperty);

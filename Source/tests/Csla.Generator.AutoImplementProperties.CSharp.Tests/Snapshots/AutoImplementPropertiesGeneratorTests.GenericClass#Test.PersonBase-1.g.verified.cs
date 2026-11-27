@@ -8,10 +8,10 @@ namespace Test;
 
 public partial class PersonBase<T>
 {
-	public static readonly PropertyInfo<string> PersonDisplayNameProperty = RegisterProperty<string>(nameof(PersonDisplayName));
+	public static readonly NotNullPropertyInfo<string> PersonDisplayNameProperty = RegisterNotNullProperty<string>(nameof(PersonDisplayName), null, string.Empty);
 	public partial string PersonDisplayName
 	{
-		get => GetProperty(PersonDisplayNameProperty)!;
+		get => GetProperty(PersonDisplayNameProperty);
 		set => SetProperty(PersonDisplayNameProperty, value);
 	}
 	public static readonly PropertyInfo<T?> SelfProperty = RegisterProperty<T?>(nameof(Self));

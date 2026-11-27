@@ -32,5 +32,7 @@
   <ItemGroup>
     <!-- Shared with Csla.Analyzers so the generator skips exactly the declarations CSLA0028 reports -->
     <Compile Include="..\..\..\..\Csla.Analyzers\Csla.Analyzers\MobileSerializerRules.cs" Link="MobileSerializers\MobileSerializerRules.cs" />
+    <!-- Shared with Csla.Analyzers so generated registrations follow the same not-null rule as the analyzers (#5047) -->
+    <Compile Include="..\..\..\..\Csla.Analyzers\Csla.Analyzers\NotNullPropertyRules.cs" Link="AutoImplement\NotNullPropertyRules.cs" />
   </ItemGroup>
 </Project>

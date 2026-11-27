@@ -62,6 +62,18 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     public string[] SetterModifiers { get; internal set; } = [];
 
     /// <summary>
+    /// How the property is registered when not-null properties are generated:
+    /// decided from the declared type and the nullable context of the declaration.
+    /// </summary>
+    internal Csla.Analyzers.NotNullRegistration NotNullRegistration { get; init; }
+
+    /// <summary>
+    /// Gets a value indicating whether nullable annotations are enabled at the
+    /// property's declaration, so the generated file needs <c>#nullable enable</c>.
+    /// </summary>
+    internal bool AnnotationsEnabled { get; init; }
+
+    /// <summary>
     /// Determines whether the specified object is equal to the current object.
     /// </summary>
     /// <param name="obj">The object to compare with the current object.</param>
@@ -90,7 +102,9 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
              Setter == other.Setter &&
              Modifiers.SequenceEqual(other.Modifiers) &&
              Partial == other.Partial &&
-             SetterModifiers.SequenceEqual(other.SetterModifiers);
+             SetterModifiers.SequenceEqual(other.SetterModifiers) &&
+             NotNullRegistration == other.NotNullRegistration &&
+             AnnotationsEnabled == other.AnnotationsEnabled;
     }
 
     /// <summary>
@@ -99,7 +113,7 @@ namespace Csla.Generator.AutoImplementProperties.CSharp.AutoImplement
     /// <returns>A hash code for the current object.</returns>
     public override int GetHashCode()
     {
-      return HashCode.Combine(PropertyName, TypeDefinition, Getter, Setter, Modifiers, Partial, SetterModifiers);
+      return HashCode.Combine(HashCode.Combine(PropertyName, TypeDefinition, Getter, Setter, Modifiers, Partial, SetterModifiers), NotNullRegistration, AnnotationsEnabled);
     }
   }
 }

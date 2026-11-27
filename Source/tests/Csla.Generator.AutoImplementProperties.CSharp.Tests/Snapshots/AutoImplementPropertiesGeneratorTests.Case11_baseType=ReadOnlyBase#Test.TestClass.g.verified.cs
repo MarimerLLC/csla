@@ -14,10 +14,10 @@ public partial class TestClass
 		get => GetProperty(AddressLine1Property);
 		private set => LoadProperty(AddressLine1Property, value);
 	}
-	public static readonly PropertyInfo<string> TownProperty = RegisterProperty<string>(nameof(Town));
+	public static readonly NotNullPropertyInfo<string> TownProperty = RegisterNotNullProperty<string>(nameof(Town), null, string.Empty);
 	public partial string Town
 	{
-		get => GetProperty(TownProperty)!;
+		get => GetProperty(TownProperty);
 		set => LoadProperty(TownProperty, value);
 	}
 }

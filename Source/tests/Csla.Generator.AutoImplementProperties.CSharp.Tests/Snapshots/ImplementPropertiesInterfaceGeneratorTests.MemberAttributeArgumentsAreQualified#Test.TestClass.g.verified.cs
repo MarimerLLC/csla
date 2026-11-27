@@ -8,46 +8,46 @@ namespace Test;
 
 public partial class TestClass
 {
-	public static readonly PropertyInfo<string> NameProperty = RegisterProperty<string>(nameof(Name));
+	public static readonly NotNullPropertyInfo<string> NameProperty = RegisterNotNullProperty<string>(nameof(Name), null, string.Empty);
 	[global::Test.Attributes.InfoAttribute( ResourceType=typeof(global::Test.Attributes.Strings), ResourceName="CustomerName")]
 	public string Name
 	{
-		get => GetProperty(NameProperty)!;
+		get => GetProperty(NameProperty);
 		set => SetProperty(NameProperty, value);
 	}
-	public static readonly PropertyInfo<int> CountProperty = RegisterProperty<int>(nameof(Count));
+	public static readonly NotNullPropertyInfo<int> CountProperty = RegisterNotNullProperty<int>(nameof(Count));
 	[global::Test.Attributes.InfoAttribute( Limit=global::Test.Attributes.Limits.Max, Mode=global::Test.Attributes.Mode.Fast)]
 	public int Count
 	{
 		get => GetProperty(CountProperty);
 		set => SetProperty(CountProperty, value);
 	}
-	public static readonly PropertyInfo<string> CodeProperty = RegisterProperty<string>(nameof(Code));
+	public static readonly NotNullPropertyInfo<string> CodeProperty = RegisterNotNullProperty<string>(nameof(Code), null, string.Empty);
 	[global::Test.Attributes.InfoAttribute( Limit=global::Test.TestClass.ITestClass.MaxLength, ResourceType=typeof(global::System.Collections.Generic.List<>))]
 	public string Code
 	{
-		get => GetProperty(CodeProperty)!;
+		get => GetProperty(CodeProperty);
 		set => SetProperty(CodeProperty, value);
 	}
-	public static readonly PropertyInfo<string> OrderedProperty = RegisterProperty<string>(nameof(Ordered));
+	public static readonly NotNullPropertyInfo<string> OrderedProperty = RegisterNotNullProperty<string>(nameof(Ordered), null, string.Empty);
 	[global::Test.Attributes.InfoAttribute(order: 2, name: "Code" )]
 	public string Ordered
 	{
-		get => GetProperty(OrderedProperty)!;
+		get => GetProperty(OrderedProperty);
 		set => SetProperty(OrderedProperty, value);
 	}
-	public static readonly PropertyInfo<string> NestedProperty = RegisterProperty<string>(nameof(Nested));
+	public static readonly NotNullPropertyInfo<string> NestedProperty = RegisterNotNullProperty<string>(nameof(Nested), null, string.Empty);
 	[global::Test.Attributes.InfoAttribute( ResourceType=typeof(global::Test.Attributes.Outer<>.Inner<>), ResourceName="Label")]
 	public string Nested
 	{
-		get => GetProperty(NestedProperty)!;
+		get => GetProperty(NestedProperty);
 		set => SetProperty(NestedProperty, value);
 	}
-	public static readonly PropertyInfo<string> PlainProperty = RegisterProperty<string>(nameof(Plain));
+	public static readonly NotNullPropertyInfo<string> PlainProperty = RegisterNotNullProperty<string>(nameof(Plain), null, string.Empty);
 	[global::Test.Attributes.InfoAttribute( ResourceType=typeof(global::Test.Attributes.Outer<>.Plain))]
 	public string Plain
 	{
-		get => GetProperty(PlainProperty)!;
+		get => GetProperty(PlainProperty);
 		set => SetProperty(PlainProperty, value);
 	}
 }

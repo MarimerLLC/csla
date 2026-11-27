@@ -8,13 +8,13 @@ namespace Test;
 
 public partial class TestClass
 {
-	public static readonly PropertyInfo<global::Test.Status> StatusProperty = RegisterProperty<global::Test.Status>(nameof(Status));
+	public static readonly NotNullPropertyInfo<global::Test.Status> StatusProperty = RegisterNotNullProperty<global::Test.Status>(nameof(Status));
 	public partial global::Test.Status Status
 	{
 		get => GetProperty(StatusProperty);
 		set => SetProperty(StatusProperty, value);
 	}
-	public static readonly PropertyInfo<global::Test.Money> TotalProperty = RegisterProperty<global::Test.Money>(nameof(Total));
+	public static readonly NotNullPropertyInfo<global::Test.Money> TotalProperty = RegisterNotNullProperty<global::Test.Money>(nameof(Total));
 	public partial global::Test.Money Total
 	{
 		get => GetProperty(TotalProperty);
@@ -26,10 +26,10 @@ public partial class TestClass
 		get => GetProperty(CountProperty);
 		set => SetProperty(CountProperty, value);
 	}
-	public static readonly PropertyInfo<global::Test.Note> NoteProperty = RegisterProperty<global::Test.Note>(nameof(Note));
+	public static readonly NotNullPropertyInfo<global::Test.Note> NoteProperty = RegisterNotNullProperty<global::Test.Note>(nameof(Note));
 	public partial global::Test.Note Note
 	{
-		get => GetProperty(NoteProperty)!;
+		get => GetProperty(NoteProperty);
 		set => SetProperty(NoteProperty, value);
 	}
 }

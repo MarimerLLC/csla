@@ -37,8 +37,16 @@
   <ItemGroup Condition="'$(TargetFramework)'=='net10.0' or '$(TargetFramework)'=='net11.0'">
     <PackageReference Include="CoreWCF.Http" Version="1.9.2" />
     <PackageReference Include="CoreWCF.Primitives" Version="1.9.2" />
-    <!-- CoreWCF brings in Microsoft.AspNetCore.WebUtilities 2.3.10; force the version that fixes GHSA-6527-9fp8-r4x6. -->
-    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="2.3.14" />
+  </ItemGroup>
+
+  <!-- CoreWCF brings in Microsoft.AspNetCore.WebUtilities 2.3.10, which has GHSA-6527-9fp8-r4x6, so reference
+       the package from the band that matches each target framework. -->
+  <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="10.0.15" />
+  </ItemGroup>
+
+  <ItemGroup Condition="'$(TargetFramework)'=='net11.0'">
+    <PackageReference Include="Microsoft.AspNetCore.WebUtilities" Version="11.0.0" />
   </ItemGroup>
 
   <!-- There is no 11.x version of the client side System.ServiceModel packages, so .NET 11 uses the 10.x version. -->
@@ -51,7 +59,7 @@
        that have known high severity advisories (NU1903), so reference a patched version of the package
        from the servicing band that matches each target framework. -->
   <ItemGroup Condition="'$(TargetFramework)'=='net10.0'">
-    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.14" />
+    <PackageReference Include="System.Security.Cryptography.Xml" Version="10.0.15" />
   </ItemGroup>
 
   <ItemGroup Condition="'$(TargetFramework)'=='net11.0'">
